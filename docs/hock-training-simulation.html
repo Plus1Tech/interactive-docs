@@ -1,0 +1,994 @@
+Title- Hock International Training Simulation     Here is teh HTML markdown-<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HOCK International — Content Production Agent Training</title>
+<style>
+:root{
+  --bg:#F7F4EE;--surface:#FFFFFF;--surface2:#F3EFE8;--surface3:#EDE8DF;
+  --border:#DDD7CC;--border2:#C9C3B7;
+  --text:#1C1814;--muted:#6B6458;--faint:#9C9487;
+  --orange:#F47920;--orange-bg:rgba(244,121,32,.10);--orange-br:rgba(244,121,32,.30);
+  --orange-light:#FEF0E6;
+  --blue:#1B4B8A;--blue-bg:rgba(27,75,138,.08);--blue-br:rgba(27,75,138,.25);
+  --blue-light:#EBF0F8;
+  --green:#2D7A3A;--green-bg:rgba(45,122,58,.09);--green-br:rgba(45,122,58,.25);
+  --monday:#F41472;--monday-bg:rgba(244,20,114,.08);--monday-br:rgba(244,20,114,.25);
+  --gamma:#6D28D9;--gamma-bg:rgba(109,40,217,.08);--gamma-br:rgba(109,40,217,.25);
+  --amber:#B45309;--amber-bg:rgba(180,83,9,.08);--amber-br:rgba(180,83,9,.25);
+  --user-bubble:#1B4B8A;--user-text:#EBF0F8;
+  --r:12px;--r-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+/* HEADER */
+.hdr{height:52px;background:var(--surface);border-bottom:3px solid var(--orange);display:flex;align-items:center;justify-content:space-between;padding:0 18px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.hdr-l{display:flex;align-items:center;gap:10px}
+.h-hock{font-size:20px;font-weight:900;font-style:italic;color:var(--orange);letter-spacing:-.5px}
+.h-intl{font-size:9px;font-weight:800;background:var(--orange);color:#fff;padding:2px 7px;border-radius:3px;letter-spacing:.06em;text-transform:uppercase}
+.h-div{width:1px;height:20px;background:var(--border);margin:0 4px}
+.h-title{font-size:13px;font-weight:700;color:var(--text)}
+.h-sub{font-size:10px;color:var(--muted)}
+/* Phase dots */
+.pbar{display:flex;align-items:center}
+.pd{width:9px;height:9px;border-radius:50%;background:var(--border2);transition:all .25s;cursor:default;position:relative}
+.pd:hover::after{content:attr(title);position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;border-radius:4px;padding:2px 8px;font-size:10px;white-space:nowrap;pointer-events:none}
+.pline{width:12px;height:1px;background:var(--border2)}
+.pd.done{background:var(--green)}
+.pd.active{width:22px;border-radius:4px;background:var(--orange)}
+.pd.setup-a{background:var(--blue)}
+/* Auto toggle */
+.hdr-r{display:flex;align-items:center;gap:10px}
+.atgl-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+.tgl{width:32px;height:17px;background:var(--border2);border-radius:9px;position:relative;transition:background .2s;flex-shrink:0}
+.tgl.on{background:var(--orange)}
+.tgl-k{width:13px;height:13px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tgl.on .tgl-k{left:17px}
+
+/* BODY */
+.body{height:calc(100vh - 52px - 52px);display:flex;overflow:hidden}
+
+/* SETUP PANEL */
+.setup-wrap{flex:1;overflow-y:auto;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.setup-wrap.hide{display:none}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;max-width:640px;width:100%;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.s-ey{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:5px}
+.s-title{font-size:19px;font-weight:800;color:var(--text);margin-bottom:7px}
+.s-desc{color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:16px}
+.s-list{display:flex;flex-direction:column;gap:7px}
+.s-row{display:flex;align-items:flex-start;gap:11px;padding:10px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm)}
+.s-ico{font-size:15px;flex-shrink:0;margin-top:1px}
+.s-nm{font-family:'SF Mono',ui-monospace,monospace;font-size:11.5px;color:var(--blue);font-weight:700;margin-bottom:2px}
+.s-ds{font-size:12px;color:var(--muted)}
+.s-ann{background:var(--orange-light);border:1px solid var(--orange-br);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:12px;position:relative}
+.s-ann-tag{position:absolute;top:-10px;right:10px;background:var(--orange);color:#fff;font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px;letter-spacing:.04em}
+.s-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin-bottom:3px}
+.s-val{font-size:12.5px;color:var(--text);font-weight:500}
+.s-warn{padding:10px 13px;background:var(--amber-bg);border:1px solid var(--amber-br);border-radius:var(--r-sm);font-size:12.5px;color:var(--amber);margin-top:12px;line-height:1.5}
+.setup-hint{font-size:11.5px;color:var(--faint);text-align:center;max-width:440px;line-height:1.65}
+
+/* CHAT AREA */
+.chat-wrap{flex:1;display:flex;overflow:hidden}
+.chat-wrap.hide{display:none}
+.chat-col{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+.chat-top{height:46px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.ct-l{display:flex;align-items:center;gap:9px}
+.av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#C45F10);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.ct-name{font-size:13px;font-weight:700;color:var(--text)}
+.ct-sub{font-size:10.5px;color:var(--muted)}
+.ph-pill{font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-br)}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:11px;scroll-behavior:smooth}
+/* Messages */
+.mw{display:flex;flex-direction:column;gap:3px;animation:mi .2s ease}
+@keyframes mi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.mw.user{align-items:flex-end}
+.mw.claude{align-items:flex-start}
+.mw.sys{align-items:center}
+.msnd{font-size:10px;color:var(--faint);padding:0 4px;font-weight:600}
+.bub{max-width:82%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.57;white-space:pre-wrap}
+.mw.user .bub{background:var(--user-bubble);color:var(--user-text);border-bottom-right-radius:3px}
+.mw.claude .bub{background:var(--surface);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.mw.sys .bub{background:var(--green-bg);border:1px solid var(--green-br);color:var(--green);font-size:12px;border-radius:var(--r-sm);max-width:92%;text-align:center;font-weight:600}
+.mw.transition .bub{background:var(--blue-light);border:1px solid var(--blue-br);color:var(--blue);font-size:12px;border-radius:var(--r-sm);max-width:96%;font-weight:500}
+.bub-code{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:'SF Mono',ui-monospace,monospace;font-size:11px;color:var(--blue);line-height:1.6;margin-top:8px;overflow-x:auto;white-space:pre}
+.bub-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+.bub-table th{text-align:left;padding:5px 8px;border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.04em;background:var(--surface2)}
+.bub-table td{padding:5px 8px;border-bottom:1px solid var(--border)}
+.bub-table tr.hl td{font-weight:800;color:var(--orange);background:var(--orange-light)}
+.bub-summary{background:var(--blue-light);border:1px solid var(--blue-br);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--blue);line-height:1.65;margin-top:8px}
+.bub-starter{background:var(--surface2);border:1px dashed var(--border2);border-radius:6px;padding:10px 12px;font-family:'SF Mono',ui-monospace,monospace;font-size:11px;color:var(--muted);line-height:1.6;margin-top:8px}
+/* Typing */
+.typ-row{display:flex;align-items:flex-end;gap:7px;padding:2px 0}
+.typ-row.hide{display:none}
+.typ-bub{background:var(--surface);border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:3px;padding:9px 13px;display:flex;gap:4px;align-items:center}
+.td{width:6px;height:6px;background:var(--faint);border-radius:50%;animation:tp 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes tp{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
+
+/* CONTEXT PANEL */
+.ctx{width:268px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px;box-shadow:-1px 0 4px rgba(0,0,0,.04)}
+.cb{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px}
+.clbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:7px}
+.cph{font-size:13px;font-weight:800;color:var(--text);line-height:1.3}
+.cnote{font-size:12px;color:var(--muted);line-height:1.55;padding:9px 10px;background:var(--orange-light);border:1px solid var(--orange-br);border-radius:6px;margin-top:4px}
+.cnote strong{color:var(--orange)}
+.sk-row{display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;margin-bottom:4px}
+.sk-row:last-child{margin-bottom:0}
+.sk-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sk-nm{font-family:'SF Mono',ui-monospace,monospace;font-size:10.5px;color:var(--blue);flex:1;line-height:1.2;font-weight:600}
+.sk-st{font-size:10px;margin-left:auto;white-space:nowrap;font-weight:600}
+.sk-st.active{color:var(--orange)}.sk-st.done{color:var(--green)}.sk-st.pending{color:var(--faint)}
+.conn-box{padding:9px;border-radius:6px;margin-top:4px}
+.conn-mon{background:var(--monday-bg);border:1px solid var(--monday-br)}
+.conn-gam{background:var(--gamma-bg);border:1px solid var(--gamma-br)}
+.conn-nm{font-size:12px;font-weight:800;margin-bottom:5px}
+.conn-nm.mn{color:var(--monday)}.conn-nm.gm{color:var(--gamma)}
+.conn-note{font-size:11.5px;color:var(--muted);line-height:1.5}
+.conn-note strong{font-weight:700}
+
+/* CONNECTOR MODALS */
+.mov{position:fixed;inset:0;background:rgba(28,24,20,.55);display:flex;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(4px);animation:fi .18s}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.mov.hide{display:none}
+.mbox{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:408px;box-shadow:0 20px 50px rgba(0,0,0,.18);animation:su .22s ease;overflow:hidden}
+@keyframes su{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* Monday header */
+.mon-hdr{background:linear-gradient(135deg,rgba(244,20,114,.09),rgba(244,20,114,.04));border-bottom:1px solid var(--monday-br);padding:16px 18px 13px;display:flex;align-items:center;gap:12px}
+.mon-ico{width:40px;height:40px;border-radius:9px;background:var(--monday-bg);border:1px solid var(--monday-br);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mon-title{font-size:14px;font-weight:800;color:var(--monday)}
+.mon-sub{font-size:11.5px;color:var(--muted);margin-top:1px}
+/* Gamma header */
+.gam-hdr{background:linear-gradient(135deg,rgba(109,40,217,.09),rgba(109,40,217,.04));border-bottom:1px solid var(--gamma-br);padding:16px 18px 13px;display:flex;align-items:center;gap:12px}
+.gam-ico{width:40px;height:40px;border-radius:9px;background:var(--gamma-bg);border:1px solid var(--gamma-br);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.gam-title{font-size:14px;font-weight:800;color:var(--gamma)}
+.gam-sub{font-size:11.5px;color:var(--muted);margin-top:1px}
+.mbody{padding:14px 18px}
+.m-action-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:9px}
+.m-row{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;align-items:flex-start}
+.m-row:last-child{border-bottom:none}
+.m-ico{font-size:13px;flex-shrink:0;margin-top:1px;width:20px}
+.m-lbl{color:var(--faint);min-width:118px;font-size:12px}
+.m-val{color:var(--text);font-weight:600}
+.mftr{padding:12px 18px 14px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;position:relative}
+.click-hint{position:absolute;top:-30px;right:14px;background:var(--orange);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:4px;white-space:nowrap;pointer-events:none}
+.click-hint::after{content:'';position:absolute;bottom:-5px;right:10px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--orange)}
+.mbtn{padding:8px 18px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.mbtn-deny{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.mbtn-deny:hover{color:var(--text)}
+.mbtn-mon{background:var(--monday);color:#fff}
+.mbtn-mon:hover{background:#D01160;transform:scale(1.02)}
+.mbtn-gam{background:var(--gamma);color:#fff}
+.mbtn-gam:hover{background:#5B21B6;transform:scale(1.02)}
+.pulse-mon{animation:pmon 1.6s infinite}
+@keyframes pmon{0%,100%{box-shadow:0 0 0 0 rgba(244,20,114,.4)}60%{box-shadow:0 0 0 9px rgba(244,20,114,0)}}
+.pulse-gam{animation:pgam 1.6s infinite}
+@keyframes pgam{0%,100%{box-shadow:0 0 0 0 rgba(109,40,217,.4)}60%{box-shadow:0 0 0 9px rgba(109,40,217,0)}}
+
+/* BOTTOM BAR */
+.bot{height:52px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;flex-shrink:0;box-shadow:0 -1px 4px rgba(0,0,0,.05)}
+.b-cnt{font-size:12px;color:var(--muted);min-width:80px;font-weight:600}
+.b-mid{display:flex;align-items:center;gap:10px}
+.prog{flex:1;max-width:160px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.prog-f{height:100%;background:var(--orange);border-radius:2px;transition:width .3s}
+.nbtn{padding:7px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .15s}
+.nbtn:hover{border-color:var(--border2);color:var(--text)}
+.nbtn.pri{background:var(--orange);color:#fff;border-color:var(--orange)}
+.nbtn.pri:hover{background:#D9640E}
+.nbtn:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.b-auto{font-size:12px;color:var(--muted);min-width:80px;text-align:right;font-weight:600}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-l">
+    <span class="h-hock">HOCK</span>
+    <span class="h-intl">International</span>
+    <div class="h-div"></div>
+    <div><div class="h-title">Content Production Agent</div><div class="h-sub">Training Simulation</div></div>
+  </div>
+  <div class="pbar" id="pbar">
+    <div class="pd setup-a" id="d0" title="Project Setup"></div>
+    <div class="pline"></div><div class="pd" id="d1" title="Phase 1 — Textbook"></div>
+    <div class="pline"></div><div class="pd" id="d2" title="Phase 2 — MCQs"></div>
+    <div class="pline"></div><div class="pd" id="d3" title="Phase 3 — Outline"></div>
+    <div class="pline"></div><div class="pd" id="d4" title="Phase 4 — Gamma"></div>
+    <div class="pline"></div><div class="pd" id="d5" title="Phase 5 — Script"></div>
+    <div class="pline"></div><div class="pd" id="d6" title="Phase 6 — Video"></div>
+    <div class="pline"></div><div class="pd" id="d7" title="Phase 7 — Close-Out"></div>
+  </div>
+  <div class="hdr-r">
+    <div class="atgl-row" onclick="toggleAuto()">
+      <span>Auto-advance</span>
+      <div class="tgl" id="atgl"><div class="tgl-k"></div></div>
+    </div>
+  </div>
+</header>
+
+<div class="body">
+  <div class="setup-wrap" id="setupWrap">
+    <div class="setup-card" id="setupCard"></div>
+    <div class="setup-hint">Click <strong>Next →</strong> to advance each step, or enable <strong>Auto-advance</strong> for timed playback.</div>
+  </div>
+  <div class="chat-wrap hide" id="chatWrap">
+    <div class="chat-col">
+      <div class="chat-top">
+        <div class="ct-l">
+          <div class="av">H</div>
+          <div><div class="ct-name">HOCK Content Production Agent</div><div class="ct-sub">Phase-locked · Claude Sonnet</div></div>
+        </div>
+        <div class="ph-pill" id="phPill">Phase 1 — Textbook</div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs"></div>
+      <div class="typ-row hide" id="typRow">
+        <div class="av" style="width:24px;height:24px;font-size:9px">H</div>
+        <div class="typ-bub"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+      </div>
+    </div>
+    <div class="ctx" id="ctxPanel"></div>
+  </div>
+</div>
+
+<div class="bot">
+  <div class="b-cnt" id="bCnt">Step 1</div>
+  <div class="b-mid">
+    <button class="nbtn" id="bBack" onclick="back()" disabled>← Back</button>
+    <div class="prog"><div class="prog-f" id="progF" style="width:1%"></div></div>
+    <button class="nbtn pri" id="bNext" onclick="next()">Next →</button>
+  </div>
+  <div class="b-auto" id="bAuto"></div>
+</div>
+
+<div class="mov hide" id="mov"><div class="mbox" id="mbox"></div></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// STEPS
+// ══════════════════════════════════════════════════════════════════
+const P1_PROMPT = `You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for [REPLACE].
+
+Create textbook content for [SECTION_ID] from the uploaded syllabus.
+Section: [e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Process:
+1. Confirm prerequisites: Syllabus and standards documents uploaded?
+2. Apply Depth Calibration Skill: Analyze scope, cognitive level, exam weight. Present summary table and recommended depth. Wait for my YES or adjustments.
+3. Follow Textbook Creation Skills: Prose-dominant (65% narrative), integrate standards naturally by number.
+4. Apply Token Optimization Skill: Chunk if comprehensive depth; pause after first segment — ask "Here's the first section — would you like me to continue?" Wait for confirmation before proceeding.
+5. Output in Markdown: Start with H1, use hierarchy, end with Summary paragraph.
+
+Integrate relevant standards from uploaded standards document.`;
+
+const P3_PROMPT = `Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+
+You are a HOCK International Content Expert creating exam prep materials for professional certification candidates with 2-4 years of relevant experience.
+
+Task: Create a presentation slide outline for the section above.
+
+Process:
+1. Confirm prerequisites: Textbook and MCQs for this section complete in chat history?
+2. Apply Depth Calibration Skill: Recommend slide count and density (Basic: 5-8 slides, Medium: 10-15, Comprehensive: 15-25). Present table and wait for YES or adjustments.
+3. Use completed textbook as source (reference previous generation).
+4. Follow Presentation_Creation_Skills and Presentation_Creation_Guide:
+   - One key idea per slide
+   - 3-6 bullets max
+   - Visual placeholders (e.g., [Image: Risk matrix chart])
+   - Short speaker notes (1-2 sentences)
+   - Gamma-ready Markdown format
+   - Use HOCK International Theme: https://gamma.app/themes/share/0mk4i94ypgimwxi
+5. Apply Token Optimization Skill: Chunk if Comprehensive (8-10 slide groups); pause after first batch.
+6. Output: Full Markdown outline only. Include Gamma template link and import instructions.
+
+After outline is confirmed, ask: "Outline ready. Grant Gamma connector access to create in Gamma? Reply Y/N or adjustments."
+
+Execute now. If depth not yet calibrated, start there.`;
+
+const P5_PROMPT = `Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+
+You are a HOCK International Content Expert creating exam prep video narration for professional certification candidates with 2-4 years of relevant experience.
+
+Task: Create a slide narration script for the presentation in project resources.
+
+Process:
+1. Confirm prerequisites: Textbook, MCQs, and Gamma presentation (or outline/export) for this section are in project resources or chat history?
+2. Source: Use the Gamma presentation file/link as primary base (map narration to each slide's title, bullets, visuals). Reference textbook/MCQs for depth and accuracy.
+3. Apply Depth Calibration Skill: Recommend total timing (Basic: 5-8 min, Medium: 10-15 min, Comprehensive: 15-25 min). Present quick table and wait for YES or override.
+4. Follow Slide_Script_Skills and Slide_Script_Guide:
+   - Format per slide: **Slide X: [Title]** + spoken text (conversational, professional) + cues [Pause 2s], [Emphasize: key term], [Transition: "Next..."]
+   - 120-150 words/min pacing
+   - Tie narration to visuals (e.g., "As shown in this chart...")
+5. Apply Token Optimization Skill: Chunk into 5-8 min segments; pause after first batch.
+6. Output: Markdown format — total estimated time, numbered slides with narration + cues, video notes at end.
+
+After script is complete, ask: "Script ready. Want to create a doc/attach to Monday? Or revise first?"
+
+Execute now. If depth not calibrated, start there.`;
+
+const MCQ_STARTER = `Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., "3c. Existing and Emerging Cybersecurity Risks and Data Security"]
+
+You are a HOCK International Content Expert creating exam prep MCQs for professional certification candidates with 2-4 years of relevant experience.
+
+CORE RULES:
+1. Choice A is ALWAYS correct. B, C, D are plausible distractors.
+2. All four choices MUST be similar in length. Rewrite if uneven. For Qs 7-13 & 22-27, make A the shortest.
+3. Never use extreme words (always, never, exclusively, only, solely, under no circumstances, etc.).
+4. Explanations: Detailed (50-100 words each) for all four choices after the question. Use complete sentences. Make them teaching opportunities. No "Choice X is correct/incorrect because" phrasing.
+5. Questions: Scenario-based, application-focused, challenging. Cite standards briefly by number if relevant.
+6. Numbering: [CERT_PREFIX] [SECTION_ID]-[sequential, e.g., CIA26 01.301 or CMA26 03.0501].
+7. Output: Plain text, hard return between choices. No headers before Q1 or Q16.
+
+PROCESS:
+- Use the completed textbook section above (Textbook Name + Section) as source — reference previous generation in this chat.
+- Follow MCQ_Creation_Guide and MCQ_Creation_Skills for quantity, difficulty, batching (10-15 per batch with checkpoint), and 11-column Excel format when requested.
+- Apply Depth Calibration if not already done.
+
+If the user provides a Section ID (or section name) in their prompt and the corresponding textbook section is already generated in this chat, immediately generate MCQs according to the MCQ Creation Guide. Use the Textbook Name and Section defined above as defaults unless overridden. Do not wait for further confirmation unless depth or quantity needs adjustment.
+
+[PASTE SUMMARY OR FULL TEXTBOOK BELOW]`;
+
+const S = [
+
+// ── SETUP ─────────────────────────────────────────────────────────
+{ph:'setup', t:'setup', card:{
+  ey:'Welcome', title:'HOCK Content Production Agent',
+  desc:'This simulation walks through the complete content production workflow — from project setup through close-out. You\'ll see the exact prompts, agent responses, approval gates, and connector actions for every phase.',
+  rows:[
+    {i:'📋',n:'7 production phases',d:'Textbook → MCQs → Outline → Gamma → Script → Video → Close-Out'},
+    {i:'⚡',n:'Skills auto-loaded',d:'Depth calibration, token optimization, textbook, MCQ, slide, script, Monday — all pre-configured'},
+    {i:'🔗',n:'3 connectors',d:'Monday.com · Gamma · Dropbox via n8n webhook'},
+    {i:'🔒',n:'Phase-locked flow',d:'Every external action requires your explicit approval before it fires'},
+  ]
+}, ctx:{ph:'Welcome', note:'Click <strong>Next →</strong> to advance, or toggle <strong>Auto-advance</strong> for timed playback.'}},
+
+{ph:'setup', t:'setup', card:{
+  ey:'Setup — Step 1 of 2', title:'Paste the System Prompt',
+  desc:'Open your Claude Project → Project Settings → Project Instructions. Paste the full contents of HOCK_System_Prompt.md into the text field — not as a file upload.',
+  ann:{lbl:'Project Instructions field (system prompt)',val:'HOCK_System_Prompt.md → paste full contents here',tag:'← Text field only'},
+  rows:[{i:'🧠',n:'HOCK_System_Prompt.md',d:'Agent identity · Phase lock rules · Skills invocation map · Connector rules · Session state tracking'}],
+  warn:'⚠ Pasting into the Instructions text field is what activates phase-locked behavior. Uploading it as a file instead silently breaks the agent routing.'
+}, ctx:{ph:'Project Setup', note:'The system prompt is the brain. Without it in the Instructions field, Claude is just Claude — no phase routing, no connector rules, no skill invocation.'}},
+
+{ph:'setup', t:'setup', card:{
+  ey:'Setup — Step 2 of 2', title:'Upload 3 Knowledge Files',
+  desc:'In Project Knowledge, upload these three files. They load into every conversation as always-on reference material. Skills are pre-configured and load automatically — no manual upload needed.',
+  rows:[
+    {i:'📂',n:'HOCK_Core_Operations.md',d:'Phase router · State table · Phase behavior steps · Connector webhooks · Artifact naming · Intent labels'},
+    {i:'📂',n:'HOCK_Content_Standards.md',d:'Depth calibration matrix · Textbook style rules · MCQ output format · Token chunking tables'},
+    {i:'📂',n:'HOCK_Revision_Prompts.md',d:'All 20+ revision prompt templates — textbook, MCQ, slide outline, and script'},
+  ],
+  warn:'⚠ Upload order: Core Operations first, Content Standards second, Revision Prompts third — matches the cross-reference order in the system prompt.'
+}, ctx:{ph:'Project Setup ✓', note:'Setup complete. The simulation now walks through all 7 production phases with exact agent dialog and connector actions.'}},
+
+// ── PHASE 1 — TEXTBOOK ────────────────────────────────────────────
+{ph:'p1', t:'sys', msg:'📄 Phase 1 — Textbook Creation',
+ ctx:{ph:'Phase 1 — Textbook Creation',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'token-optimization',s:'pending'},{n:'textbook-style-guide',s:'pending'}],
+  note:'The user provides the textbook prompt directly. Agent does <strong>not</strong> pre-fill or suggest one.'}},
+
+{ph:'p1', t:'user', msg:P1_PROMPT,
+ ctx:{ph:'Phase 1 — Textbook Creation',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'token-optimization',s:'pending'},{n:'textbook-style-guide',s:'pending'}],
+  note:'Full structured prompt received. Invoking <strong>depth-calibration-skill</strong> before generating anything — always first.'}},
+
+{ph:'p1', t:'claude',
+ msg:'Checking prerequisites first — confirming syllabus and standards documents are uploaded. ✓ Both confirmed.\n\nRunning depth calibration now.',
+ table:{hs:['Factor','Assessment','Rationale'],
+   rows:[['Scope','Moderate','Covers 4 distinct organizational concepts'],['Cognitive Level','Medium','Verbs: assess, compare, apply to audit context'],['Exam Weight','High','Domain III — 18% of CIA Part 1 weighting']],
+   hl:['Recommended Depth','Comprehensive','Moderate + Medium + High weight']},
+ after:'Does this depth level look right, or would you like to adjust before I begin?',
+ ctx:{ph:'Phase 1 — Textbook Creation',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'token-optimization',s:'pending'},{n:'textbook-style-guide',s:'pending'}],
+  note:'Depth calibration complete. Presenting table. Waiting for YES or adjustment — will not generate a single word until confirmed.'}},
+
+{ph:'p1', t:'user', msg:'YES',
+ ctx:{ph:'Phase 1 — Textbook Creation',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'token-optimization',s:'active'},{n:'textbook-style-guide',s:'active'}],
+  note:'Depth confirmed: Comprehensive. Invoking <strong>token-optimization</strong> and <strong>textbook-style-guide</strong> now.'}},
+
+{ph:'p1', t:'claude',
+ msg:'Invoking Token Optimization and Textbook Style Guide. Chunking at 1,500–2,000 words. Starting with H1 and first section now.',
+ code:`# Study Unit 3.1: Organizational Structures and Internal Audit
+
+Organizations design their structures to coordinate work, allocate authority, and pursue strategic objectives. For internal auditors, understanding organizational structure is foundational — it defines the scope of every engagement and determines where risk concentrations are most likely to emerge.
+
+## Functional Structure
+
+A functional structure groups employees by specialized discipline — finance, operations, marketing, and human resources each operate as distinct departments under a senior leader. This design creates deep expertise within each function and clear accountability for specialized outputs.
+
+**Advantages for control assessment:** Functional structures produce well-defined reporting lines and clear ownership of processes, making it straightforward to map controls to functional owners...
+
+— — —
+~900 words | Pausing per Token Optimization Skill`,
+ ctx:{ph:'Phase 1 — Textbook Creation',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'token-optimization',s:'active'},{n:'textbook-style-guide',s:'active'}],
+  note:'65% narrative prose / 25% structured bullets / 10% examples per <strong>textbook-style-guide</strong>. Pausing after first segment.'}},
+
+{ph:'p1', t:'claude', msg:"Here's the first section — would you like me to continue?",
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'Mid-generation pause. Exact phrase per Textbook Creation Skill. Waiting for confirmation before proceeding.'}},
+
+{ph:'p1', t:'user', msg:'Continue.',
+ ctx:{ph:'Phase 1 — Textbook Creation',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'token-optimization',s:'active'},{n:'textbook-style-guide',s:'active'}],
+  note:'Resuming generation from last stopping point.'}},
+
+{ph:'p1', t:'claude',
+ msg:'Continuing the next section now…',
+ code:`## Divisional Structure
+
+Divisional structures organize the enterprise around distinct products, geographies, or customer segments. Each division operates as a semi-autonomous unit with its own functional resources...
+
+## Matrix Structure
+
+Matrix structures overlay functional and divisional authority, assigning employees to both a functional manager and a project manager simultaneously...
+
+| Structure | Audit Strength | Primary Risk |
+|---|---|---|
+| Functional | Clear control ownership | Siloed communication |
+| Divisional | Business-unit visibility | Resource duplication |
+| Matrix | Cross-functional reach | Dual-reporting gaps |
+
+**Summary:** Organizational structure is not administrative background — it is the internal auditor's map. The structure defines control ownership, reporting clarity, and the boundaries of every engagement...
+
+— — —
+Section complete · ~4,340 words total`,
+ ctx:{ph:'Phase 1 — Textbook Creation',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'token-optimization',s:'done'},{n:'textbook-style-guide',s:'done'}],
+  note:'Section complete with summary paragraph per <strong>textbook-style-guide</strong>. Comprehensive range: 4,200–6,000 words. ✓'}},
+
+{ph:'p1', t:'claude', msg:'The section is complete. Do you want revisions to this textbook, or is it finalized?',
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'Approval gate. Exact phrase per Phase Behavior Reference. Do not proceed until user explicitly responds.'}},
+
+{ph:'p1', t:'user', msg:"It's finalized.",
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'Textbook finalized. Moving to Word Doc conversion gate.'}},
+
+{ph:'p1', t:'claude', msg:'Are you ready to turn the textbook into a Word Doc?',
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'One gate per message. Do not auto-convert — explicit confirmation required.'}},
+
+{ph:'p1', t:'user', msg:'Yes.',
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'Converting to Word Doc.'}},
+
+{ph:'p1', t:'claude', msg:'✓ Converted.\n\nCIA26_SU03_Textbook_Final.docx is ready.\n\nWould you like to Add to Monday\'s Column Textbook File?',
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'Word Doc ready. Asking permission before Monday connector fires.'}},
+
+{ph:'p1', t:'user', msg:'Yes.',
+ ctx:{ph:'Phase 1 — Textbook Creation', conn:'mon',
+  note:'Monday connector fires. Permission dialog appears — click <strong style="color:var(--monday)">Allow</strong> to proceed.'}},
+
+{ph:'p1', t:'conn-mon',
+ conn:{title:'Monday.com',sub:'Requesting permission to update task',action:'Add textbook file to HOCK International Content board',
+  rows:[{i:'📎',l:'Textbook File Column',v:'CIA26_SU03_Textbook_Final.docx'}]}},
+
+{ph:'p1', t:'claude', msg:'✓ Textbook file added to Monday.\n\nWould you like to update the status, assignee and dates?',
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'File attached. Asking about status/assignee/dates separately — one gate per action.'}},
+
+{ph:'p1', t:'user', msg:'Yes.',
+ ctx:{ph:'Phase 1 — Textbook Creation',conn:'mon',note:'Monday connector fires again for status update.'}},
+
+{ph:'p1', t:'conn-mon',
+ conn:{title:'Monday.com',sub:'Requesting permission to update task',action:'Update status, assignee, and dates',
+  rows:[{i:'🔄',l:'Status',v:'Textbook Ready for Review'},{i:'👤',l:'Assignee',v:'Task creator'},{i:'📅',l:'Start Date',v:'Today'},{i:'📅',l:'Due Date',v:'Today + 2 days'}]}},
+
+{ph:'p1', t:'claude', msg:'✓ Monday updated — Status: Textbook Ready for Review.\n\nDo you want to Save the Textbook to the project?',
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'Final Phase 1 gate. Saving to project makes the textbook available as source material for all downstream phases.'}},
+
+{ph:'p1', t:'user', msg:'Yes, add it to the project.',
+ ctx:{ph:'Phase 1 — Textbook Creation',note:'Saving to project.'}},
+
+{ph:'p1', t:'claude', msg:'✓ Textbook saved to project resources.\n\nPhase 1 complete.',
+ ctx:{ph:'Phase 1 — Textbook ✓',note:'All Phase 1 artifacts complete and saved. Ready for the channel transition prompt before Phase 2.'}},
+
+// ── PHASE 1→2 TRANSITION ──────────────────────────────────────────
+{ph:'p1', t:'claude',
+ msg:'Before we begin MCQ creation, would you like to move this work to a new channel? This keeps your chat context clean and focused for the next phase.',
+ ctx:{ph:'Phase 1 → Phase 2 Transition',note:'Agent asks about channel transition before starting MCQs. This is standard — user can say YES or NO.'}},
+
+{ph:'p1', t:'user', msg:'YES',
+ ctx:{ph:'Phase 1 → Phase 2 Transition',note:'User opts for a new channel. Agent provides the carryover summary and new-chat starter prompt.'}},
+
+{ph:'p1', t:'claude',
+ msg:'Great — here is a clean summary of the completed textbook content to use in the new channel:',
+ summary:'Section: CIA Part 1 — Study Unit 3.1: Organizational Structures and Internal Audit\nCertification: CIA Part 1\n\nSummary of Content: This section covers the four primary organizational structures (functional, divisional, matrix, flat) and their implications for internal audit scope, control ownership, and risk assessment. Key frameworks include the span-of-control tradeoff, dual-reporting complexity in matrix structures, and audit-relevant risk concentrations per structure type. Standards integrated: IIA Standard 2200 (Engagement Planning) and IIA Standard 2010 (Planning).',
+ msgAfter:'When you\'re ready, start a new chat and paste this summary along with your MCQ request.\n\nIn the new chat, you can begin with:',
+ starter:MCQ_STARTER,
+ ctx:{ph:'Phase 1 → Phase 2 Transition',note:'Carryover summary + new-chat starter provided. User opens a new chat and pastes the starter prompt to begin Phase 2.'}},
+
+// ── PHASE 2 — MCQs ────────────────────────────────────────────────
+{ph:'p2', t:'sys', msg:'❓ Phase 2 — MCQs Creation',
+ ctx:{ph:'Phase 2 — MCQs Creation',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'mcq-creation-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'New channel. User pastes the MCQ starter prompt with the carryover summary.'}},
+
+{ph:'p2', t:'user', msg:MCQ_STARTER,
+ ctx:{ph:'Phase 2 — MCQs Creation',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'mcq-creation-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Starter prompt received with textbook summary. MCQ creation skill activated.'}},
+
+{ph:'p2', t:'claude',
+ msg:"I'll generate scenario-based, application-focused MCQs using the completed textbook section as the source. Choice A will be correct, the answer choices will be balanced in length, and each question will include detailed explanations.",
+ code:`Q1. CIA26 03.0101
+A regional bank is evaluating whether to restructure its lending division from a functional model to a divisional structure organized by product line. An internal auditor assessing the proposed change should recognize that the primary risk of divisional restructuring is:
+
+A. Duplication of specialized resources across product divisions, increasing overhead costs and reducing economies of scale.
+B. Reduced span of control for senior managers overseeing multiple product lines.
+C. Elimination of cross-functional communication between credit and compliance teams.
+D. Increased difficulty benchmarking divisional performance against industry standards.
+
+Explanation for A (Correct): Divisional structures replicate specialized functions across each business unit, increasing overhead and reducing efficiency gains from specialization...
+
+[Q2–Q15 generating per MCQ Creation Skill rules...]`,
+ ctx:{ph:'Phase 2 — MCQs Creation',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'mcq-creation-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Batch 1 of 15. Choice A = correct · Balanced answer lengths · No extreme qualifier words · 50–100 word explanations.'}},
+
+{ph:'p2', t:'claude', msg:'Here are the MCQs for review. Let me know if revisions are needed or if these are approved.',
+ ctx:{ph:'Phase 2 — MCQs Creation',note:'Approval gate. Waits for user response before any next action.'}},
+
+{ph:'p2', t:'user', msg:'Strengthen the distractors in Q4 and Q11, and shorten the explanations in Q9–Q12.',
+ ctx:{ph:'Phase 2 — MCQs Creation',
+  skills:[{n:'mcq-creation-skill',s:'active'}],
+  note:'Targeted revision. Using <strong>HOCK_Revision_Prompts.md</strong> — Strengthen Distractors + Fix Length templates. Only specified questions modified.'}},
+
+{ph:'p2', t:'claude', msg:'Updated. I strengthened the distractors in Q4 and Q11 and shortened the explanations in Q9–Q12. Are these approved?',
+ ctx:{ph:'Phase 2 — MCQs Creation',note:'Revision complete. All other questions preserved exactly as-is.'}},
+
+{ph:'p2', t:'user', msg:'Yes, approved.',
+ ctx:{ph:'Phase 2 — MCQs Creation',note:'MCQs approved. Moving to Excel conversion.'}},
+
+{ph:'p2', t:'claude', msg:'Are you ready to convert these to an Excel?',
+ ctx:{ph:'Phase 2 — MCQs Creation',note:'11-column format for WATU Pro import.'}},
+
+{ph:'p2', t:'user', msg:'Yes.',ctx:{ph:'Phase 2 — MCQs Creation',note:'Converting to Excel.'}},
+
+{ph:'p2', t:'claude', msg:'✓ CIA26_SU03_MCQ_Final.xlsx is ready.\n\nAre you ready for me to update Monday and save the MCQs to Monday\'s column MCQs File?',
+ ctx:{ph:'Phase 2 — MCQs Creation',note:'Excel ready. Asking permission before Monday connector fires.'}},
+
+{ph:'p2', t:'user', msg:'Yes.',
+ ctx:{ph:'Phase 2 — MCQs Creation',conn:'mon',note:'Monday connector fires.'}},
+
+{ph:'p2', t:'conn-mon',
+ conn:{title:'Monday.com',sub:'Requesting permission to update task',action:'Update MCQ task on HOCK International Content board',
+  rows:[{i:'📎',l:'MCQs File Column',v:'CIA26_SU03_MCQ_Final.xlsx'},{i:'🔄',l:'Status',v:'MCQs Ready for Review'},{i:'👤',l:'Assignee',v:'creatorEmail'},{i:'📅',l:'Start Date',v:'Today'},{i:'📅',l:'Due Date',v:'Today + 2 days'},{i:'📝',l:'Description',v:'MCQ update note appended'}]}},
+
+{ph:'p2', t:'claude', msg:'✓ Monday updated — MCQs File column · Status: MCQs Ready for Review · Due: Today + 2 days.\n\nDo you want to Save MCQs to the project?',
+ ctx:{ph:'Phase 2 — MCQs Creation',note:'Monday fully updated. Final Phase 2 gate.'}},
+
+{ph:'p2', t:'user', msg:'Yes.',ctx:{ph:'Phase 2 — MCQs Creation',note:'Saving MCQs to project.'}},
+
+{ph:'p2', t:'claude', msg:'✓ MCQs saved to project.\n\nPhase 2 complete. Ready for Phase 3 — Presentation Outline when you are.',
+ ctx:{ph:'Phase 2 — MCQs ✓',note:'All Phase 2 artifacts saved. Ready for presentation outline generation.'}},
+
+// ── PHASE 3 — PRESENTATION OUTLINE ───────────────────────────────
+{ph:'p3', t:'sys', msg:'📊 Phase 3 — Presentation Outline',
+ ctx:{ph:'Phase 3 — Presentation Outline',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'slide-creation-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Outline generated in chat first. <strong>Gamma is NOT triggered until outline is explicitly approved.</strong>'}},
+
+{ph:'p3', t:'user', msg:P3_PROMPT,
+ ctx:{ph:'Phase 3 — Presentation Outline',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'slide-creation-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Full structured prompt received. Confirming prerequisites, then running depth calibration for slide count.'}},
+
+{ph:'p3', t:'claude',
+ msg:'Confirming prerequisites — textbook and MCQs for this section confirmed in chat history. ✓\n\nRunning depth calibration for slide density.',
+ table:{hs:['Depth','Slide Count','Density'],
+   rows:[['Basic','5–8 slides','Core concepts only'],['Medium','10–15 slides','Concepts + application'],['Comprehensive','15–25 slides','Full depth with visuals']],
+   hl:['Recommended','15–20 slides','Comprehensive — matches textbook depth']},
+ after:'Does this slide count look right, or would you like to adjust?',
+ ctx:{ph:'Phase 3 — Presentation Outline',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'slide-creation-skill',s:'active'}],
+  note:'Slide count recommendation presented. Waiting for YES before generating the outline.'}},
+
+{ph:'p3', t:'user', msg:'YES',
+ ctx:{ph:'Phase 3 — Presentation Outline',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'slide-creation-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Confirmed. Generating Gamma-ready Markdown outline — first batch of 8-10 slides.'}},
+
+{ph:'p3', t:'claude',
+ msg:'Generating first batch (Slides 1–8) using the textbook as source…',
+ code:`Theme: https://gamma.app/themes/share/0mk4i94ypgimwxi
+
+## Slide 1: Organizational Structures — The Auditor's Map
+- Structure defines audit scope, control ownership, and risk concentration
+- Four types: Functional · Divisional · Matrix · Flat
+- CIA exam focus: assess risks and audit implications of each
+[Image: 2x2 grid showing all 4 structure types side-by-side]
+> Speaker Note: Open with the core audit relevance — structure isn't background, it's your engagement map.
+
+## Slide 2: Functional Structure
+- Groups by discipline: Finance · Ops · Marketing · HR
+- Deep specialization + clear departmental accountability
+- Audit risk: siloed communication creates cross-functional control gaps
+[Image: Functional hierarchy with audit touchpoints marked]
+> Speaker Note: Connect structure type directly to control ownership — this is the strongest structure for mapping controls.
+
+[Slides 3–8 follow same format...]
+
+Batch 1: Slides 1–8. Continue to Slides 9–18?`,
+ ctx:{ph:'Phase 3 — Presentation Outline',note:'First batch of 8 slides generated per <strong>token-optimization</strong>. Pausing for check before continuing.'}},
+
+{ph:'p3', t:'user', msg:'Continue.',
+ ctx:{ph:'Phase 3 — Presentation Outline',note:'Resuming — generating Slides 9–18.'}},
+
+{ph:'p3', t:'claude',
+ msg:'Slides 9–18 complete. Full outline ready.',
+ code:`[Slides 9–18: Matrix Structure · Flat Structure · Structure and Audit Scope · Control Assessment by Type · Case Application · Summary + Exam Tips]
+
+Full Markdown outline: 18 slides total.
+Gamma template link: https://gamma.app/themes/share/0mk4i94ypgimwxi
+
+To import: Copy full outline → Gamma → New Presentation → Import Markdown → Apply HOCK theme.`,
+ ctx:{ph:'Phase 3 — Presentation Outline',note:'Full outline complete. 18 slides. Waiting for approval before triggering Gamma connector.'}},
+
+{ph:'p3', t:'claude', msg:'Outline ready. Grant Gamma connector access to create in Gamma? Reply Y/N or adjustments.',
+ ctx:{ph:'Phase 3 — Presentation Outline',note:'<strong>Hard gate.</strong> Exact phrase per Presentation Outline prompt. Gamma does NOT fire until this receives a Y.'}},
+
+{ph:'p3', t:'user', msg:'Y',
+ ctx:{ph:'Phase 3 → Phase 4 — Gamma',conn:'gam',
+  note:'Outline approved. Triggering Gamma connector now. Permission dialog appears.'}},
+
+{ph:'p3', t:'claude', msg:'Outline is Ready for Gamma. Creating your presentation now using the HOCK theme…',
+ ctx:{ph:'Phase 4 — Gamma Creation',conn:'gam',
+  note:'Gamma is asynchronous — waiting for completed status before returning gammaUrl.'}},
+
+{ph:'p3', t:'conn-gam',
+ conn:{title:'Gamma',sub:'Requesting permission to create presentation',action:'Create presentation from approved Markdown outline',
+  rows:[{i:'📋',l:'Title',v:'CIA P1 SU03 — Organizational Structures'},{i:'🎨',l:'Theme',v:'HOCK International (0mk4i94ypgimwxi)'},{i:'📊',l:'Slides',v:'18 slides'},{i:'📄',l:'Source',v:'Approved Markdown outline'}]}},
+
+// ── PHASE 4 — GAMMA CREATION ─────────────────────────────────────
+{ph:'p4', t:'sys', msg:'🎨 Phase 4 — Gamma Creation',
+ ctx:{ph:'Phase 4 — Gamma Creation',note:'Gamma generation is asynchronous. Agent waits for completed status before returning the link. Do not use the link until status is confirmed complete.'}},
+
+{ph:'p4', t:'claude',
+ msg:'✓ Gamma creation complete.\n\nYour presentation is ready:\ngamma.app/deck/cia-p1-su03-org-structures\n\nAre any revisions needed, or is it finalized?\n\nNote: If revisions are needed, go to the Gamma URL and make changes directly on the Gamma website. Do not ask me to update the presentation through the connector. Once your changes are complete, let me know so I can download the PowerPoint and add to Monday\'s.',
+ ctx:{ph:'Phase 4 — Gamma Creation',note:'Gamma link returned. Revisions = user edits at Gamma URL directly. <strong>Connector is never used for post-creation edits.</strong>'}},
+
+{ph:'p4', t:'user', msg:"It's finalized.",
+ ctx:{ph:'Phase 4 — Gamma Creation',conn:'gam',note:'Finalized. Downloading PowerPoint via Gamma connector.'}},
+
+{ph:'p4', t:'claude', msg:'Downloading the PowerPoint via the Gamma connector…',
+ ctx:{ph:'Phase 4 — Gamma Creation',conn:'gam',note:'Gamma export connector fires.'}},
+
+{ph:'p4', t:'conn-gam',
+ conn:{title:'Gamma',sub:'Requesting permission to export presentation',action:'Download PowerPoint from finalized presentation',
+  rows:[{i:'📥',l:'Export Format',v:'PowerPoint (.pptx)'},{i:'🔗',l:'Source',v:'gamma.app/deck/cia-p1-su03-org-structures'}]}},
+
+{ph:'p4', t:'claude', msg:'✓ PowerPoint downloaded.\n\nAdding Gamma URL to the Presentation Link column and the PowerPoint to the Presentation File column in Monday\'s…',
+ ctx:{ph:'Phase 4 — Gamma Creation',conn:'mon',note:'Monday connector fires — two columns updated in one action.'}},
+
+{ph:'p4', t:'conn-mon',
+ conn:{title:'Monday.com',sub:'Requesting permission to update task',action:'Add presentation assets to HOCK task',
+  rows:[{i:'🔗',l:'Presentation Link Column',v:'gamma.app/deck/cia-p1-su03-org-structures'},{i:'📎',l:'Presentation File Column',v:'CIA26_SU03_Slides_Final.pptx'}]}},
+
+{ph:'p4', t:'claude', msg:'✓ Monday updated — Presentation Link and Presentation File columns set.\n\nDo you want to Save the Presentation to the project?',
+ ctx:{ph:'Phase 4 — Gamma Creation',note:'Both Monday columns updated. Final Phase 4 gate — saving to project is required before the script phase.'}},
+
+{ph:'p4', t:'user', msg:'Yes.',ctx:{ph:'Phase 4 — Gamma Creation',note:'Saving presentation to project.'}},
+
+{ph:'p4', t:'claude', msg:'✓ Presentation saved to project.\n\nPhase 4 complete. Ready for Phase 5 — Slide Script when you are.',
+ ctx:{ph:'Phase 4 — Gamma ✓',note:'Presentation saved to project. Required gate for Phase 5 — script cannot begin without the presentation file in project resources.'}},
+
+// ── PHASE 5 — SLIDE SCRIPT ────────────────────────────────────────
+{ph:'p5', t:'sys', msg:'📝 Phase 5 — Slide Script',
+ ctx:{ph:'Phase 5 — Slide Script',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'slide-script-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Prerequisite gate fires before any generation: presentation must be in project resources or chat history.'}},
+
+{ph:'p5', t:'user', msg:P5_PROMPT,
+ ctx:{ph:'Phase 5 — Slide Script',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'slide-script-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Full structured script prompt received. Agent asks about the presentation before doing anything else — hard gate.'}},
+
+{ph:'p5', t:'claude',
+ msg:'Before I begin — is the Gamma presentation saved as a project resource?\n\nThe script maps narration directly to each slide. If the presentation file isn\'t in the project, the script references won\'t align with the actual deck.',
+ ctx:{ph:'Phase 5 — Slide Script',
+  note:'<strong>Hard gate.</strong> Agent asks about the presentation before confirming any other prerequisites. Script generation does not start until this is confirmed.'}},
+
+{ph:'p5', t:'user', msg:'Yes, the presentation is in the project.',
+ ctx:{ph:'Phase 5 — Slide Script',
+  skills:[{n:'depth-calibration-skill',s:'active'},{n:'slide-script-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Presentation confirmed in project. Checking remaining prerequisites and running depth calibration.'}},
+
+{ph:'p5', t:'claude',
+ msg:'Confirming remaining prerequisites — textbook ✓, MCQs ✓, Gamma presentation in project resources ✓.\n\nRunning depth calibration for script timing.',
+ table:{hs:['Depth','Total Timing','Pacing'],
+   rows:[['Basic','5–8 min','Key concepts only'],['Medium','10–15 min','Concepts + application'],['Comprehensive','15–25 min','Full narration with cues']],
+   hl:['Recommended','18–22 min','Comprehensive — matches slide depth']},
+ after:'Does this timing look right, or would you like to adjust?',
+ ctx:{ph:'Phase 5 — Slide Script',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'slide-script-skill',s:'active'}],
+  note:'Timing recommendation presented. Waiting for YES before generating the script.'}},
+
+{ph:'p5', t:'user', msg:'YES',
+ ctx:{ph:'Phase 5 — Slide Script',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'slide-script-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Confirmed. Generating first batch — Slides 1–8 (~6 min). Using Gamma presentation as primary base.'}},
+
+{ph:'p5', t:'claude',
+ msg:'Generating Batch 1: Slides 1–8 (~6 min). Using the Gamma presentation file as the primary base, mapping narration to each slide.',
+ code:`Total Estimated Time: ~20 min at 130 wpm
+Record at 130 wpm, clear enunciation, pause at all [Pause] markers.
+
+**Slide 1: Organizational Structures — The Auditor's Map**
+Organizational structure defines how authority flows, how resources are allocated, and how work gets done. [Pause 2s]
+
+For internal auditors, understanding structure is foundational — it shapes the scope of every engagement and determines where control risks are most likely to emerge. [Emphasize: control risks]
+
+Today we'll examine the four primary structures and what each means for audit planning. [Pause 1s]
+[Transition: "Let's start with the most common structure you'll encounter in practice."]
+
+**Slide 2: Functional Structure**
+As shown in this chart, a functional structure groups employees by specialized discipline — finance, operations, marketing, and human resources each report through their own department head. [Pause 1s]
+
+The audit implication here: functional structures give you well-defined reporting lines and clear control ownership. But that clarity comes with a tradeoff — siloed communication across departments creates gaps where cross-functional controls may be inconsistently applied. [Emphasize: siloed communication]
+[Transition: "Next, let's look at what happens when an organization grows beyond functional boundaries."]
+
+Batch 1: Slides 1–8, ~6 min. Continue?`,
+ ctx:{ph:'Phase 5 — Slide Script',
+  skills:[{n:'depth-calibration-skill',s:'done'},{n:'slide-script-skill',s:'active'},{n:'token-optimization',s:'active'}],
+  note:'Script includes [Pause], [Emphasize], [Transition] cues. Pacing: 120–150 wpm. Tied to slide visuals. Not reading slides verbatim.'}},
+
+{ph:'p5', t:'user', msg:'Continue.',ctx:{ph:'Phase 5 — Slide Script',note:'Resuming — Slides 9–18.'}},
+
+{ph:'p5', t:'claude', msg:'Slides 9–18 complete. Full script ready.\n\nScript ready. Want to create a doc/attach to Monday? Or revise first?',
+ ctx:{ph:'Phase 5 — Slide Script',note:'Exact closing phrase per Slide Script Prompt. Approval gate — revise or proceed.'}},
+
+{ph:'p5', t:'user', msg:'Create the doc and attach to Monday.',
+ ctx:{ph:'Phase 5 — Slide Script',note:'Converting to doc and updating Monday in sequence.'}},
+
+{ph:'p5', t:'claude', msg:'✓ CIA26_SU03_Script_Final.docx is ready.\n\nUpdating Monday now…',
+ ctx:{ph:'Phase 5 — Slide Script',conn:'mon',note:'Monday connector fires for script update.'}},
+
+{ph:'p5', t:'conn-mon',
+ conn:{title:'Monday.com',sub:'Requesting permission to update task',action:'Update script task on HOCK International Content board',
+  rows:[{i:'📎',l:'Slide Script Column',v:'CIA26_SU03_Script_Final.docx'},{i:'🔄',l:'Status',v:'Slide Script Ready for Review'},{i:'👤',l:'Assignee',v:'brian@hockinternational.com'},{i:'📅',l:'Due Date',v:'Today + 2 days'},{i:'📝',l:'Description',v:'Slide script update note appended'}]}},
+
+{ph:'p5', t:'claude', msg:'✓ Monday updated — Slide Script column · Status: Slide Script Ready for Review · Assignee: brian@hockinternational.com\n\nWould you like me to add the script to the Gamma presentation as speaker notes?',
+ ctx:{ph:'Phase 5 — Slide Script',note:'Monday updated. Optional: add speaker notes to Gamma via connector.'}},
+
+{ph:'p5', t:'user', msg:'Yes, add them.',
+ ctx:{ph:'Phase 5 — Slide Script',conn:'gam',note:'Gamma connector fires to add speaker notes.'}},
+
+{ph:'p5', t:'conn-gam',
+ conn:{title:'Gamma',sub:'Requesting permission to update presentation',action:'Add speaker notes to all slides',
+  rows:[{i:'📝',l:'Action',v:'Add speaker notes to each slide'},{i:'🔗',l:'Presentation',v:'gamma.app/deck/cia-p1-su03-org-structures'},{i:'📄',l:'Source',v:'CIA26_SU03_Script_Final.docx'}]}},
+
+{ph:'p5', t:'claude', msg:'✓ Speaker notes added to the Gamma presentation.\n\nPhase 5 complete. Ready to move to Phase 6 — Video when you are.',
+ ctx:{ph:'Phase 5 — Script ✓',note:'All script artifacts complete. Speaker notes live in Gamma. Ready for HeyGen production.'}},
+
+// ── PHASE 6 — VIDEO ───────────────────────────────────────────────
+{ph:'p6', t:'sys', msg:'🎬 Phase 6 — Video',
+ ctx:{ph:'Phase 6 — Video',note:'Video is created manually in HeyGen. No automation. Agent waits for user confirmation of completion.'}},
+
+{ph:'p6', t:'claude', msg:'Phase 6 — Video is completed manually in HeyGen. Use the approved script (CIA26_SU03_Script_Final.docx) and PowerPoint (CIA26_SU03_Slides_Final.pptx) as your source materials.\n\nWhen your video is complete, let me know and I\'ll update Monday\'s.',
+ ctx:{ph:'Phase 6 — Video',note:'Agent explains and waits. No further action until user confirms completion.'}},
+
+{ph:'p6', t:'user', msg:'Video is complete.',
+ ctx:{ph:'Phase 6 — Video',conn:'mon',note:'User confirms. Monday connector fires for video status update.'}},
+
+{ph:'p6', t:'conn-mon',
+ conn:{title:'Monday.com',sub:'Requesting permission to update task',action:'Update video status',
+  rows:[{i:'🔄',l:'Status',v:'Video is Ready for Review'}]}},
+
+{ph:'p6', t:'claude', msg:'✓ Monday updated — Status: Video is Ready for Review.\n\nReady for Phase 7 — Close-Out when you are.',
+ ctx:{ph:'Phase 6 — Video ✓',note:'All production phases complete. Video flagged for review.'}},
+
+// ── PHASE 7 — CLOSE-OUT ───────────────────────────────────────────
+{ph:'p7', t:'sys', msg:'✅ Phase 7 — Close-Out',
+ ctx:{ph:'Phase 7 — Close-Out',note:'Confirming all artifacts are complete and saved before closing the workflow.'}},
+
+{ph:'p7', t:'claude',
+ msg:'Let\'s confirm all artifacts before closing out.\n\n✓  Textbook — Monday Textbook File Column\n✓  MCQs — Monday MCQs File Column\n✓  Presentation Link — Monday Presentation Link Column\n✓  Presentation File — Monday Presentation File Column\n✓  Slide Script — Monday Slide Script Column\n✓  Speaker Notes — Added to Gamma\n✓  Video — HeyGen complete · Status: Ready for Review\n\nAll artifacts confirmed. Updating Monday to Complete.',
+ ctx:{ph:'Phase 7 — Close-Out',conn:'mon',note:'All 7 artifact checks pass. Final Monday update — Status: Complete.'}},
+
+{ph:'p7', t:'conn-mon',
+ conn:{title:'Monday.com',sub:'Requesting permission to close workflow',action:'Set final task status to Complete',
+  rows:[{i:'🔄',l:'Status',v:'Complete'},{i:'📁',l:'All artifacts',v:'Verified and saved ✓'}]}},
+
+{ph:'p7', t:'claude',
+ msg:'✓ Workflow complete.\n\nAll HOCK content for CIA Part 1 — SU03: Organizational Structures has been produced, reviewed, and saved.\n\nTextbook · MCQs · Presentation · Script · Video — all delivered. ✓',
+ ctx:{ph:'Phase 7 — Close-Out ✓',note:'Production workflow complete. All artifacts verified. Task closed in Monday. Ready for the next study unit.'}}
+];
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let cur = 0, autoOn = false, countdownInt = null, autoSec = 4;
+let modalBlocking = false;
+const rendered = new Set();
+const phaseMap = {
+  p1:'Phase 1 — Textbook', p2:'Phase 2 — MCQs',
+  p3:'Phase 3 — Outline',  p4:'Phase 4 — Gamma',
+  p5:'Phase 5 — Script',   p6:'Phase 6 — Video', p7:'Phase 7 — Close-Out'
+};
+
+// ══════════════════════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════════════════════
+function render(i) {
+  const s = S[i];
+  const pct = Math.round(((i+1)/S.length)*100);
+  document.getElementById('bCnt').textContent = `Step ${i+1} of ${S.length}`;
+  document.getElementById('progF').style.width = pct+'%';
+  document.getElementById('bBack').disabled = i===0;
+  document.getElementById('bNext').disabled = i===S.length-1;
+  updateDots(s.ph);
+
+  if (s.ph==='setup') {
+    show('setupWrap'); hide('chatWrap');
+    renderSetup(s.card);
+  } else {
+    hide('setupWrap'); show('chatWrap');
+    document.getElementById('phPill').textContent = phaseMap[s.ph]||s.ph;
+    renderCtx(s.ctx);
+    if (!rendered.has(i)) {
+      rendered.add(i);
+      if (s.t==='conn-mon'||s.t==='conn-gam') {
+        document.getElementById('bNext').disabled=true;
+        stopAuto(); modalBlocking=true;
+        showModal(s.conn,s.t==='conn-gam'); return;
+      }
+      if (s.t==='sys') addSys(s.msg);
+      else if (s.t==='user') addUser(s.msg);
+      else if (s.t==='claude') {
+        showTyping(true);
+        setTimeout(()=>{ showTyping(false); addClaude(s); scrollChat(); },700);
+        return;
+      }
+      scrollChat();
+    }
+  }
+  if (autoOn&&!modalBlocking) scheduleAuto();
+}
+
+function renderSetup(c) {
+  let h=`<div class="s-ey">${c.ey}</div><div class="s-title">${c.title}</div><div class="s-desc">${c.desc}</div>`;
+  if(c.ann) h+=`<div class="s-ann"><div class="s-ann-tag">${c.ann.tag}</div><div class="s-lbl">${c.ann.lbl}</div><div class="s-val">${c.ann.val}</div></div>`;
+  if(c.rows?.length){
+    h+='<div class="s-list">';
+    c.rows.forEach(r=>{h+=`<div class="s-row"><div class="s-ico">${r.i}</div><div><div class="s-nm">${r.n}</div><div class="s-ds">${r.d}</div></div></div>`;});
+    h+='</div>';
+  }
+  if(c.warn) h+=`<div class="s-warn">${c.warn}</div>`;
+  document.getElementById('setupCard').innerHTML=h;
+}
+
+function renderCtx(ctx) {
+  if(!ctx) return;
+  let h=`<div class="cb"><div class="clbl">Current Phase</div><div class="cph">${ctx.ph}</div></div>`;
+  if(ctx.skills?.length){
+    h+='<div class="cb"><div class="clbl">Active Skills</div>';
+    ctx.skills.forEach(sk=>{
+      const c=sk.s==='active'?'var(--orange)':sk.s==='done'?'var(--green)':'var(--faint)';
+      h+=`<div class="sk-row"><div class="sk-dot" style="background:${c}"></div><div class="sk-nm">${sk.n}</div><div class="sk-st ${sk.s}">${sk.s==='active'?'● active':sk.s==='done'?'✓ done':'○ pending'}</div></div>`;
+    });
+    h+='</div>';
+  }
+  if(ctx.note) h+=`<div class="cnote">${ctx.note}</div>`;
+  if(ctx.conn){
+    const isMon=ctx.conn==='mon';
+    h+=`<div class="conn-box ${isMon?'conn-mon':'conn-gam'}">
+      <div class="conn-nm ${isMon?'mn':'gm'}">${isMon?'📊 Monday.com':'🎨 Gamma'} — Action Pending</div>
+      <div class="conn-note">Permission dialog will appear. Click <strong style="color:${isMon?'var(--monday)':'var(--gamma)'}">Allow</strong> to proceed.</div>
+    </div>`;
+  }
+  document.getElementById('ctxPanel').innerHTML=h;
+}
+
+function addSys(t){
+  const w=mk('div','mw sys'); w.innerHTML=`<div class="bub">${esc(t)}</div>`; msgs().appendChild(w);
+}
+function addUser(t){
+  const w=mk('div','mw user'); w.innerHTML=`<div class="msnd">You</div><div class="bub">${esc(t)}</div>`; msgs().appendChild(w);
+}
+function addClaude(s){
+  const w=mk('div','mw claude');
+  let h=`<div class="msnd">Agent</div><div class="bub"><div>${esc(s.msg)}</div>`;
+  if(s.table){
+    h+=`<table class="bub-table"><thead><tr>${s.table.hs.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>`;
+    s.table.rows.forEach(r=>{h+=`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`;});
+    if(s.table.hl) h+=`<tr class="hl">${s.table.hl.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`;
+    h+='</tbody></table>';
+  }
+  if(s.after) h+=`<div style="margin-top:8px">${esc(s.after)}</div>`;
+  if(s.summary) h+=`<div class="bub-summary">${esc(s.summary)}</div>`;
+  if(s.starter) h+=`<div class="bub-starter">${esc(s.starter)}</div>`;
+  if(s.msgAfter) h+=`<div style="margin-top:8px">${esc(s.msgAfter)}</div>`;
+  if(s.code) h+=`<div class="bub-code">${esc(s.code)}</div>`;
+  h+='</div>';
+  w.innerHTML=h; msgs().appendChild(w);
+}
+
+function showTyping(v){
+  document.getElementById('typRow').classList.toggle('hide',!v);
+  if(v) scrollChat();
+}
+
+function showModal(conn,isGam){
+  const isMon=!isGam;
+  const rows=conn.rows.map(r=>`<div class="m-row"><div class="m-ico">${r.i}</div><div class="m-lbl">${r.l}</div><div class="m-val">${r.v}</div></div>`).join('');
+  document.getElementById('mbox').innerHTML=`
+    <div class="${isMon?'mon-hdr':'gam-hdr'}">
+      <div class="${isMon?'mon-ico':'gam-ico'}">${isMon?'📊':'🎨'}</div>
+      <div><div class="${isMon?'mon-title':'gam-title'}">${conn.title}</div><div class="${isMon?'mon-sub':'gam-sub'}">${conn.sub}</div></div>
+    </div>
+    <div class="mbody"><div class="m-action-lbl">${conn.action}</div>${rows}</div>
+    <div class="mftr">
+      <div class="click-hint">👆 Click Allow to continue</div>
+      <button class="mbtn mbtn-deny" onclick="denyModal()">Deny</button>
+      <button class="mbtn ${isMon?'mbtn-mon pulse-mon':'mbtn-gam pulse-gam'}" onclick="allowModal()">Allow</button>
+    </div>`;
+  document.getElementById('mov').classList.remove('hide');
+}
+function allowModal(){
+  document.getElementById('mov').classList.add('hide');
+  modalBlocking=false;
+  document.getElementById('bNext').disabled=(cur>=S.length-1);
+  scrollChat();
+  if(autoOn) scheduleAuto();
+}
+function denyModal(){
+  document.getElementById('mov').classList.add('hide');
+  modalBlocking=false;
+  document.getElementById('bNext').disabled=(cur>=S.length-1);
+  const w=mk('div','mw sys');
+  w.innerHTML=`<div class="bub">⚠ Action denied. Re-trigger this action when ready.</div>`;
+  msgs().appendChild(w); scrollChat();
+}
+
+function updateDots(ph){
+  const phs=['setup','p1','p2','p3','p4','p5','p6','p7'];
+  const ids=['d0','d1','d2','d3','d4','d5','d6','d7'];
+  const pi=phs.indexOf(ph);
+  ids.forEach((id,i)=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.className='pd'+(i<pi?' done':i===pi?ph==='setup'?' setup-a':' active':'');
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════════════════
+function next(){if(cur<S.length-1){cur++;render(cur);}}
+function back(){if(cur>0){cur--;stopAuto();render(cur);}}
+function toggleAuto(){
+  autoOn=!autoOn;
+  document.getElementById('atgl').classList.toggle('on',autoOn);
+  autoOn?scheduleAuto():stopAuto();
+}
+function scheduleAuto(){
+  stopAuto();
+  if(!autoOn||modalBlocking||cur>=S.length-1) return;
+  autoSec=4;
+  document.getElementById('bAuto').textContent=`Next in ${autoSec}s…`;
+  countdownInt=setInterval(()=>{
+    autoSec--;
+    if(autoSec<=0){stopAuto();next();}
+    else document.getElementById('bAuto').textContent=`Next in ${autoSec}s…`;
+  },1000);
+}
+function stopAuto(){
+  clearInterval(countdownInt);
+  document.getElementById('bAuto').textContent='';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════════
+function msgs(){return document.getElementById('chatMsgs');}
+function scrollChat(){const el=msgs();setTimeout(()=>{el.scrollTop=el.scrollHeight;},60);}
+function show(id){document.getElementById(id).classList.remove('hide');}
+function hide(id){document.getElementById(id).classList.add('hide');}
+function mk(tag,cls){const el=document.createElement(tag);el.className=cls;return el;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+
+render(0);
+</script>
+</body>
+</html>
