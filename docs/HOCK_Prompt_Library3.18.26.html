@@ -819,15 +819,26 @@ Execute now using the monday connector.`},
 
 // ── STORAGE: uses localStorage for standalone file ──
 const SK='hock_prompts_v3';
+const SK_SIG='hock_prompts_v3_sig';
+// Signature based on baked DD content — changes every time you bake new prompts
+const BAKE_SIG=(()=>{const filled=DD.filter(d=>d.prompt&&d.prompt.length>10);return DD.length+'|'+filled.length+'|'+(DD[0]&&DD[0].prompt?DD[0].prompt.slice(0,40):'');})();
 let prompts=[],nid=2000,editC=null,openId=null;
 
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
 function load(){
-  try{const r=localStorage.getItem(SK);if(r){const p=JSON.parse(r);if(Array.isArray(p)&&p.length){prompts=p;nid=Math.max(...p.map(x=>+x.id||0))+1;return;}}}catch(e){}
-  prompts=DD.map(d=>({...d}));
+  try{
+    const sig=localStorage.getItem(SK_SIG);
+    const r=localStorage.getItem(SK);
+    // If localStorage exists AND its signature matches the baked file, use localStorage
+    if(sig&&sig===BAKE_SIG&&r){const p=JSON.parse(r);if(Array.isArray(p)&&p.length){prompts=p;nid=Math.max(...p.map(x=>+x.id||0))+1;return;}}
+    // Otherwise baked file is newer — use DD and update signature
+    prompts=DD.map(d=>({...d}));
+    localStorage.setItem(SK_SIG,BAKE_SIG);
+    localStorage.setItem(SK,JSON.stringify(prompts));
+  }catch(e){prompts=DD.map(d=>({...d}));}
 }
-function sav(){try{localStorage.setItem(SK,JSON.stringify(prompts));}catch(e){toast('Save failed','e')}}
+function sav(){try{localStorage.setItem(SK,JSON.stringify(prompts));localStorage.setItem(SK_SIG,BAKE_SIG);}catch(e){toast('Save failed','e')}}
 
 function toast(msg,t='s'){const el=document.createElement('div');el.className='toast t'+t;el.textContent=msg;document.getElementById('tc').appendChild(el);setTimeout(()=>el.remove(),2400)}
 
