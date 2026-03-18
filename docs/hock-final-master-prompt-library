@@ -1,0 +1,1086 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOCK International — Master Prompt Library</title>
+<style>
+:root{
+  --bg:#F7F4EE;--surf:#FFFFFF;--surf2:#F3EFE8;--surf3:#EDE8DF;
+  --border:#DDD7CC;--border2:#C9C3B7;
+  --text:#1C1814;--muted:#6B6458;--faint:#9C9487;
+  --orange:#F47920;--obg:rgba(244,121,32,.10);--obr:rgba(244,121,32,.30);--olight:#FEF0E6;
+  --blue:#1B4B8A;--bbg:rgba(27,75,138,.08);--bbr:rgba(27,75,138,.25);--blight:#EBF0F8;
+  --green:#2D7A3A;--gbg:rgba(45,122,58,.09);--gbr:rgba(45,122,58,.25);--glight:#EAF3DE;
+  --amber:#B45309;--ambg:rgba(180,83,9,.08);--ambr:rgba(180,83,9,.25);--amlight:#FEF3E2;
+  --r:8px;--rsm:5px;
+  --sh:0 1px 4px rgba(0,0,0,.07),0 2px 12px rgba(0,0,0,.04);
+  --shs:0 1px 3px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+#hdr{background:var(--surf);border-bottom:3px solid var(--orange);padding:16px 28px 12px;box-shadow:var(--shs);position:sticky;top:0;z-index:100}
+.hdr1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-hock{font-size:26px;font-weight:900;font-style:italic;color:var(--orange);letter-spacing:-.5px;line-height:1}
+.logo-intl{background:var(--blue);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase;line-height:1.4}
+.hdiv{width:1px;height:22px;background:var(--border);margin:0 4px}
+.htitles h1{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.2px}
+.htitles p{color:var(--muted);font-size:12px}
+.hright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.stat{background:var(--olight);border:1px solid var(--obr);border-radius:var(--r);padding:7px 14px;text-align:center}
+.snum{color:var(--orange);font-size:22px;font-weight:800;line-height:1}
+.slbl{color:var(--orange);font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;opacity:.75}
+.hbtns{display:flex;gap:6px;flex-wrap:wrap}
+.hdr2{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.fi,.fs{padding:6px 10px;border-radius:var(--rsm);border:1px solid var(--border2);background:var(--surf);color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border-color .15s}
+.fi{width:210px}.fi::placeholder{color:var(--faint)}
+.fi:focus,.fs:focus{border-color:var(--orange)}
+.fs option{background:#fff;color:var(--text)}
+
+.btn{padding:6px 12px;border-radius:var(--rsm);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;border:1px solid transparent;font-weight:600}
+.bpri{background:var(--orange);color:#fff;border-color:var(--orange)}.bpri:hover{background:#d96a14}
+.bsec{background:var(--surf);color:var(--blue);border-color:var(--bbr)}.bsec:hover{background:var(--blight)}
+.bghost{background:transparent;color:var(--muted);border-color:var(--border2)}.bghost:hover{background:var(--surf2);color:var(--text)}
+.bdng{background:transparent;color:#c0392b;border-color:rgba(192,57,43,.3);font-size:11px;padding:5px 10px}.bdng:hover{background:rgba(192,57,43,.07)}
+
+main{padding:20px 28px 48px}
+.pg{margin-bottom:24px;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.ph{display:flex;align-items:center;gap:8px;padding:9px 14px;color:#fff}
+.ptag{background:rgba(255,255,255,.2);border-radius:var(--rsm);padding:2px 8px;font-size:11px;font-family:monospace;letter-spacing:.5px;font-weight:600}
+.ptitle{font-size:13px;font-weight:700;letter-spacing:-.1px}
+.pcnt{margin-left:auto;font-size:11px;opacity:.7;font-weight:500}
+.badd{padding:3px 9px;border-radius:4px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff;font-size:11px;cursor:pointer;font-family:inherit;font-weight:600;margin-left:6px}.badd:hover{background:rgba(255,255,255,.25)}
+
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:var(--surf)}
+thead tr{background:var(--surf2);border-bottom:2px solid var(--border)}
+th{padding:8px 11px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:nth-child(even){background:var(--surf2)}
+tbody tr:hover{background:var(--olight)}
+td{padding:8px 11px;font-size:12px;vertical-align:top;line-height:1.5;color:var(--text)}
+
+.pp{display:inline-block;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-family:monospace;white-space:nowrap;font-weight:700}
+.sc{font-family:'SF Mono',monospace;font-size:11px;color:var(--faint);white-space:nowrap}
+.nc{font-weight:700;color:var(--text);min-width:140px;font-size:12px}
+.prov{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;white-space:nowrap;letter-spacing:.02em}
+.pu{background:var(--glight);color:var(--green);border:1px solid var(--gbr)}
+.pa{background:var(--blight);color:var(--blue);border:1px solid var(--bbr)}
+.wc{font-size:11px;color:var(--muted);white-space:nowrap}
+.purc{font-size:12px;color:var(--muted);min-width:160px;line-height:1.5}
+.prc{min-width:220px}
+
+.prev{padding:8px 10px;border-radius:var(--rsm);border:1px solid var(--gbr);background:var(--glight);cursor:pointer;font-size:12px;color:#1e5c2e;line-height:1.5}
+.prev:hover{border-color:var(--green);background:#daf0de}
+.psnip{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.phint{font-size:10px;color:var(--faint);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.pemp{padding:7px 10px;border-radius:var(--rsm);border:1.5px dashed var(--border2);background:var(--surf2);font-size:11px;color:var(--faint);min-height:36px;display:flex;align-items:center;gap:6px}
+
+.ib{padding:4px 8px;background:var(--surf2);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:12px;line-height:1;transition:all .15s;color:var(--muted)}
+.ib:hover{background:var(--blight);color:var(--blue);border-color:var(--bbr)}
+.ib.dl:hover{background:rgba(192,57,43,.08);color:#c0392b;border-color:rgba(192,57,43,.25)}
+
+.ea{width:100%;min-height:110px;padding:8px;border:2px solid var(--orange);border-radius:var(--rsm);font-size:12px;font-family:'SF Mono','Menlo',monospace;resize:vertical;outline:none;line-height:1.65;color:var(--text);background:var(--surf)}
+.einp{width:100%;padding:5px 8px;border:2px solid var(--orange);border-radius:4px;font-size:12px;outline:none;color:var(--text);font-family:inherit;margin-bottom:4px;background:var(--surf)}
+.erow{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.esave{padding:5px 13px;background:var(--orange);color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;font-weight:700;font-family:inherit}.esave:hover{background:#d96a14}
+.ecan{padding:5px 11px;background:var(--surf2);color:var(--muted);border:1px solid var(--border2);border-radius:4px;font-size:12px;cursor:pointer;font-family:inherit}
+
+#mo{display:none;position:fixed;inset:0;background:rgba(28,24,20,.65);z-index:500;align-items:center;justify-content:center;padding:20px}
+#mo.open{display:flex}
+#md{background:var(--surf);border-radius:var(--r);padding:24px;max-width:700px;width:100%;max-height:82vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.25);animation:mi .18s ease}
+@keyframes mi{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.mm{font-size:11px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;font-weight:600}
+.mt{font-size:18px;font-weight:800;color:var(--text);margin-bottom:3px;letter-spacing:-.2px}
+.mp{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:14px}
+.mc{float:right;background:none;border:none;font-size:22px;cursor:pointer;color:var(--faint);line-height:1;margin-left:10px;padding:2px}.mc:hover{color:var(--text)}
+.mpt{white-space:pre-wrap;font-size:12px;color:var(--text);line-height:1.75;background:var(--surf2);padding:14px 16px;border-radius:var(--rsm);border:1px solid var(--border);font-family:'SF Mono','Menlo',monospace;max-height:44vh;overflow-y:auto}
+.ma{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+#io{display:none;position:fixed;inset:0;background:rgba(28,24,20,.65);z-index:600;align-items:center;justify-content:center;padding:20px}
+#io.open{display:flex}
+#im{background:var(--surf);border-radius:var(--r);padding:24px;max-width:560px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.25)}
+#im h2{color:var(--text);font-size:15px;font-weight:800;margin-bottom:5px}
+#im p{color:var(--muted);font-size:13px;margin-bottom:10px}
+#im textarea{width:100%;height:160px;padding:9px;border:1px solid var(--border2);border-radius:var(--rsm);font-family:'SF Mono',monospace;font-size:12px;resize:vertical;outline:none;background:var(--surf2)}
+#im textarea:focus{border-color:var(--orange)}
+#ierr{color:#c0392b;font-size:12px;margin-top:6px}
+
+#tc{position:fixed;bottom:16px;right:16px;z-index:700;display:flex;flex-direction:column;gap:6px}
+.toast{padding:9px 14px;border-radius:var(--r);font-size:12px;font-weight:700;animation:ti .2s ease;max-width:260px;box-shadow:var(--sh)}
+.ts{background:var(--green);color:#fff}.te{background:#c0392b;color:#fff}.ti{background:var(--blue);color:#fff}
+@keyframes ti{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+
+.hidden{display:none!important}
+footer{background:var(--blue);color:rgba(255,255,255,.65);text-align:center;padding:13px;font-size:12px;border-top:3px solid var(--orange)}
+</style>
+</head>
+<body style="">
+
+<div id="hdr">
+  <div class="hdr1">
+    <div class="logo">
+      <span class="logo-hock">HOCK</span>
+      <span class="logo-intl">International</span>
+      <div class="hdiv"></div>
+      <div class="htitles">
+        <h1>Master Prompt Library</h1>
+        <p>Phase-locked &nbsp;·&nbsp; Auto-saved to browser storage &nbsp;·&nbsp; Use <strong>Bake to File</strong> to export for GitHub</p>
+      </div>
+    </div>
+    <div class="hright">
+      <div class="stat"><div class="snum" id="sf">34</div><div class="slbl">/ <span id="st">34</span> Filled</div></div>
+      <div class="hbtns">
+        <button class="btn bpri" id="bbk" title="Saves current prompts into the HTML file itself — use this version for GitHub">⬇ Bake to File</button>
+        <button class="btn bsec" id="bex">↓ Export JSON</button>
+        <button class="btn bsec" id="bim">↑ Import JSON</button>
+        <button class="btn bdng" id="brs">↻ Reset Defaults</button>
+      </div>
+    </div>
+  </div>
+  <div class="hdr2">
+    <input class="fi" type="text" id="search" placeholder="Search prompts, purpose, or text…">
+    <select class="fs" id="fp">
+      <option value="">All Phases</option>
+      <option value="0">Phase 0 — Initialization</option>
+      <option value="1">Phase 1 — Textbook</option>
+      <option value="1→2">Phase 1→2 — Transition</option>
+      <option value="2">Phase 2 — MCQs</option>
+      <option value="3">Phase 3 — Presentation</option>
+      <option value="4">Phase 4 — Slide Script</option>
+      <option value="5">Phase 5 — Flashcards</option>
+      <option value="6">Phase 6 — Close-Out</option>
+    </select>
+    <select class="fs" id="fv">
+      <option value="">All Providers</option>
+      <option value="User">User</option>
+      <option value="Agent">Agent</option>
+    </select>
+    <button class="btn bghost hidden" id="bcl">✕ Clear filters</button>
+  </div>
+</div>
+
+<main id="main"><div class="pg"><div class="ph" style="background:#1B4B8A"><span class="ptag">PHASE 0</span><span class="ptitle">Project Initialization</span><span class="pcnt">1 prompt</span><button class="badd" onclick="addRow('0')">+ Add Prompt</button></div><div class="tw"><table><thead><tr><th>Phase</th><th>Step</th><th>Name</th><th>Provider</th><th>Where</th><th>Purpose</th><th>Prompt</th><th style="width:72px">Actions</th></tr></thead><tbody><tr id="r-1"><td><span class="pp" style="background:#1B4B8A">0</span></td><td class="sc">Init</td><td><div class="nc">New Project Initialization Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Project Instructions</td><td><div class="purc">Establish certification, role, assets, integrations, and global rules. Unlocks process.</div></td><td class="prc"><div class="prev" onclick="opM(1)"><div class="psnip"># HOCK International Content Production Agent
+
+## Identity
+You manage the workflow for HOCK certific…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(1)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(1)">✏</button><button class="ib dl" title="Delete" onclick="del(1)">×</button></div></td></tr></tbody></table></div></div><div class="pg"><div class="ph" style="background:#2D7A3A"><span class="ptag">PHASE 1</span><span class="ptitle">Textbook Content Creation</span><span class="pcnt">8 prompts</span><button class="badd" onclick="addRow('1')">+ Add Prompt</button></div><div class="tw"><table><thead><tr><th>Phase</th><th>Step</th><th>Name</th><th>Provider</th><th>Where</th><th>Purpose</th><th>Prompt</th><th style="width:72px">Actions</th></tr></thead><tbody><tr id="r-2"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.1</td><td><div class="nc">Textbook Section Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Generate textbook content for specified Section ID. Run Depth Calibration, then Textbook Creation Guide.</div></td><td class="prc"><div class="prev" onclick="opM(2)"><div class="psnip">You are a HOCK International Content Expert creating exam prep textbooks 
+for internal auditors with…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(2)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(2)">✏</button><button class="ib dl" title="Delete" onclick="del(2)">×</button></div></td></tr><tr id="r-3"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.2</td><td><div class="nc">Expand Section Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Expand only the specified portion of the textbook. Preserve all else.</div></td><td class="prc"><div class="prev" onclick="opM(3)"><div class="psnip">You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(3)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(3)">✏</button><button class="ib dl" title="Delete" onclick="del(3)">×</button></div></td></tr><tr id="r-4"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.2</td><td><div class="nc">Condense Section Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Reduce or shorten only specified content.</div></td><td class="prc"><div class="prev" onclick="opM(4)"><div class="psnip">You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(4)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(4)">✏</button><button class="ib dl" title="Delete" onclick="del(4)">×</button></div></td></tr><tr id="r-5"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.2</td><td><div class="nc">Rewrite Section Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Rewrite specified text without changing structure unless stated.</div></td><td class="prc"><div class="prev" onclick="opM(5)"><div class="psnip">You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(5)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(5)">✏</button><button class="ib dl" title="Delete" onclick="del(5)">×</button></div></td></tr><tr id="r-6"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.2</td><td><div class="nc">Insert Content Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Insert new content at a defined location.</div></td><td class="prc"><div class="prev" onclick="opM(6)"><div class="psnip">You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(6)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(6)">✏</button><button class="ib dl" title="Delete" onclick="del(6)">×</button></div></td></tr><tr id="r-7"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.2</td><td><div class="nc">Format-Only Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Change formatting only. No content edits.</div></td><td class="prc"><div class="prev" onclick="opM(7)"><div class="psnip">You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(7)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(7)">✏</button><button class="ib dl" title="Delete" onclick="del(7)">×</button></div></td></tr><tr id="r-8"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.2</td><td><div class="nc">Fallback General Revision Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Mixed or complex revisions when no specific prompt applies.</div></td><td class="prc"><div class="prev" onclick="opM(8)"><div class="psnip">You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(8)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(8)">✏</button><button class="ib dl" title="Delete" onclick="del(8)">×</button></div></td></tr><tr id="r-10"><td><span class="pp" style="background:#2D7A3A">1</span></td><td class="sc">1.5</td><td><div class="nc">Add Textbook to Mondays</div></td><td><span class="prov pa">Agent</span></td><td class="wc">Chat → Monday Tool</td><td><div class="purc">Update existing Monday task status and attach textbook.</div></td><td class="prc"><div class="prev" onclick="opM(10)"><div class="psnip">You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search fo…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(10)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(10)">✏</button><button class="ib dl" title="Delete" onclick="del(10)">×</button></div></td></tr></tbody></table></div></div><div class="pg"><div class="ph" style="background:#B45309"><span class="ptag">PHASE 1→2</span><span class="ptitle">Channel Transition</span><span class="pcnt">1 prompt</span><button class="badd" onclick="addRow('1→2')">+ Add Prompt</button></div><div class="tw"><table><thead><tr><th>Phase</th><th>Step</th><th>Name</th><th>Provider</th><th>Where</th><th>Purpose</th><th>Prompt</th><th style="width:72px">Actions</th></tr></thead><tbody><tr id="r-11"><td><span class="pp" style="background:#B45309">1→2</span></td><td class="sc">Transition</td><td><div class="nc">Move Work to New Channel (YES/NO)</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Determines whether MCQ work continues in a new channel.</div></td><td class="prc"><div class="prev" onclick="opM(11)"><div class="psnip">Generate a phase carryover summary for [SECTION NAME]. I am transitioning from [CURRENT PHASE] to [N…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(11)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(11)">✏</button><button class="ib dl" title="Delete" onclick="del(11)">×</button></div></td></tr></tbody></table></div></div><div class="pg"><div class="ph" style="background:#6D28D9"><span class="ptag">PHASE 2</span><span class="ptitle">MCQ Creation</span><span class="pcnt">8 prompts</span><button class="badd" onclick="addRow('2')">+ Add Prompt</button></div><div class="tw"><table><thead><tr><th>Phase</th><th>Step</th><th>Name</th><th>Provider</th><th>Where</th><th>Purpose</th><th>Prompt</th><th style="width:72px">Actions</th></tr></thead><tbody><tr id="r-13"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.1</td><td><div class="nc">MCQs Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Generate MCQs from completed textbook. Apply MCQ Creation Guide, batching, and depth rules.</div></td><td class="prc"><div class="prev" onclick="opM(13)"><div class="psnip">Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., "3c. Existing and …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(13)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(13)">✏</button><button class="ib dl" title="Delete" onclick="del(13)">×</button></div></td></tr><tr id="r-14"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.2</td><td><div class="nc">General MCQ Revision Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Mixed MCQ revisions. Preserve numbering and rules.</div></td><td class="prc"><div class="prev" onclick="opM(14)"><div class="psnip">Revise the previously generated MCQs for [Section ID/Name].
+
+Changes needed:
+- [Describe change 1, e…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(14)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(14)">✏</button><button class="ib dl" title="Delete" onclick="del(14)">×</button></div></td></tr><tr id="r-15"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.2</td><td><div class="nc">Fix Length / Extremes Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Fix length imbalance or prohibited words.</div></td><td class="prc"><div class="prev" onclick="opM(15)"><div class="psnip">Fix length imbalance and/or prohibited words in the previously generated MCQs for [Section ID/Name].…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(15)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(15)">✏</button><button class="ib dl" title="Delete" onclick="del(15)">×</button></div></td></tr><tr id="r-16"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.2</td><td><div class="nc">Strengthen Distractors Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Improve plausibility of distractors.</div></td><td class="prc"><div class="prev" onclick="opM(16)"><div class="psnip">Improve distractors in the previously generated MCQs for [Section ID/Name].
+
+Focus on:
+- [e.g., "Q4,…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(16)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(16)">✏</button><button class="ib dl" title="Delete" onclick="del(16)">×</button></div></td></tr><tr id="r-17"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.2</td><td><div class="nc">Adjust Explanations Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Revise explanations only.</div></td><td class="prc"><div class="prev" onclick="opM(17)"><div class="psnip">Revise explanations in the previously generated MCQs for [Section ID/Name].
+
+Changes:
+- [e.g., "All …</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(17)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(17)">✏</button><button class="ib dl" title="Delete" onclick="del(17)">×</button></div></td></tr><tr id="r-18"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.2</td><td><div class="nc">Regenerate Specific Questions Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Replace specific MCQs only.</div></td><td class="prc"><div class="prev" onclick="opM(18)"><div class="psnip">Regenerate only these specific MCQs from the previous set for [Section ID/Name]:
+
+Questions to repla…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(18)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(18)">✏</button><button class="ib dl" title="Delete" onclick="del(18)">×</button></div></td></tr><tr id="r-19"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.2</td><td><div class="nc">Convert Batch to Excel Format Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Convert MCQs to 11-column Excel format.</div></td><td class="prc"><div class="prev" onclick="opM(19)"><div class="psnip">Convert the previously generated MCQs for [Section ID/Name] to 11-column Excel-ready format.
+
+Column…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(19)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(19)">✏</button><button class="ib dl" title="Delete" onclick="del(19)">×</button></div></td></tr><tr id="r-21"><td><span class="pp" style="background:#6D28D9">2</span></td><td class="sc">2.4</td><td><div class="nc">Add MCQs to Mondays</div></td><td><span class="prov pa">Agent</span></td><td class="wc">Chat → Monday Tool</td><td><div class="purc">Update Monday task with MCQ status and attachment.</div></td><td class="prc"><div class="prev" onclick="opM(21)"><div class="psnip">You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search fo…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(21)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(21)">✏</button><button class="ib dl" title="Delete" onclick="del(21)">×</button></div></td></tr></tbody></table></div></div><div class="pg"><div class="ph" style="background:#E0294A"><span class="ptag">PHASE 3</span><span class="ptitle">Presentation / Slide Creation</span><span class="pcnt">9 prompts</span><button class="badd" onclick="addRow('3')">+ Add Prompt</button></div><div class="tw"><table><thead><tr><th>Phase</th><th>Step</th><th>Name</th><th>Provider</th><th>Where</th><th>Purpose</th><th>Prompt</th><th style="width:72px">Actions</th></tr></thead><tbody><tr id="r-22"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.1</td><td><div class="nc">Presentation Outline Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Generate slide outline from textbook + MCQs. Run slide depth calibration.</div></td><td class="prc"><div class="prev" onclick="opM(22)"><div class="psnip">Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and E…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(22)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(22)">✏</button><button class="ib dl" title="Delete" onclick="del(22)">×</button></div></td></tr><tr id="r-225"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.2</td><td><div class="nc">General Presentation Revision Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Fallback for mixed presentation changes. Edit only specified slides; keep all else intact.</div></td><td class="prc"><div class="prev" onclick="opM(225)"><div class="psnip">Revise the previously generated slide outline for [Section ID/Name].
+
+Changes needed:
+- [Change 1, e…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(225)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(225)">✏</button><button class="ib dl" title="Delete" onclick="del(225)">×</button></div></td></tr><tr id="r-23"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.2</td><td><div class="nc">Adjust Visuals / Placeholders</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Update visuals only.</div></td><td class="prc"><div class="prev" onclick="opM(23)"><div class="psnip">Update visuals in the previously generated slide outline for [Section ID/Name].
+
+Specific changes:
+-…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(23)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(23)">✏</button><button class="ib dl" title="Delete" onclick="del(23)">×</button></div></td></tr><tr id="r-24"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.2</td><td><div class="nc">Reduce / Condense Density</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Reduce slide count or bullet density.</div></td><td class="prc"><div class="prev" onclick="opM(24)"><div class="psnip">Condense the previously generated slide outline for [Section ID/Name].
+
+Focus on:
+- [e.g., "Reduce o…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(24)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(24)">✏</button><button class="ib dl" title="Delete" onclick="del(24)">×</button></div></td></tr><tr id="r-25"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.2</td><td><div class="nc">Expand / Add Content</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Add slides or content.</div></td><td class="prc"><div class="prev" onclick="opM(25)"><div class="psnip">Expand the previously generated slide outline for [Section ID/Name].
+
+Additions:
+- [e.g., "After Sli…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(25)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(25)">✏</button><button class="ib dl" title="Delete" onclick="del(25)">×</button></div></td></tr><tr id="r-26"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.2</td><td><div class="nc">Fix Formatting / Consistency</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Formatting-only changes.</div></td><td class="prc"><div class="prev" onclick="opM(26)"><div class="psnip">Reformat the previously generated slide outline for [Section ID/Name].
+
+Changes:
+- [e.g., "Ensure al…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(26)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(26)">✏</button><button class="ib dl" title="Delete" onclick="del(26)">×</button></div></td></tr><tr id="r-27"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.2</td><td><div class="nc">Update Speaker Notes</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Revise speaker notes only.</div></td><td class="prc"><div class="prev" onclick="opM(27)"><div class="psnip">Revise speaker notes in the previously generated slide outline for [Section ID/Name].
+
+Changes:
+- [e…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(27)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(27)">✏</button><button class="ib dl" title="Delete" onclick="del(27)">×</button></div></td></tr><tr id="r-28"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.3</td><td><div class="nc">Send to Gamma Prompt</div></td><td><span class="prov pa">Agent</span></td><td class="wc">Chat → Gamma Tool</td><td><div class="purc">Create presentation in Gamma.</div></td><td class="prc"><div class="prev" onclick="opM(28)"><div class="psnip">You are connected to my Gamma account via the Gamma connector.
+
+Task: Create the presentation in Gam…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(28)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(28)">✏</button><button class="ib dl" title="Delete" onclick="del(28)">×</button></div></td></tr><tr id="r-29"><td><span class="pp" style="background:#E0294A">3</span></td><td class="sc">3.4</td><td><div class="nc">Export Presentation + Add to Mondays</div></td><td><span class="prov pa">Agent</span></td><td class="wc">Chat → Tools</td><td><div class="purc">Export slides and update Monday task.</div></td><td class="prc"><div class="prev" onclick="opM(29)"><div class="psnip">You are connected to both my Gamma account (via Gamma connector) and monday.com workspace (via monda…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(29)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(29)">✏</button><button class="ib dl" title="Delete" onclick="del(29)">×</button></div></td></tr></tbody></table></div></div><div class="pg"><div class="ph" style="background:#F47920"><span class="ptag">PHASE 4</span><span class="ptitle">Slide Script Creation</span><span class="pcnt">7 prompts</span><button class="badd" onclick="addRow('4')">+ Add Prompt</button></div><div class="tw"><table><thead><tr><th>Phase</th><th>Step</th><th>Name</th><th>Provider</th><th>Where</th><th>Purpose</th><th>Prompt</th><th style="width:72px">Actions</th></tr></thead><tbody><tr id="r-30"><td><span class="pp" style="background:#F47920">4</span></td><td class="sc">4.1</td><td><div class="nc">Slide Script / Narration Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Generate narration aligned to slides with timing calibration.</div></td><td class="prc"><div class="prev" onclick="opM(30)"><div class="psnip">Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and E…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(30)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(30)">✏</button><button class="ib dl" title="Delete" onclick="del(30)">×</button></div></td></tr><tr id="r-31"><td><span class="pp" style="background:#F47920">4</span></td><td class="sc">4.2</td><td><div class="nc">General Script Revision Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Mixed script revisions.</div></td><td class="prc"><div class="prev" onclick="opM(31)"><div class="psnip">Revise the previously generated slide script for [Section ID/Name].
+
+Changes needed:
+- [Change 1, e.…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(31)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(31)">✏</button><button class="ib dl" title="Delete" onclick="del(31)">×</button></div></td></tr><tr id="r-32"><td><span class="pp" style="background:#F47920">4</span></td><td class="sc">4.2</td><td><div class="nc">Adjust Pacing / Timing Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Change total timing or pacing.</div></td><td class="prc"><div class="prev" onclick="opM(32)"><div class="psnip">Adjust pacing in the previously generated slide script for [Section ID/Name].
+
+Specific changes:
+- […</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(32)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(32)">✏</button><button class="ib dl" title="Delete" onclick="del(32)">×</button></div></td></tr><tr id="r-33"><td><span class="pp" style="background:#F47920">4</span></td><td class="sc">4.2</td><td><div class="nc">Strengthen Cues / Emphasis Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Update emphasis and cues.</div></td><td class="prc"><div class="prev" onclick="opM(33)"><div class="psnip">Update cues and emphasis in the previously generated slide script for [Section ID/Name].
+
+Focus on:
+…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(33)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(33)">✏</button><button class="ib dl" title="Delete" onclick="del(33)">×</button></div></td></tr><tr id="r-34"><td><span class="pp" style="background:#F47920">4</span></td><td class="sc">4.2</td><td><div class="nc">Tie to Visuals / Textbook Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Improve alignment to visuals/textbook.</div></td><td class="prc"><div class="prev" onclick="opM(34)"><div class="psnip">Improve visual references and textbook ties in the previously generated slide script for [Section ID…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(34)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(34)">✏</button><button class="ib dl" title="Delete" onclick="del(34)">×</button></div></td></tr><tr id="r-35"><td><span class="pp" style="background:#F47920">4</span></td><td class="sc">4.2</td><td><div class="nc">Shorten / Condense Narration Prompt</div></td><td><span class="prov pu">User</span></td><td class="wc">Chat</td><td><div class="purc">Reduce narration length.</div></td><td class="prc"><div class="prev" onclick="opM(35)"><div class="psnip">Condense narration in the previously generated slide script for [Section ID/Name].
+
+Specific:
+- [e.g…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(35)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(35)">✏</button><button class="ib dl" title="Delete" onclick="del(35)">×</button></div></td></tr><tr id="r-36"><td><span class="pp" style="background:#F47920">4</span></td><td class="sc">4.3</td><td><div class="nc">Add Slide Script to Mondays</div></td><td><span class="prov pa">Agent</span></td><td class="wc">Chat → Monday Tool</td><td><div class="purc">Attach approved script and update status.</div></td><td class="prc"><div class="prev" onclick="opM(36)"><div class="psnip">You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search fo…</div><div class="phint">👁 View full prompt</div></div></td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(36)">✎</button><button class="ib" title="Edit name &amp; purpose" onclick="stM(36)">✏</button><button class="ib dl" title="Delete" onclick="del(36)">×</button></div></td></tr></tbody></table></div></div></main>
+
+<!-- PROMPT MODAL -->
+<div id="mo" class="">
+  <div id="md">
+    <button class="mc" id="mcl">×</button>
+    <div class="mm" id="mmeta">Phase 4  ·  Step 4.3  ·  Agent</div>
+    <div class="mt" id="mtitle">Add Slide Script to Mondays</div>
+    <div class="mp" id="mpur">Attach approved script and update status.</div>
+    <pre class="mpt" id="mbody">You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search for and update an existing item on the Content Production board with the slide script.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Search the board for a task named: [Task Name]
+2. If found, update:
+   - Status: "Slide Script Ready for Review"
+   - Assignee/Person: brian@hockinternational.com
+   - Due Date: today's date + 2 days
+   - Slide Script: Upload/attach the slide script file
+   - Description: Append "Slide script added/updated: [Textbook Name] - [Section]. Added on [current date and time EST]. Source: Claude narration script."
+3. If no exact match found, reply: "No matching task found. Confirm if I should create a new item?"
+4. After action, return: Updated item ID, direct link, confirmation of all updated fields.
+
+Execute now using the monday connector.</pre>
+    <div class="ma">
+      <button class="btn bpri" id="bcp">Copy Prompt</button>
+      <button class="btn bsec" id="bme">✎ Edit Prompt</button>
+      <button class="btn bghost" id="bmc">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div id="io">
+  <div id="im">
+    <h2>Import Prompt Library</h2>
+    <p>Paste exported JSON below. This will replace all current prompts.</p>
+    <textarea id="ijson" placeholder="[{&quot;id&quot;:1,&quot;phase&quot;:&quot;0&quot;,...}]"></textarea>
+    <div style="display:flex;gap:8px">
+      <button class="btn bpri" id="bic">Import</button>
+      <button class="btn bghost" id="bix">Cancel</button>
+    </div>
+    <div id="ierr"></div>
+  </div>
+</div>
+
+<div id="tc"></div>
+
+<footer>HOCK International &nbsp;·&nbsp; Master Prompt Library &nbsp;·&nbsp; Phase-locked &nbsp;·&nbsp; Agent-ready &nbsp;·&nbsp; All changes saved to browser localStorage</footer>
+
+<script>
+const PHASES={
+  "0":{label:"Project Initialization",color:"#1B4B8A"},
+  "1":{label:"Textbook Content Creation",color:"#2D7A3A"},
+  "1→2":{label:"Channel Transition",color:"#B45309"},
+  "2":{label:"MCQ Creation",color:"#6D28D9"},
+  "3":{label:"Presentation / Slide Creation",color:"#E0294A"},
+  "4":{label:"Slide Script Creation",color:"#F47920"},
+  "5":{label:"Flashcards (Optional)",color:"#0E7C86"},
+  "6":{label:"Close-Out",color:"#4A5568"}
+};
+const PORD=["0","1","1→2","2","3","4","5","6"];
+
+const DD=[
+  {id:1,phase:"0",step:"Init",name:"New Project Initialization Prompt",who:"User",where:"Project Instructions",
+   purpose:"Establish certification, role, assets, integrations, and global rules. Unlocks process.",
+   prompt:`# [CERTIFICATION_NAME] Content Expert — HOCK International
+
+## Role
+Expert content developer creating exam prep materials (textbooks, MCQs, presentation outlines, slide scripts, flashcards) for professional certification candidates with 2-4 years of relevant experience studying for [CERTIFICATION_NAME].
+
+## Source Documents & Assets
+- Syllabus: [CERT]_Syllabus.pdf
+- Standards: [STANDARDS_DOC].pdf
+- Textbook: [TEXTBOOK_NAME].md
+- MCQs: [MCQ_FILE_NAME].xlsx or similar
+- Presentation: Gamma link or outline Markdown
+- Slide Script: [SCRIPT_NAME].md or .docx
+
+## Integrations
+- monday.com connector: Update Content Production board (https://hock-internationalcompany.monday.com/boards/18398486903)
+- Gamma connector: Create presentations using Hock International Theme
+
+## Content Creation Guides
+| Content Type          | Guide File                     | Purpose                              |
+|-----------------------|-------------------------------|--------------------------------------|
+| Textbooks             | Textbook_Creation_Guide.md    | Structure, tone, prose-dominant      |
+| MCQs                  | MCQ_Creation_Guide.md         | Questions, distractors, explanations |
+| Presentation Outlines | Presentation_Outline_Guide.md | Slide structure, visuals, Gamma      |
+| Slide Scripts         | Slide_Script_Guide.md         | Narration, cues, timing              |
+| Flashcards            | Flashcard_Guide.md            | Card format, spaced repetition       |
+
+## Process: ALWAYS Confirm Before Generating
+Follow Content_Creation_Skill.md for routing, depth calibration, production order, and shared principles.
+
+Production Order: Textbook → MCQs → Presentation Outline → Gamma → Slide Script → Flashcards
+
+## Key Rules
+- Use [CERTIFYING_BODY] terminology.
+- Cite standards by number from [STANDARDS_DOC].pdf.
+- Never generate without depth confirmation.
+- Token efficiency: Always chunk comprehensive outputs; pause for user check.
+- monday/Gamma: Confirm connector access before actions; update existing tasks only unless user confirms new.
+- Ambiguous requests: Ask "Which content type? Textbook, MCQs, outline, script, flashcards?"`},
+
+  {id:2,phase:"1",step:"1.1",name:"Textbook Section Prompt",who:"User",where:"Chat",
+   purpose:"Generate textbook content for specified Section ID. Run Depth Calibration, then Textbook Creation Guide.",
+   prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Create textbook content for [SECTION_ID] from the uploaded syllabus.
+
+Section: [e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Process:
+1. Confirm prerequisites: Syllabus and standards documents uploaded?
+2. Apply Depth Calibration Skill: Analyze scope, cognitive level, exam weight. Present summary table and recommended depth. Wait for my YES or adjustments.
+3. Follow Textbook Creation Skills: Prose-dominant (65% narrative), integrate standards naturally by number.
+4. Apply Token Optimization Skill: Chunk if comprehensive depth; pause after first segment for check.
+5. Output in Markdown: Start with H1, use hierarchy, end with Summary paragraph.
+
+Integrate relevant standards from uploaded standards document.`},
+
+  {id:3,phase:"1",step:"1.2",name:"Expand Section Prompt",who:"User",where:"Chat",
+   purpose:"Expand only the specified portion of the textbook. Preserve all else.",
+   prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Expand the specified part of the previously generated textbook section for this ID. Add content only where described — keep all else identical.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Expansion needed:
+- [Describe what to add, e.g., "Add 2 examples under H2: Emerging Risks"]
+
+If expansion affects depth, re-apply Depth Calibration Skill briefly and note changes.
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Checkpoint if adding >1k words.
+Output full revised section in Markdown.`},
+
+  {id:4,phase:"1",step:"1.2",name:"Condense Section Prompt",who:"User",where:"Chat",
+   purpose:"Reduce or shorten only specified content.",
+   prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Condense the specified part of the previously generated textbook section for this ID. Remove/reword only where described — keep all else identical.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Condensation needed:
+- [Describe what to shorten, e.g., "Reduce H3: Data Security by 30%, remove redundant bullets"]
+
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Keep edits minimal.
+Output full revised section in Markdown.`},
+
+  {id:5,phase:"1",step:"1.2",name:"Rewrite Section Prompt",who:"User",where:"Chat",
+   purpose:"Rewrite specified text without changing structure unless stated.",
+   prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Rewrite the specified part of the previously generated textbook section for this ID. Do not add/remove content unless specified — keep structure identical.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Rewrite needed:
+- [Describe changes, e.g., "Make tone more conversational in intro; fix accuracy in Standard 5.1 reference"]
+
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Edit only targeted areas.
+Output full revised section in Markdown.`},
+
+  {id:6,phase:"1",step:"1.2",name:"Insert Content Prompt",who:"User",where:"Chat",
+   purpose:"Insert new content at a defined location.",
+   prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Insert new content into the previously generated textbook section for this ID at the specified location. Do not change existing content.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Insertion needed:
+- [Describe what/where, e.g., "Add new H3: Mitigation Strategies after H2, ~300 words on best practices"]
+
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Checkpoint if insert >500 words.
+Output full revised section in Markdown.`},
+
+  {id:7,phase:"1",step:"1.2",name:"Format-Only Prompt",who:"User",where:"Chat",
+   purpose:"Change formatting only. No content edits.",
+   prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Reformat the specified part of the previously generated textbook section for this ID. Change only formatting — no content additions/removals/rewrites.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Formatting needed:
+- [Describe changes, e.g., "Convert bullets to numbered steps in Process section; fix header levels"]
+
+Follow Textbook Creation Skills: Use proper hierarchy.
+Apply Token Optimization: Minimal edits.
+Output full revised section in Markdown.`},
+
+  {id:8,phase:"1",step:"1.2",name:"Fallback General Revision Prompt",who:"User",where:"Chat",
+   purpose:"Mixed or complex revisions when no specific prompt applies.",
+   prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Revise the previously generated textbook section for this ID. Edit only what is specified — keep unchanged content exactly as-is.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Changes needed:
+- [Describe specific change 1]
+- [Describe specific change 2]
+
+If changes affect depth, re-apply Depth Calibration Skill briefly.
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Checkpoint for long edits.
+Output full revised section in Markdown.`},
+
+  {id:9,phase:"1",step:"1.4",name:"Add Textbook to Dropbox",who:"Agent",where:"Chat → Tool",
+   purpose:"Upload finalized textbook to Dropbox using naming conventions.",prompt:""},
+
+  {id:10,phase:"1",step:"1.5",name:"Add Textbook to Mondays",who:"Agent",where:"Chat → Monday Tool",
+   purpose:"Update existing Monday task status and attach textbook.",
+   prompt:`You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search for and update an existing item on the Content Production board for [Task Name]
+Do not create a new item unless I confirm.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Search the board for a task named: [Task Name]
+2. If found, update these columns:
+   - Status: "Textbook is Ready for Review"
+   - Assignee/Person: brian@hockinternational.com
+   - Start Date: today's date
+   - Due Date: today's date + 2 days
+   - Description (Long Text): Append: "Textbook added/updated: [Textbook Name] - [Section]. Added/updated on [current date and time EST]. Source: Generated in Claude project."
+   - Textbook file: Upload/attach or replace the file in this column
+3. If no exact match found, reply: "No matching task found for '[Task Name]'. Confirm if I should create a new item?"
+4. After action, return: Updated item ID, direct link, confirmation of all updated fields.
+
+Execute now using the monday connector. Confirm board access and column names first if needed.`},
+
+  {id:11,phase:"1→2",step:"Transition",name:"Move Work to New Channel (YES/NO)",who:"User",where:"Chat",
+   purpose:"Determines whether MCQ work continues in a new channel.",prompt:""},
+
+  {id:12,phase:"1→2",step:"Transition",name:"Overview of Completed Work (YES/NO)",who:"User",where:"Chat",
+   purpose:"Agent summarizes what has been completed so far (no MCQs generated).",prompt:""},
+
+  {id:13,phase:"2",step:"2.1",name:"MCQs Prompt",who:"User",where:"Chat",
+   purpose:"Generate MCQs from completed textbook. Apply MCQ Creation Guide, batching, and depth rules.",
+   prompt:`Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., "3c. Existing and Emerging Cybersecurity Risks and Data Security"]
+
+You are a HOCK International Content Expert creating exam prep MCQs for professional certification candidates with 2-4 years of relevant experience.
+
+CORE RULES:
+1. Choice A is ALWAYS correct. B, C, D are plausible distractors.
+2. All four choices MUST be similar in length. Rewrite if uneven.
+3. Never use extreme words (always, never, exclusively, only, solely, under no circumstances, etc.).
+4. Explanations: Detailed (50-100 words each) for all four choices. Use complete sentences. Teaching opportunities. No "Choice X is correct/incorrect because" phrasing.
+5. Questions: Scenario-based, application-focused, challenging. Cite standards briefly by number if relevant.
+6. Numbering: [CERT_PREFIX] [SECTION_ID]-[sequential, e.g., CIA26 01.301].
+7. Output: Plain text, hard return between choices. No headers before Q1 or Q16.
+
+PROCESS:
+- Use the completed textbook section as source — reference previous generation in this chat.
+- Follow MCQ_Creation_Guide and MCQ_Creation_Skills for quantity, difficulty, batching (10-15 per batch with checkpoint), and 11-column Excel format when requested.
+- Apply Depth Calibration if not already done.`},
+
+  {id:14,phase:"2",step:"2.2",name:"General MCQ Revision Prompt",who:"User",where:"Chat",
+   purpose:"Mixed MCQ revisions. Preserve numbering and rules.",
+   prompt:`Revise the previously generated MCQs for [Section ID/Name].
+
+Changes needed:
+- [Describe change 1, e.g., "Make Q5 distractors more plausible – current ones too obvious"]
+- [Describe change 2, e.g., "Shorten explanations in Q10-12 to 60-80 words each"]
+
+Edit only what's specified. Keep all other questions, numbering, format, and rules exactly as-is.
+Follow MCQ Creation Guide and MCQ Creation Skills for any affected rules.
+Output only the full revised set of MCQs in plain text (same format as original).`},
+
+  {id:15,phase:"2",step:"2.2",name:"Fix Length / Extremes Prompt",who:"User",where:"Chat",
+   purpose:"Fix length imbalance or prohibited words.",
+   prompt:`Fix length imbalance and/or prohibited words in the previously generated MCQs for [Section ID/Name].
+
+Specific fixes:
+- [e.g., "Q3, Q7, Q14: Rewrite choices so all four are similar length"]
+- [e.g., "Q9: Remove 'always' from choice C and rewrite to keep plausibility"]
+
+Do not change correct answer, scenario, or explanations unless specified.
+Output only the revised questions (full text for affected ones + note which were changed).`},
+
+  {id:16,phase:"2",step:"2.2",name:"Strengthen Distractors Prompt",who:"User",where:"Chat",
+   purpose:"Improve plausibility of distractors.",
+   prompt:`Improve distractors in the previously generated MCQs for [Section ID/Name].
+
+Focus on:
+- [e.g., "Q4, Q11, Q18: Make B, C, D more plausible – current ones too far from correct concept"]
+- [e.g., "Q6: Add common misconception to choice D"]
+
+Keep A correct and explanations unchanged unless distractor change affects them.
+Output only the revised questions (full text for affected ones).`},
+
+  {id:17,phase:"2",step:"2.2",name:"Adjust Explanations Prompt",who:"User",where:"Chat",
+   purpose:"Revise explanations only.",
+   prompt:`Revise explanations in the previously generated MCQs for [Section ID/Name].
+
+Changes:
+- [e.g., "All explanations: Shorten to 60-80 words max while keeping teaching value"]
+- [e.g., "Q2, Q15: Strengthen why distractors are wrong – add specific reference to textbook concept"]
+
+Do not change questions or choices.
+Output only the revised questions with updated explanations.`},
+
+  {id:18,phase:"2",step:"2.2",name:"Regenerate Specific Questions Prompt",who:"User",where:"Chat",
+   purpose:"Replace specific MCQs only.",
+   prompt:`Regenerate only these specific MCQs from the previous set for [Section ID/Name]:
+
+Questions to replace:
+- [e.g., Q8, Q13, Q20]
+
+New versions must follow all core rules and use the same textbook source.
+Output only the new questions (with original numbering) + note which were replaced.`},
+
+  {id:19,phase:"2",step:"2.2",name:"Convert Batch to Excel Format Prompt",who:"User",where:"Chat",
+   purpose:"Convert MCQs to 11-column Excel format.",
+   prompt:`Convert the previously generated MCQs for [Section ID/Name] to 11-column Excel-ready format.
+
+Columns:
+Category | Question ID | Question Text | Choice A | Choice B | Choice C | Choice D | Explanation for A | Explanation for B | Explanation for C | Explanation for D
+
+Use Category = [e.g., 2796] or whatever matches the textbook.
+Output as plain text table or tab-separated values ready for copy-paste to Excel.`},
+
+  {id:20,phase:"2",step:"2.3",name:"Add MCQs to Dropbox",who:"Agent",where:"Chat → Tool",
+   purpose:"Upload MCQs file to Dropbox.",prompt:""},
+
+  {id:21,phase:"2",step:"2.4",name:"Add MCQs to Mondays",who:"Agent",where:"Chat → Monday Tool",
+   purpose:"Update Monday task with MCQ status and attachment.",
+   prompt:`You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search for and update an existing item on the Content Production board for [Task Name]. Do not create a new item unless I confirm.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Search the board for a task named: [Task Name]
+2. If found, update these columns:
+   - Status: "MCQs Ready for Review"
+   - Assignee/Person: [Creator email]
+   - Start Date: today's date
+   - Due Date: today's date + 2 days
+   - Description (Long Text): Append: "MCQs added/updated: [Textbook Name] - [Section]. Added/updated on [current date and time EST]. Source: Generated in Claude project."
+   - MCQs File: Upload/attach or replace the file in this column
+3. If no exact match found, reply: "No matching task found for '[Task Name]'. Confirm if I should create a new item?"
+4. After action, return: Updated item ID, direct link, confirmation of all updated fields.
+
+Execute now using the monday connector.`},
+
+  {id:22,phase:"3",step:"3.1",name:"Presentation Outline Prompt",who:"User",where:"Chat",
+   purpose:"Generate slide outline from textbook + MCQs. Run slide depth calibration.",
+   prompt:`Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+
+You are a HOCK International Content Expert creating exam prep materials for professional certification candidates.
+
+Task: Create a presentation slide outline for the section above.
+
+Process:
+1. Confirm prerequisites: Textbook and MCQs for this section complete in chat history?
+2. Apply Depth Calibration Skill: Recommend slide count (Basic: 5-8, Medium: 10-15, Comprehensive: 15-25). Present table and wait for YES or adjustments.
+3. Use completed textbook as source.
+4. Follow Presentation_Creation_Skills and Presentation_Creation_Guide:
+   - One key idea per slide, 3-6 bullets max
+   - Visual placeholders (e.g., [Image: Risk matrix chart])
+   - Short speaker notes (1-2 sentences)
+   - Gamma-ready Markdown format
+   - Use Hock International Theme: https://gamma.app/themes/share/0mk4i94ypgimwxi
+5. Apply Token Optimization: Chunk if Comprehensive; pause after first batch.
+6. Output: Full Markdown outline only. Include Gamma template link and import instructions.
+
+After outline confirmed, ask: "Outline ready. Grant Gamma connector access? Reply Y/N."
+Execute now. If depth not yet calibrated, start there.`},
+
+  {id:225,phase:"3",step:"3.2",name:"General Presentation Revision Prompt",who:"User",where:"Chat",
+   purpose:"Fallback for mixed presentation changes. Edit only specified slides; keep all else intact.",
+   prompt:`Revise the previously generated slide outline for [Section ID/Name].
+
+Changes needed:
+- [Change 1, e.g., "Slide 7: Change placeholder to bar chart instead of pie chart"]
+- [Change 2, e.g., "Slides 4-6: Reduce bullets to max 4 per slide; simplify wording"]
+
+Edit only specified slides. Keep structure, visuals, notes, and Gamma template link intact.
+Follow Presentation_Creation_Skills and Presentation_Creation_Guide.
+Output the full updated Markdown outline.`},
+
+  {id:23,phase:"3",step:"3.2",name:"Adjust Visuals / Placeholders",who:"User",where:"Chat",
+   purpose:"Update visuals only.",
+   prompt:`Update visuals in the previously generated slide outline for [Section ID/Name].
+
+Specific changes:
+- [e.g., "Slide 3: Replace [Image: Risk matrix] with [Icon: warning triangle]"]
+- [e.g., "Slide 9: Add [Chart: trend line] for detection effectiveness"]
+
+Do not change text, bullets, or notes unless specified.
+Output full revised outline in Markdown.`},
+
+  {id:24,phase:"3",step:"3.2",name:"Reduce / Condense Density",who:"User",where:"Chat",
+   purpose:"Reduce slide count or bullet density.",
+   prompt:`Condense the previously generated slide outline for [Section ID/Name].
+
+Focus on:
+- [e.g., "Reduce overall to 12 slides max – merge Slides 8-10 into one"]
+- [e.g., "Limit bullets to 3-4 per slide; shorten text"]
+
+Follow depth guidelines from Presentation_Creation_Skills (Medium: 10-15 slides).
+Output full revised outline in Markdown.`},
+
+  {id:25,phase:"3",step:"3.2",name:"Expand / Add Content",who:"User",where:"Chat",
+   purpose:"Add slides or content.",
+   prompt:`Expand the previously generated slide outline for [Section ID/Name].
+
+Additions:
+- [e.g., "After Slide 5: Insert new slide titled 'Common Failures' with 3 bullets and [Image: checklist]"]
+- [e.g., "Slide 12: Add speaker note with transition phrase to next topic"]
+
+Keep existing slides unchanged unless specified.
+Output full revised outline in Markdown.`},
+
+  {id:26,phase:"3",step:"3.2",name:"Fix Formatting / Consistency",who:"User",where:"Chat",
+   purpose:"Formatting-only changes.",
+   prompt:`Reformat the previously generated slide outline for [Section ID/Name].
+
+Changes:
+- [e.g., "Ensure all slides use consistent bullet style; fix any missing speaker notes"]
+- [e.g., "Add Gamma theme link at top if missing: https://gamma.app/themes/share/0mk4i94ypgimwxi"]
+
+No content changes – formatting only.
+Output full revised outline in Markdown.`},
+
+  {id:27,phase:"3",step:"3.2",name:"Update Speaker Notes",who:"User",where:"Chat",
+   purpose:"Revise speaker notes only.",
+   prompt:`Revise speaker notes in the previously generated slide outline for [Section ID/Name].
+
+Changes:
+- [e.g., "All notes: Make more conversational and add pacing cue [Pause 2s]"]
+- [e.g., "Slide 6: Strengthen note to tie back to textbook example"]
+
+Keep slide titles/bullets/visuals unchanged.
+Output full revised outline in Markdown.`},
+
+  {id:28,phase:"3",step:"3.3",name:"Send to Gamma Prompt",who:"Agent",where:"Chat → Gamma Tool",
+   purpose:"Create presentation in Gamma.",
+   prompt:`You are connected to my Gamma account via the Gamma connector.
+
+Task: Create the presentation in Gamma using the previously generated slide outline for [Section ID/Name].
+
+Steps:
+1. Use the Markdown outline from earlier in this chat as the content source.
+2. Apply the Hock International Theme: https://gamma.app/themes/share/0mk4i94ypgimwxi
+3. Import the full outline structure: titles as headings, bullets as content, visual placeholders as image suggestions, speaker notes as presenter notes.
+4. Keep layout clean: one key idea per slide, 3-6 bullets max.
+5. After creation, return: Direct Gamma share/edit link, confirmation of theme applied, any warnings.
+
+Execute now using the Gamma connector. Confirm access if needed.`},
+
+  {id:29,phase:"3",step:"3.4",name:"Export Presentation + Add to Mondays",who:"Agent",where:"Chat → Tools",
+   purpose:"Export slides and update Monday task.",
+   prompt:`You are connected to both my Gamma account (via Gamma connector) and monday.com workspace (via monday connector/MCP).
+
+Task: After Gamma presentation is created, export as PowerPoint, then update the existing Content Production board item.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Get the Gamma share/edit link from this chat. Confirm theme: Hock International.
+2. Export the Gamma presentation as PowerPoint (.pptx) using the Gamma connector.
+3. Search the monday board for the existing item by Task Name: [Task Name]
+4. If found, update: Status "Slides Ready for Review", Assignee, Due Date (today +2), Presentation Link, Presentation File (.pptx), Description.
+5. If no exact match, reply: "No matching task found for '[Task Name]'. Confirm if I should create a new item?"
+6. Return: Updated monday item ID, direct link, Gamma link, confirmation of PowerPoint attached.
+
+Execute now using both connectors.`},
+
+  {id:30,phase:"4",step:"4.1",name:"Slide Script / Narration Prompt",who:"User",where:"Chat",
+   purpose:"Generate narration aligned to slides with timing calibration.",
+   prompt:`Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+
+You are a HOCK International Content Expert creating exam prep video narration for professional certification candidates.
+
+Task: Create a slide narration script for the presentation in project resources.
+
+Process:
+1. Confirm prerequisites: Textbook, MCQs, and Gamma presentation for this section in project resources or chat history?
+2. Source: Use the Gamma presentation file/link as primary base. Reference textbook/MCQs for depth and accuracy.
+3. Apply Depth Calibration Skill: Recommend total timing (Basic: 5-8 min, Medium: 10-15 min, Comprehensive: 15-25 min). Present quick table and wait for YES or override.
+4. Follow Slide_Script_Skills and Slide_Script_Guide:
+   - Format per slide: **Slide X: [Title]** + spoken text + cues [Pause 2s], [Emphasize: key term], [Transition: "Next..."]
+   - 120-150 words/min pacing
+   - Tie narration to visuals (e.g., "As shown in this chart...")
+5. Apply Token Optimization: Chunk into 5-8 min segments if Comprehensive; pause after first batch.
+6. Output: Markdown format — total estimated time, numbered slides with narration + cues, video notes at end.
+
+Execute now. If depth not calibrated, start there.`},
+
+  {id:31,phase:"4",step:"4.2",name:"General Script Revision Prompt",who:"User",where:"Chat",
+   purpose:"Mixed script revisions.",
+   prompt:`Revise the previously generated slide script for [Section ID/Name].
+
+Changes needed:
+- [Change 1, e.g., "Make narration on Slides 4-6 more conversational"]
+- [Change 2, e.g., "Add [Pause 3s] cue after visual reveal on Slide 9"]
+
+Edit only specified slides. Keep timing, format, and cues intact unless specified.
+Follow Slide_Script_Skills and Slide_Script_Guide.
+Output the full updated script in Markdown.`},
+
+  {id:32,phase:"4",step:"4.2",name:"Adjust Pacing / Timing Prompt",who:"User",where:"Chat",
+   purpose:"Change total timing or pacing.",
+   prompt:`Adjust pacing in the previously generated slide script for [Section ID/Name].
+
+Specific changes:
+- [e.g., "Reduce total to 10-12 min – shorten Slides 7-10 by ~30%"]
+- [e.g., "Slide 5: Add pacing cue [Speak slower here] for complex concept"]
+
+Follow depth timing from Slide_Script_Guide (e.g., Medium: 10-15 min).
+Output full updated script in Markdown with revised total time estimate.`},
+
+  {id:33,phase:"4",step:"4.2",name:"Strengthen Cues / Emphasis Prompt",who:"User",where:"Chat",
+   purpose:"Update emphasis and cues.",
+   prompt:`Update cues and emphasis in the previously generated slide script for [Section ID/Name].
+
+Focus on:
+- [e.g., "Add [Emphasize: fraud triangle] on Slide 3 and [Pause 2s] after"]
+- [e.g., "All transitions: Make more natural, e.g., 'Let's look at why this fails...'"]
+
+Keep spoken text unchanged unless specified.
+Output full updated script in Markdown.`},
+
+  {id:34,phase:"4",step:"4.2",name:"Tie to Visuals / Textbook Prompt",who:"User",where:"Chat",
+   purpose:"Improve alignment to visuals/textbook.",
+   prompt:`Improve visual references and textbook ties in the previously generated slide script for [Section ID/Name].
+
+Changes:
+- [e.g., "Slides 6-8: Explicitly reference visuals, e.g., 'As this chart shows...'"]
+- [e.g., "Slide 10: Add brief tie-back to textbook example from Study Unit 3"]
+
+No changes to core narration or timing.
+Output full updated script in Markdown.`},
+
+  {id:35,phase:"4",step:"4.2",name:"Shorten / Condense Narration Prompt",who:"User",where:"Chat",
+   purpose:"Reduce narration length.",
+   prompt:`Condense narration in the previously generated slide script for [Section ID/Name].
+
+Specific:
+- [e.g., "Reduce all spoken text to 1-2 sentences per slide where possible"]
+- [e.g., "Remove redundant explanations on Slides 11-13"]
+
+Maintain teaching value and cues.
+Output full updated script in Markdown with new total time estimate.`},
+
+  {id:36,phase:"4",step:"4.3",name:"Add Slide Script to Mondays",who:"Agent",where:"Chat → Monday Tool",
+   purpose:"Attach approved script and update status.",
+   prompt:`You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search for and update an existing item on the Content Production board with the slide script.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Search the board for a task named: [Task Name]
+2. If found, update:
+   - Status: "Slide Script Ready for Review"
+   - Assignee/Person: brian@hockinternational.com
+   - Due Date: today's date + 2 days
+   - Slide Script: Upload/attach the slide script file
+   - Description: Append "Slide script added/updated: [Textbook Name] - [Section]. Added on [current date and time EST]. Source: Claude narration script."
+3. If no exact match found, reply: "No matching task found. Confirm if I should create a new item?"
+4. After action, return: Updated item ID, direct link, confirmation of all updated fields.
+
+Execute now using the monday connector.`},
+
+  {id:37,phase:"5",step:"5.1",name:"Flashcard Guide Prompt",who:"User",where:"Chat",
+   purpose:"Generate flashcards from approved upstream content.",prompt:""},
+
+  {id:38,phase:"6",step:"Close",name:"Close-Out Confirmation",who:"User",where:"Chat",
+   purpose:"Finalize process and close Monday task.",prompt:""}
+];
+
+// ── STORAGE: uses localStorage for standalone file ──
+const SK='hock_prompts_v3';
+let prompts=[],nid=2000,editC=null,openId=null;
+
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function load(){
+  try{const r=localStorage.getItem(SK);if(r){const p=JSON.parse(r);if(Array.isArray(p)&&p.length){prompts=p;nid=Math.max(...p.map(x=>+x.id||0))+1;return;}}}catch(e){}
+  prompts=DD.map(d=>({...d}));
+}
+function sav(){try{localStorage.setItem(SK,JSON.stringify(prompts));}catch(e){toast('Save failed','e')}}
+
+function toast(msg,t='s'){const el=document.createElement('div');el.className='toast t'+t;el.textContent=msg;document.getElementById('tc').appendChild(el);setTimeout(()=>el.remove(),2400)}
+
+function stats(){
+  const f=prompts.filter(p=>p.prompt&&p.prompt.trim()).length;
+  document.getElementById('sf').textContent=f;
+  document.getElementById('st').textContent=prompts.length;
+}
+
+function render(){
+  const s=document.getElementById('search').value.toLowerCase();
+  const ph=document.getElementById('fp').value;
+  const pv=document.getElementById('fv').value;
+  document.getElementById('bcl').classList.toggle('hidden',!(s||ph||pv));
+  const fil=prompts.filter(r=>{
+    if(ph&&r.phase!==ph)return false;
+    if(pv&&r.who!==pv)return false;
+    if(s&&![r.name,r.purpose,r.prompt||''].some(t=>t.toLowerCase().includes(s)))return false;
+    return true;
+  });
+  const main=document.getElementById('main');main.innerHTML='';
+  PORD.forEach(phase=>{
+    const rows=fil.filter(r=>r.phase===phase);
+    if(!rows.length)return;
+    const pi=PHASES[phase];
+    const g=document.createElement('div');g.className='pg';
+    g.innerHTML=`<div class="ph" style="background:${pi.color}"><span class="ptag">PHASE ${phase}</span><span class="ptitle">${pi.label}</span><span class="pcnt">${rows.length} prompt${rows.length!==1?'s':''}</span><button class="badd" onclick="addRow('${phase}')">+ Add Prompt</button></div><div class="tw"><table><thead><tr><th>Phase</th><th>Step</th><th>Name</th><th>Provider</th><th>Where</th><th>Purpose</th><th>Prompt</th><th style="width:72px">Actions</th></tr></thead><tbody></tbody></table></div>`;
+    main.appendChild(g);
+    const tb=g.querySelector('tbody');
+    rows.forEach(row=>{
+      const ep=editC&&editC.id===row.id&&editC.f==='p';
+      const em=editC&&editC.id===row.id&&editC.f==='m';
+      const has=row.prompt&&row.prompt.trim();
+      const pi2=PHASES[row.phase]||{color:'#888'};
+      const tr=document.createElement('tr');tr.id='r-'+row.id;
+      let nc=em?`<input class="einp" id="n-${row.id}" value="${esc(row.name)}">`:`<div class="nc">${esc(row.name)}</div>`;
+      let purc=em?`<textarea class="ea" id="pu-${row.id}" style="min-height:52px">${esc(row.purpose)}</textarea>`:`<div class="purc">${esc(row.purpose)}</div>`;
+      let mbtns=em?`<div class="erow"><button class="esave" onclick="savM(${row.id})">Save</button><button class="ecan" onclick="canE()">Cancel</button></div>`:'';
+      let pc=ep?`<textarea class="ea" id="p-${row.id}">${esc(row.prompt)}</textarea><div class="erow"><button class="esave" onclick="savP(${row.id})">Save</button><button class="ecan" onclick="canE()">Cancel</button></div>`:has?`<div class="prev" onclick="opM(${row.id})"><div class="psnip">${esc(row.prompt.substring(0,100))}…</div><div class="phint">&#128065; View full prompt</div></div>`:`<div class="pemp">Not yet added — click &#9998; to write</div>`;
+      tr.innerHTML=`<td><span class="pp" style="background:${pi2.color}">${esc(row.phase)}</span></td><td class="sc">${esc(row.step)}</td><td>${nc}${mbtns}</td><td><span class="prov ${row.who==='User'?'pu':'pa'}">${esc(row.who)}</span></td><td class="wc">${esc(row.where)}</td><td>${purc}</td><td class="prc">${pc}</td><td><div style="display:flex;flex-direction:column;gap:4px;align-items:center"><button class="ib" title="Edit prompt text" onclick="stP(${row.id})">&#9998;</button><button class="ib" title="Edit name & purpose" onclick="stM(${row.id})">&#9999;</button><button class="ib dl" title="Delete" onclick="del(${row.id})">&#215;</button></div></td>`;
+      tb.appendChild(tr);
+    });
+  });
+  stats();
+}
+
+function stP(id){editC={id,f:'p'};render();setTimeout(()=>{const t=document.getElementById('p-'+id);if(t){t.focus();t.selectionStart=t.selectionEnd=t.value.length;}},50)}
+function stM(id){editC={id,f:'m'};render();setTimeout(()=>{const t=document.getElementById('n-'+id);if(t)t.focus()},50)}
+function canE(){editC=null;render()}
+
+function savP(id){
+  const t=document.getElementById('p-'+id);if(!t)return;
+  const r=prompts.find(x=>x.id===id);if(r)r.prompt=t.value;
+  editC=null;sav();render();toast('Prompt saved');
+}
+function savM(id){
+  const n=document.getElementById('n-'+id),p=document.getElementById('pu-'+id);
+  const r=prompts.find(x=>x.id===id);
+  if(r){if(n)r.name=n.value;if(p)r.purpose=p.value;}
+  editC=null;sav();render();toast('Details saved');
+}
+function addRow(phase){
+  const r={id:nid++,phase,step:'New',name:'New Prompt',who:'User',where:'Chat',purpose:'Describe the purpose of this prompt.',prompt:''};
+  prompts.push(r);sav();render();toast('Prompt added — click ✎ to edit','i');
+  setTimeout(()=>{const el=document.getElementById('r-'+r.id);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})},100);
+}
+function del(id){
+  const r=prompts.find(x=>x.id===id);if(!r)return;
+  if(!confirm('Delete "'+r.name+'"?\nThis cannot be undone.'))return;
+  prompts=prompts.filter(x=>x.id!==id);
+  if(editC&&editC.id===id)editC=null;
+  sav();render();toast('Deleted','e');
+}
+
+function opM(id){
+  const r=prompts.find(x=>x.id===id);if(!r)return;
+  openId=id;
+  document.getElementById('mmeta').textContent='Phase '+r.phase+'  ·  Step '+r.step+'  ·  '+r.who;
+  document.getElementById('mtitle').textContent=r.name;
+  document.getElementById('mpur').textContent=r.purpose;
+  document.getElementById('mbody').textContent=r.prompt||'(No prompt text yet — click Edit Prompt to add one.)';
+  document.getElementById('mo').classList.add('open');
+}
+function clM(){document.getElementById('mo').classList.remove('open');openId=null}
+document.getElementById('mcl').onclick=clM;
+document.getElementById('bmc').onclick=clM;
+document.getElementById('mo').onclick=function(e){if(e.target.id==='mo')clM()};
+document.getElementById('bcp').onclick=function(){
+  const r=prompts.find(x=>x.id===openId);if(!r||!r.prompt)return;
+  navigator.clipboard.writeText(r.prompt).catch(function(){});
+  const b=document.getElementById('bcp');b.textContent='Copied!';setTimeout(function(){b.textContent='Copy Prompt'},1500);
+  toast('Copied to clipboard');
+};
+document.getElementById('bme').onclick=function(){const id=openId;clM();stP(id)};
+
+// ── BAKE TO FILE: embed current prompts into DD array and download new HTML ──
+document.getElementById('bbk').onclick=function(){
+  if(!confirm('Bake current prompts into a new HTML file?\n\nThis creates a standalone file with your prompts hardcoded in — use THAT file for GitHub.'))return;
+  const src=document.documentElement.outerHTML;
+  // Replace the DD=[...] block with current prompts serialized
+  const newDD='const DD='+JSON.stringify(prompts,null,2)+';';
+  // Match from "const DD=[" to the closing "];" that ends the array
+  const baked=src.replace(/const DD=\[[\s\S]*?\];\s*\nconst PORD/,newDD+'\nconst PORD');
+  const b=new Blob([baked],{type:'text/html'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u;
+  a.download='HOCK_Master_Prompt_Library.html';
+  a.click();URL.revokeObjectURL(u);
+  toast('✓ Baked file downloaded — use this for GitHub','i');
+};
+
+document.getElementById('bex').onclick=function(){
+  const j=JSON.stringify(prompts,null,2);
+  const b=new Blob([j],{type:'application/json'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');a.href=u;a.download='hock_prompts_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);
+  toast('Export downloaded');
+};
+document.getElementById('bim').onclick=function(){document.getElementById('ijson').value='';document.getElementById('ierr').textContent='';document.getElementById('io').classList.add('open')};
+document.getElementById('bix').onclick=function(){document.getElementById('io').classList.remove('open')};
+document.getElementById('io').onclick=function(e){if(e.target.id==='io')document.getElementById('io').classList.remove('open')};
+document.getElementById('bic').onclick=function(){
+  const raw=document.getElementById('ijson').value.trim();
+  const err=document.getElementById('ierr');
+  try{
+    const p=JSON.parse(raw);
+    if(!Array.isArray(p))throw new Error('Must be a JSON array');
+    if(!p.length)throw new Error('Array is empty');
+    if(!confirm('Import '+p.length+' prompts? This replaces all current prompts.'))return;
+    prompts=p;nid=Math.max.apply(null,p.map(function(x){return +x.id||0}))+1;
+    sav();document.getElementById('io').classList.remove('open');render();toast('Imported '+p.length+' prompts','i');
+  }catch(e){err.textContent='Error: '+e.message}
+};
+document.getElementById('brs').onclick=function(){
+  if(!confirm('Reset to defaults? This deletes all edits and custom prompts.'))return;
+  prompts=DD.map(function(d){return Object.assign({},d)});nid=2000;editC=null;sav();render();toast('Reset to defaults','i');
+};
+
+document.getElementById('search').oninput=render;
+document.getElementById('fp').onchange=render;
+document.getElementById('fv').onchange=render;
+document.getElementById('bcl').onclick=function(){document.getElementById('search').value='';document.getElementById('fp').value='';document.getElementById('fv').value='';render()};
+
+load();render();
+</script>
+
+
+
+</body><vmaker-container style="position: fixed; top: 0px; right: 0px; z-index: 99999999; width: 100%; height: 100%; pointer-events: none; user-select: none;"><style>
+          @font-face {
+            font-family: 'VM-Poppins';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Poppins-Light.ttf) format('truetype');
+            font-weight: 300;
+            font-style: normal;
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'VM-Poppins';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Poppins-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'VM-Poppins';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Poppins-Medium.ttf) format('truetype');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'VM-Poppins';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Poppins-SemiBold.ttf) format('truetype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'VM-Poppins';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Poppins-Bold.ttf) format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'VM-Allerta';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Allerta-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Charmonman';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Charmonman-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Comic Neue';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/ComicNeue-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Open Sans';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/OpenSans-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Poiret One';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/PoiretOne-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Signpainter';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Sign-Painter-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Futura';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Futura-Light-font.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Barlow';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/Barlow-Regular.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Norwester';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/norwester.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+          @font-face {
+            font-family: 'VM-Europa';
+            src: url(chrome-extension://bjibimlhliikdlklncdgkpdmgkpieplj/static/media/europa.ttf) format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: auto;
+          }
+        </style></vmaker-container></html>
