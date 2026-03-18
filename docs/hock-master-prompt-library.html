@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hock International — Master Prompt Library</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d2240;
+    --navy-mid: #1a3a5c;
+    --navy-light: #2a4f78;
+    --gold: #c9a84c;
+    --gold-light: #e8d08a;
+    --cream: #f8f5ef;
+    --cream-dark: #ede9e0;
+    --green-fill: #e8f4ec;
+    --green-text: #1e5c3a;
+    --blue-fill: #e8eef8;
+    --empty-border: #c9a84c;
+    --shadow: 0 4px 20px rgba(13,34,64,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--cream);
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    background: linear-gradient(135deg, var(--navy) 0%, #071529 100%);
+    padding: 32px 40px 24px;
+    border-bottom: 4px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .brand-label {
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'Source Serif 4', serif;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .header-sub {
+    color: #7fa8c8;
+    font-size: 13px;
+    margin-top: 5px;
+    font-style: italic;
+    font-weight: 300;
+  }
+  .stat-box {
+    background: rgba(201,168,76,0.12);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 12px 22px;
+    text-align: center;
+    min-width: 110px;
+  }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .stat-label {
+    color: #7fa8c8;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-input, .filter-select {
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: 1px solid #2a4f78;
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    font-size: 13px;
+    font-family: 'Source Serif 4', serif;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .filter-input { width: 260px; }
+  .filter-input::placeholder { color: rgba(255,255,255,0.35); }
+  .filter-input:focus, .filter-select:focus { border-color: var(--gold); }
+  .filter-select option { background: var(--navy); color: #fff; }
+  .btn-clear {
+    padding: 7px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+    transition: background .15s;
+  }
+  .btn-clear:hover { background: rgba(201,168,76,0.15); }
+
+  /* ── MAIN ── */
+  main { padding: 28px 40px 48px; }
+
+  /* ── PHASE GROUP ── */
+  .phase-group { margin-bottom: 36px; }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    border-radius: 6px 6px 0 0;
+    color: #fff;
+  }
+  .phase-tag {
+    background: rgba(255,255,255,0.18);
+    border-radius: 4px;
+    padding: 2px 9px;
+    font-size: 11px;
+    font-family: 'Source Serif 4', monospace;
+    letter-spacing: 1px;
+  }
+  .phase-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+  .phase-count {
+    margin-left: auto;
+    font-size: 11px;
+    opacity: 0.65;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: var(--shadow);
+  }
+  thead tr {
+    background: #f0f4f8;
+    border-bottom: 2px solid #dde5ee;
+  }
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--navy-mid);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-family: 'Source Serif 4', serif;
+  }
+  tbody tr {
+    border-bottom: 1px solid #eef1f5;
+    transition: background .1s;
+  }
+  tbody tr:nth-child(even) { background: #fafbfc; }
+  tbody tr:hover { background: #f5f8ff; }
+  tbody tr.row-added { background: #fffdf0; }
+  td {
+    padding: 10px 14px;
+    font-size: 13px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  /* ── CELLS ── */
+  .phase-pill {
+    display: inline-block;
+    color: #fff;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: monospace;
+    white-space: nowrap;
+  }
+  .step-cell { font-family: monospace; font-size: 12px; color: #666; white-space: nowrap; }
+  .name-cell { font-weight: 600; color: var(--navy-mid); min-width: 160px; }
+  .provider-pill {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 2px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .provider-user { background: var(--green-fill); color: var(--green-text); }
+  .provider-agent { background: var(--blue-fill); color: var(--navy-mid); }
+  .where-cell { font-size: 12px; color: #666; white-space: nowrap; }
+  .purpose-cell { font-size: 12px; color: #444; min-width: 200px; }
+
+  /* ── PROMPT CELL ── */
+  .prompt-cell { min-width: 240px; }
+  .prompt-preview {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #b8d4b8;
+    background: #f4fbf4;
+    cursor: pointer;
+    font-size: 12px;
+    color: #2a5a2a;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: box-shadow .15s, border-color .15s;
+  }
+  .prompt-preview:hover { box-shadow: 0 2px 8px rgba(30,92,58,0.15); border-color: #7abf7a; }
+  .prompt-snippet {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .prompt-view-hint { font-size: 10px; color: #888; }
+  .prompt-empty {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1.5px dashed var(--empty-border);
+    background: #fffbf0;
+    font-size: 11px;
+    color: #bbb;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 38px;
+  }
+  .prompt-actions { display: flex; gap: 6px; align-items: flex-start; }
+  .btn-edit {
+    padding: 6px 9px;
+    background: #f0f4f8;
+    border: 1px solid #dde5ee;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    flex-shrink: 0;
+    line-height: 1;
+    transition: background .15s;
+  }
+  .btn-edit:hover { background: #e0e8f0; }
+  .saved-badge {
+    font-size: 11px;
+    color: var(--green-text);
+    margin-top: 3px;
+    display: none;
+  }
+  .saved-badge.show { display: block; }
+
+  /* ── EDIT MODE ── */
+  .edit-area {
+    width: 100%;
+    min-height: 130px;
+    padding: 9px;
+    border: 2px solid var(--gold);
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Source Serif 4', serif;
+    resize: vertical;
+    outline: none;
+    line-height: 1.6;
+    color: #222;
+  }
+  .edit-btns { display: flex; gap: 7px; margin-top: 6px; }
+  .btn-save {
+    padding: 6px 14px;
+    background: var(--navy-mid);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Source Serif 4', serif;
+    transition: background .15s;
+  }
+  .btn-save:hover { background: var(--navy-light); }
+  .btn-cancel {
+    padding: 6px 12px;
+    background: #f0f4f8;
+    color: #666;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  /* ── MODAL ── */
+  #modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #modal-overlay.open { display: flex; }
+  #modal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    max-width: 740px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 28px 80px rgba(0,0,0,0.35);
+    animation: modal-in .2s ease;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(12px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal-meta { font-size: 11px; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    color: var(--navy-mid);
+    margin-bottom: 5px;
+  }
+  .modal-purpose { font-size: 13px; color: #666; font-style: italic; margin-bottom: 16px; font-weight: 300; }
+  .modal-close {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
+    margin-left: 12px;
+    transition: color .15s;
+  }
+  .modal-close:hover { color: #333; }
+  .modal-prompt-text {
+    white-space: pre-wrap;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.75;
+    background: #f5f7fc;
+    padding: 18px;
+    border-radius: 7px;
+    border: 1px solid #dde5ee;
+    font-family: 'Source Serif 4', serif;
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .btn-copy {
+    padding: 9px 20px;
+    background: var(--navy-mid);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Source Serif 4', serif;
+    transition: background .15s;
+  }
+  .btn-copy:hover { background: var(--navy-light); }
+  .btn-modal-edit {
+    padding: 9px 16px;
+    background: #f0f4f8;
+    color: var(--navy-mid);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    color: #7fa8c8;
+    text-align: center;
+    padding: 18px;
+    font-size: 12px;
+    border-top: 3px solid var(--gold);
+  }
+
+  /* ── HIDDEN ── */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="header-top">
+    <div>
+      <div class="brand-label">Hock International</div>
+      <h1>Master Prompt Library</h1>
+      <p class="header-sub">Phase-locked &nbsp;·&nbsp; Click any filled prompt to view &nbsp;·&nbsp; ✏️ to edit &nbsp;·&nbsp; Single source of truth</p>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="stat-filled">0</div>
+      <div class="stat-label">/ <span id="stat-total">0</span> Filled</div>
+    </div>
+  </div>
+  <div class="filters">
+    <input class="filter-input" type="text" id="search" placeholder="Search prompt name, purpose, or text…">
+    <select class="filter-select" id="filter-phase">
+      <option value="">All Phases</option>
+      <option value="0">Phase 0 — Project Initialization</option>
+      <option value="1">Phase 1 — Textbook Content Creation</option>
+      <option value="1→2">Phase 1→2 — Channel Transition</option>
+      <option value="2">Phase 2 — MCQ Creation</option>
+      <option value="3">Phase 3 — Presentation / Slice Creation</option>
+      <option value="4">Phase 4 — Slide Script Creation</option>
+      <option value="5">Phase 5 — Flashcards (Optional)</option>
+      <option value="6">Phase 6 — Close-Out</option>
+    </select>
+    <select class="filter-select" id="filter-provider">
+      <option value="">All Providers</option>
+      <option value="User">User</option>
+      <option value="Agent">Agent</option>
+    </select>
+    <button class="btn-clear hidden" id="btn-clear">Clear Filters</button>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <button class="modal-close" id="modal-close">×</button>
+    <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-purpose" id="modal-purpose"></div>
+    <pre class="modal-prompt-text" id="modal-body"></pre>
+    <div class="modal-actions">
+      <button class="btn-copy" id="btn-copy">Copy Prompt</button>
+      <button class="btn-modal-edit" id="btn-modal-edit">✏️ Edit</button>
+    </div>
+  </div>
+</div>
+
+<footer>✅ Single source of truth &nbsp;·&nbsp; Phase-locked &nbsp;·&nbsp; Agent-ready &nbsp;·&nbsp; n8n routing compatible</footer>
+
+<script>
+const PHASES = {
+  "0":   { label: "Project Initialization",         color: "#1a3a5c" },
+  "1":   { label: "Textbook Content Creation",      color: "#1e5c3a" },
+  "1→2": { label: "Channel Transition",             color: "#5c3a1e" },
+  "2":   { label: "MCQ Creation",                   color: "#3a1e5c" },
+  "3":   { label: "Presentation / Slice Creation",  color: "#5c1e3a" },
+  "4":   { label: "Slide Script Creation",          color: "#1e3a5c" },
+  "5":   { label: "Flashcards (Optional)",          color: "#3a5c1e" },
+  "6":   { label: "Close-Out",                      color: "#5c4a1e" },
+};
+const PHASE_ORDER = ["0","1","1→2","2","3","4","5","6"];
+
+const DATA = [
+  { id:1, phase:"0", step:"Init", name:"New Project Initialization Prompt", who:"User", where:"Project Instructions",
+    purpose:"Establish certification, role, assets, integrations, and global rules. Unlocks process.",
+    prompt:`# [CERTIFICATION_NAME] Content Expert — HOCK International
+
+## Role
+Expert content developer creating exam prep materials (textbooks, MCQs, presentation outlines, slide scripts, flashcards) for professional certification candidates with 2-4 years of relevant experience studying for [CERTIFICATION_NAME].
+
+## Source Documents & Assets
+- Syllabus: [CERT]_Syllabus.pdf
+- Standards: [STANDARDS_DOC].pdf
+- Textbook: [TEXTBOOK_NAME].md
+- MCQs: [MCQ_FILE_NAME].xlsx or similar
+- Presentation: Gamma link or outline Markdown
+- Slide Script: [SCRIPT_NAME].md or .docx
+- Other: Use uploaded files directly (e.g., Gamma exports, monday attachments)
+
+## Integrations
+- monday.com connector: Update Content Production board (https://hock-internationalcompany.monday.com/boards/18398486903)
+- Gamma connector: Create presentations using Hock International Theme
+
+## Content Creation Guides
+Always follow the user-specified guide. Do not blend rules.
+| Content Type          | Guide File                     | Purpose                              |
+|-----------------------|-------------------------------|--------------------------------------|
+| Textbooks             | Textbook_Creation_Guide.md    | Structure, tone, prose-dominant      |
+| MCQs                  | MCQ_Creation_Guide.md         | Questions, distractors, explanations |
+| Presentation Outlines | Presentation_Outline_Guide.md | Slide structure, visuals, Gamma      |
+| Slide Scripts         | Slide_Script_Guide.md         | Narration, cues, timing              |
+| Flashcards            | Flashcard_Guide.md            | Card format, spaced repetition       |
+
+## Process: ALWAYS Confirm Before Generating
+Follow Content_Creation_Skill.md for routing, depth calibration, production order, and shared principles.
+
+Production Order (must complete upstream first):
+1. Textbook → MCQs → Presentation Outline → Gamma creation → Slide Script → Flashcards
+2. After completing each deliverable: If requested by user, update the corresponding monday.com task.
+
+Core Steps:
+1. Use Depth_Calibration_Guide.md first: Present summary table, wait for YES/adjustments.
+2. Generate using specified guide. Reference upstream assets by name.
+3. Apply Token_Optimization_Guide.md: Chunk long outputs, reference don't repeat, checkpoint mid-generation.
+4. For Gamma: Create outline in chat first, confirm, then use Gamma connector.
+5. For monday: Search existing task by name, update Status/Assignee/Due Date/Description/File columns.
+
+## Key Rules
+- Use [CERTIFYING_BODY] terminology.
+- Cite standards by number from [STANDARDS_DOC].pdf.
+- Never generate without depth confirmation.
+- Token efficiency: Always chunk comprehensive outputs; pause for user check.
+- monday/Gamma: Confirm connector access before actions; update existing tasks only unless user confirms new.
+- Ambiguous requests: Ask "Which content type? Textbook, MCQs, outline, script, flashcards?"`},
+
+  { id:2, phase:"1", step:"1.1", name:"Textbook Section Prompt", who:"User", where:"Chat",
+    purpose:"Generate textbook content for specified Section ID. Run Depth Calibration, then Textbook Creation Guide.",
+    prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Create textbook content for [SECTION_ID] from the uploaded syllabus.
+
+Section: [e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Process:
+1. Confirm prerequisites: Syllabus and standards documents uploaded?
+2. Apply Depth Calibration Skill: Analyze scope, cognitive level, exam weight. Present summary table and recommended depth. Wait for my YES or adjustments.
+3. Follow Textbook Creation Skills: Prose-dominant (65% narrative), integrate standards naturally by number.
+4. Apply Token Optimization Skill: Chunk if comprehensive depth; pause after first segment for check.
+5. Output in Markdown: Start with H1, use hierarchy, end with Summary paragraph.
+
+Integrate relevant standards from uploaded standards document.`},
+
+  { id:3, phase:"1", step:"1.2", name:"Expand Section Prompt", who:"User", where:"Chat",
+    purpose:"Expand only the specified portion of the textbook. Preserve all else.",
+    prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Expand the specified part of the previously generated textbook section for this ID. Add content only where described — keep all else identical.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Expansion needed:
+- [Describe what to add, e.g., "Add 2 examples under H2: Emerging Risks"]
+
+If expansion affects depth, re-apply Depth Calibration Skill briefly and note changes.
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Checkpoint if adding >1k words.
+Output full revised section in Markdown.`},
+
+  { id:4, phase:"1", step:"1.2", name:"Condense Section Prompt", who:"User", where:"Chat",
+    purpose:"Reduce or shorten only specified content.",
+    prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Condense the specified part of the previously generated textbook section for this ID. Remove/reword only where described — keep all else identical.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Condensation needed:
+- [Describe what to shorten, e.g., "Reduce H3: Data Security by 30%, remove redundant bullets"]
+
+If condensation affects depth, re-apply Depth Calibration Skill briefly and note changes.
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Keep edits minimal.
+Output full revised section in Markdown.`},
+
+  { id:5, phase:"1", step:"1.2", name:"Rewrite Section Prompt", who:"User", where:"Chat",
+    purpose:"Rewrite specified text without changing structure unless stated.",
+    prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Rewrite the specified part of the previously generated textbook section for this ID. Do not add/remove content unless specified — keep structure identical.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Rewrite needed:
+- [Describe changes, e.g., "Make tone more conversational in intro; fix accuracy in Standard 5.1 reference"]
+
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Edit only targeted areas.
+Output full revised section in Markdown.`},
+
+  { id:6, phase:"1", step:"1.2", name:"Insert Content Prompt", who:"User", where:"Chat",
+    purpose:"Insert new content at a defined location.",
+    prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Insert new content into the previously generated textbook section for this ID at the specified location. Do not change existing content.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Insertion needed:
+- [Describe what/where, e.g., "Add new H3: Mitigation Strategies after H2, ~300 words on best practices"]
+
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally.
+Apply Token Optimization: Checkpoint if insert >500 words.
+Output full revised section in Markdown.`},
+
+  { id:7, phase:"1", step:"1.2", name:"Format-Only Prompt", who:"User", where:"Chat",
+    purpose:"Change formatting only. No content edits.",
+    prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Reformat the specified part of the previously generated textbook section for this ID. Change only formatting — no content additions/removals/rewrites.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Formatting needed:
+- [Describe changes, e.g., "Convert bullets to numbered steps in Process section; fix header levels"]
+
+Follow Textbook Creation Skills: Use proper hierarchy.
+Apply Token Optimization: Minimal edits.
+Output full revised section in Markdown.`},
+
+  { id:8, phase:"1", step:"1.2", name:"Fallback General Revision Prompt", who:"User", where:"Chat",
+    purpose:"Mixed or complex revisions when no specific prompt applies.",
+    prompt:`You are a HOCK International Content Expert creating exam prep textbooks for internal auditors with 2-4 years experience studying for CIA Part 2.
+
+Revise the previously generated textbook section for this ID. Edit only what is specified — keep unchanged content exactly as-is.
+
+Section: [SECTION_ID, e.g., "3c. Cybersecurity Risks"]
+Certification: [CIA Part 2]
+
+Changes needed:
+- [Describe specific change 1, e.g., "Fix tone in intro"]
+- [Describe specific change 2]
+
+If changes affect depth, re-apply Depth Calibration Skill briefly.
+Follow Textbook Creation Skills: Prose-dominant, integrate standards naturally from uploaded document.
+Apply Token Optimization: Checkpoint for long edits.
+Output full revised section in Markdown.`},
+
+  { id:9, phase:"1", step:"1.4", name:"Add Textbook to Dropbox (implicit YES)", who:"Agent", where:"Chat → Tool",
+    purpose:"Upload finalized textbook to Dropbox using naming conventions.", prompt:""},
+
+  { id:10, phase:"1", step:"1.5", name:"Add Textbook to Mondays", who:"Agent", where:"Chat → Monday Tool",
+    purpose:"Update existing Monday task status and attach textbook.",
+    prompt:`You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search for and update an existing item on the Content Production board for [Task Name]
+Do not create a new item unless I confirm.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Search the board for a task named: [Task Name]
+2. If found, update these columns on that item:
+   - Status: "Textbook is Ready for Review"
+   - Assignee/Person: brian@hockinternational.com
+   - Start Date: today's date
+   - Due Date: today's date + 2 days
+   - Description (Long Text): Append or update with: "Textbook added/updated: [Textbook Name] - [Section]. Added/updated on [current date and time EST]. Source: Generated in Claude project."
+   - Textbook file: Upload/attach or replace the file in this column (File type column)
+3. If no exact match found, do NOT create anything. Instead, reply with: "No matching task found for '[Task Name]'. Confirm if I should create a new item?"
+4. Use these details:
+   Task Name: [exact Task Name, e.g., "CIA Part 2 - Study Unit 3: Risk Management - 3c. Cybersecurity Risks"]
+   Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+   Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+   File: [the most recent textbook file generated in this chat, or specify name/URL]
+5. After action, return:
+   - Updated item ID
+   - Direct link to the item
+   - Confirmation of updated fields: Status, Assignee, Start Date, Due Date, Description, File attached
+
+Execute now using the monday connector. Confirm board access and column names first if needed.
+If any clarification required (e.g., exact column titles, file upload method, or if Task Name matching is partial vs. exact), ask me before proceeding.`},
+
+  { id:11, phase:"1→2", step:"Transition", name:"Move Work to New Channel (YES/NO)", who:"User", where:"Chat",
+    purpose:"Determines whether MCQ work continues in a new channel.", prompt:""},
+
+  { id:12, phase:"1→2", step:"Transition", name:"Overview of Completed Work (YES/NO)", who:"User", where:"Chat",
+    purpose:"Agent summarizes what has been completed so far (no MCQs generated).", prompt:""},
+
+  { id:13, phase:"2", step:"2.1", name:"MCQs Prompt", who:"User", where:"Chat",
+    purpose:"Generate MCQs from completed textbook. Apply MCQ Creation Guide, batching, and depth rules.",
+    prompt:`Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., "3c. Existing and Emerging Cybersecurity Risks and Data Security"]
+
+You are a HOCK International Content Expert creating exam prep MCQs for professional certification candidates with 2-4 years of relevant experience.
+
+CORE RULES:
+1. Choice A is ALWAYS correct. B, C, D are plausible distractors.
+2. All four choices MUST be similar in length. Rewrite if uneven. For Qs 7-13 & 22-27, make A the shortest.
+3. Never use extreme words (always, never, exclusively, only, solely, under no circumstances, etc.).
+4. Explanations: Detailed (50-100 words each) for all four choices after the question. Use complete sentences. Make them teaching opportunities. No "Choice X is correct/incorrect because" phrasing.
+5. Questions: Scenario-based, application-focused, challenging. Cite standards briefly by number if relevant.
+6. Numbering: [CERT_PREFIX] [SECTION_ID]-[sequential, e.g., CIA26 01.301-CIA26 01.010 or CMA26 03.0501].
+7. Output: Plain text, hard return between choices. No headers before Q1 or Q16.
+
+PROCESS:
+- Use the completed textbook section above as source — reference previous generation in this chat.
+- Follow MCQ_Creation_Guide and MCQ_Creation_Skills for quantity, difficulty, batching (10-15 per batch with checkpoint), and 11-column Excel format when requested.
+- Apply Depth Calibration if not already done.
+
+If the user provides a Section ID and the corresponding textbook is already in this chat, immediately generate MCQs. Do not wait for further confirmation unless depth or quantity needs adjustment.`},
+
+  { id:14, phase:"2", step:"2.2", name:"General MCQ Revision Prompt", who:"User", where:"Chat",
+    purpose:"Mixed MCQ revisions. Preserve numbering and rules.",
+    prompt:`Revise the previously generated MCQs for [Section ID/Name].
+
+Changes needed:
+- [Describe change 1, e.g., "Make Q5 distractors more plausible – current ones too obvious"]
+- [Describe change 2, e.g., "Shorten explanations in Q10-12 to 60-80 words each"]
+- [etc.]
+
+Edit only what's specified. Keep all other questions, numbering, format, and rules exactly as-is.
+Follow MCQ Creation Guide and MCQ Creation Skills for any affected rules.
+Output only the full revised set of MCQs in plain text (same format as original).`},
+
+  { id:15, phase:"2", step:"2.2", name:"Fix Length / Extremes Prompt", who:"User", where:"Chat",
+    purpose:"Fix length imbalance or prohibited words.",
+    prompt:`Fix length imbalance and/or prohibited words in the previously generated MCQs for [Section ID/Name].
+
+Specific fixes:
+- [e.g., "Q3, Q7, Q14: Rewrite choices so all four are similar length"]
+- [e.g., "Q9: Remove 'always' from choice C and rewrite to keep plausibility"]
+
+Do not change correct answer, scenario, or explanations unless specified.
+Output only the revised questions (full text for affected ones + note which were changed).`},
+
+  { id:16, phase:"2", step:"2.2", name:"Strengthen Distractors Prompt", who:"User", where:"Chat",
+    purpose:"Improve plausibility of distractors.",
+    prompt:`Improve distractors in the previously generated MCQs for [Section ID/Name].
+
+Focus on:
+- [e.g., "Q4, Q11, Q18: Make B, C, D more plausible – current ones too far from correct concept"]
+- [e.g., "Q6: Add common misconception to choice D"]
+
+Keep A correct and explanations unchanged unless distractor change affects them.
+Output only the revised questions (full text for affected ones).`},
+
+  { id:17, phase:"2", step:"2.2", name:"Adjust Explanations Prompt", who:"User", where:"Chat",
+    purpose:"Revise explanations only.",
+    prompt:`Revise explanations in the previously generated MCQs for [Section ID/Name].
+
+Changes:
+- [e.g., "All explanations: Shorten to 60-80 words max while keeping teaching value"]
+- [e.g., "Q2, Q15: Strengthen why distractors are wrong – add specific reference to textbook concept"]
+
+Do not change questions or choices.
+Output only the revised questions with updated explanations.`},
+
+  { id:18, phase:"2", step:"2.2", name:"Regenerate Specific Questions Prompt", who:"User", where:"Chat",
+    purpose:"Replace specific MCQs only.",
+    prompt:`Regenerate only these specific MCQs from the previous set for [Section ID/Name]:
+
+Questions to replace:
+- [e.g., Q8, Q13, Q20]
+
+New versions must follow all core rules and use the same textbook source.
+Output only the new questions (with original numbering) + note "Replaced Q8, Q13, Q20".`},
+
+  { id:19, phase:"2", step:"2.2", name:"Convert Batch to Excel Format Prompt", who:"User", where:"Chat",
+    purpose:"Convert MCQs to 11-column Excel format.",
+    prompt:`Convert the previously generated MCQs (or revised set) for [Section ID/Name] to 11-column Excel-ready format.
+
+Columns:
+Category | Question ID | Question Text | Choice A | Choice B | Choice C | Choice D | Explanation for A | Explanation for B | Explanation for C | Explanation for D
+
+Use Category = [e.g., 2796] or whatever matches the textbook.
+Output as plain text table or tab-separated values ready for copy-paste to Excel.`},
+
+  { id:20, phase:"2", step:"2.3", name:"Add MCQs to Dropbox (implicit YES)", who:"Agent", where:"Chat → Tool",
+    purpose:"Upload MCQs file to Dropbox.", prompt:""},
+
+  { id:21, phase:"2", step:"2.4", name:"Add MCQs to Mondays", who:"Agent", where:"Chat → Monday Tool",
+    purpose:"Update Monday task with MCQ status and attachment.",
+    prompt:`You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search for and update an existing item on the Content Production board for [Task Name]. Do not create a new item unless I confirm.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Search the board for a task named: [Task Name]
+2. If found, update these columns:
+   - Status: "MCQs Ready for Review"
+   - Assignee/Person: [Creator email, e.g., creator@hockinternational.com – replace with actual]
+   - Start Date: today's date
+   - Due Date: today's date + 2 days
+   - Description (Long Text): Append: "MCQs added/updated: [Textbook Name] - [Section]. Added/updated on [current date and time EST]. Source: Generated in Claude project."
+   - MCQs File: Upload/attach or replace the file in this column (File type column)
+3. If no exact match found, reply: "No matching task found for '[Task Name]'. Confirm if I should create a new item?"
+4. Use these details:
+   Task Name: [exact Task Name]
+   Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+   Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+   File: [the most recent MCQ file/Excel generated in this chat]
+5. After action, return: Updated item ID, direct link, confirmation of all updated fields.
+
+Execute now using the monday connector. Confirm board access and column names first if needed.`},
+
+  { id:22, phase:"3", step:"3.1", name:"Presentation Outline Prompt", who:"User", where:"Chat",
+    purpose:"Generate slide outline from textbook + MCQs. Run slide depth calibration.",
+    prompt:`Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+
+You are a HOCK International Content Expert creating exam prep materials for professional certification candidates with 2-4 years of relevant experience.
+
+Task: Create a presentation slide outline for the section above.
+
+Process:
+1. Confirm prerequisites: Textbook and MCQs for this section complete in chat history?
+2. Apply Depth Calibration Skill: Recommend slide count and density (Basic: 5-8 slides, Medium: 10-15, Comprehensive: 15-25). Present table and wait for YES or adjustments.
+3. Use completed textbook as source (reference previous generation).
+4. Follow Presentation_Creation_Skills and Presentation_Creation_Guide:
+   - One key idea per slide
+   - 3-6 bullets max
+   - Visual placeholders (e.g., [Image: Risk matrix chart], [Icon: warning sign])
+   - Short speaker notes (1-2 sentences for narration)
+   - Gamma-ready Markdown format
+   - Use Hock International Theme: https://gamma.app/themes/share/0mk4i94ypgimwxi
+5. Apply Token Optimization Skill: Chunk if Comprehensive (8-10 slide groups); pause after first batch for check.
+6. Output: Full Markdown outline only (titles, bullets, visuals, notes). Include Gamma template link and instructions for import.
+
+After outline is confirmed, ask: "Outline ready. Grant Gamma connector access to create in Gamma? Reply Y/N or adjustments."
+Execute now. If depth not yet calibrated, start there.`},
+
+  { id:225, phase:"3", step:"3.2", name:"General Presentation Revision Prompt ⭐ Added", who:"User", where:"Chat",
+    purpose:"Fallback for mixed presentation changes. Edit only specified slides; keep all else intact.",
+    prompt:`Revise the previously generated slide outline for [Section ID/Name].
+
+Changes needed:
+- [Change 1, e.g., "Slide 7: Change placeholder to bar chart instead of pie chart"]
+- [Change 2, e.g., "Slides 4-6: Reduce bullets to max 4 per slide; simplify wording"]
+- [etc.]
+
+Edit only specified slides. Keep structure, visuals, notes, and Gamma template link intact.
+Follow Presentation_Creation_Skills and Presentation_Creation_Guide.
+Output the full updated Markdown outline.`},
+
+  { id:23, phase:"3", step:"3.2", name:"Adjust Visuals / Placeholders", who:"User", where:"Chat",
+    purpose:"Update visuals only.",
+    prompt:`Update visuals in the previously generated slide outline for [Section ID/Name].
+
+Specific changes:
+- [e.g., "Slide 3: Replace [Image: Risk matrix] with [Icon: warning triangle]"]
+- [e.g., "Slide 9: Add [Chart: trend line] for detection effectiveness"]
+
+Do not change text, bullets, or notes unless specified.
+Output full revised outline in Markdown.`},
+
+  { id:24, phase:"3", step:"3.2", name:"Reduce / Condense Density", who:"User", where:"Chat",
+    purpose:"Reduce slide count or bullet density.",
+    prompt:`Condense the previously generated slide outline for [Section ID/Name].
+
+Focus on:
+- [e.g., "Reduce overall to 12 slides max – merge Slides 8-10 into one"]
+- [e.g., "Limit bullets to 3-4 per slide; shorten text"]
+
+Follow depth guidelines from Presentation_Creation_Skills (Medium: 10-15 slides).
+Output full revised outline in Markdown.`},
+
+  { id:25, phase:"3", step:"3.2", name:"Expand / Add Content", who:"User", where:"Chat",
+    purpose:"Add slides or content.",
+    prompt:`Expand the previously generated slide outline for [Section ID/Name].
+
+Additions:
+- [e.g., "After Slide 5: Insert new slide titled 'Common Failures' with 3 bullets and [Image: checklist]"]
+- [e.g., "Slide 12: Add speaker note with transition phrase to next topic"]
+
+Keep existing slides unchanged unless specified.
+Output full revised outline in Markdown.`},
+
+  { id:26, phase:"3", step:"3.2", name:"Fix Formatting / Consistency", who:"User", where:"Chat",
+    purpose:"Formatting-only changes.",
+    prompt:`Reformat the previously generated slide outline for [Section ID/Name].
+
+Changes:
+- [e.g., "Ensure all slides use consistent bullet style; fix any missing speaker notes"]
+- [e.g., "Add Gamma theme link at top if missing: https://gamma.app/themes/share/0mk4i94ypgimwxi"]
+
+No content changes – formatting only.
+Output full revised outline in Markdown.`},
+
+  { id:27, phase:"3", step:"3.2", name:"Update Speaker Notes", who:"User", where:"Chat",
+    purpose:"Revise speaker notes only.",
+    prompt:`Revise speaker notes in the previously generated slide outline for [Section ID/Name].
+
+Changes:
+- [e.g., "All notes: Make more conversational and add pacing cue [Pause 2s]"]
+- [e.g., "Slide 6: Strengthen note to tie back to textbook example"]
+
+Keep slide titles/bullets/visuals unchanged.
+Output full revised outline in Markdown.`},
+
+  { id:28, phase:"3", step:"3.3", name:"Send to Gamma Prompt", who:"Agent", where:"Chat → Gamma Tool",
+    purpose:"Create presentation in Gamma.",
+    prompt:`You are connected to my Gamma account via the Gamma connector.
+
+Task: Create the presentation in Gamma using the previously generated slide outline for [Section ID/Name, e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security].
+
+Steps:
+1. Use the Markdown outline from earlier in this chat as the content source.
+2. Apply the Hock International Theme: https://gamma.app/themes/share/0mk4i94ypgimwxi
+3. Import the full outline structure:
+   - Slide titles as headings
+   - Bullets as content
+   - Visual placeholders (e.g., [Image: ...]) as image suggestions
+   - Speaker notes as presenter notes
+4. Keep layout clean: one key idea per slide, 3-6 bullets max, visuals where placeholders exist.
+5. After creation, return:
+   - Direct Gamma share/edit link
+   - Confirmation of theme applied
+   - Thumbnail preview if available
+   - Any warnings (e.g., missing images, layout issues)
+
+If any part of the outline needs quick tweaks before import, let me know first.
+Execute now using the Gamma connector. Confirm access if needed.`},
+
+  { id:29, phase:"3", step:"3.4", name:"Export Presentation + Add to Mondays", who:"Agent", where:"Chat → Tools",
+    purpose:"Export slides and update Monday task.",
+    prompt:`You are connected to both my Gamma account (via Gamma connector) and monday.com workspace (via monday connector/MCP).
+
+Task: After Gamma presentation is created, export as PowerPoint, then update the existing Content Production board item.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Retrieve the Gamma presentation just created in this chat. Get the direct Gamma share/edit link. Confirm theme applied: Hock International (https://gamma.app/themes/share/0mk4i94ypgimwxi)
+2. Export the Gamma presentation as PowerPoint (.pptx) file using the Gamma connector's export feature.
+3. Search the monday board for the existing item by Task Name: [Task Name]
+4. If found, update these columns:
+   - Status: "Slides Ready for Review"
+   - Assignee/Person: [Creator email – replace with actual]
+   - Due Date: today's date + 2 days
+   - Presentation Link: [Gamma share/edit link] (URL/link column)
+   - Presentation File: Upload/attach the exported .pptx file (File type column)
+   - Description (Long Text): Append: "Slides created in Gamma and PowerPoint exported. Added on [current date and time EST]. Gamma link: [Gamma URL]. Source: Claude + Gamma."
+5. If no exact match found, reply: "No matching task found for '[Task Name]'. Confirm if I should create a new item?"
+6. After action, return: Updated monday item ID, direct link, Gamma link, confirmation of PowerPoint attached, any errors.
+
+Execute now using both connectors. Confirm access to Gamma and monday if needed.`},
+
+  { id:30, phase:"4", step:"4.1", name:"Slide Script / Narration Prompt", who:"User", where:"Chat",
+    purpose:"Generate narration aligned to slides with timing calibration.",
+    prompt:`Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+
+You are a HOCK International Content Expert creating exam prep video narration for professional certification candidates with 2-4 years of relevant experience.
+
+Task: Create a slide narration script for the presentation in project resources.
+
+Process:
+1. Confirm prerequisites: Textbook, MCQs, and Gamma presentation (or outline/export) for this section are in project resources or chat history?
+2. Source: Use the Gamma presentation file/link as primary base (map narration to each slide's title, bullets, visuals). Reference textbook/MCQs for depth and accuracy.
+3. Apply Depth Calibration Skill: Recommend total timing (Basic: 5-8 min, Medium: 10-15 min, Comprehensive: 15-25 min). Present quick table and wait for YES or override.
+4. Follow Slide_Script_Skills and Slide_Script_Guide:
+   - Format per slide: **Slide X: [Title]** + spoken text (conversational, professional tone) + cues [Pause 2s], [Emphasize: key term], [Transition: "Next..."]
+   - 120-150 words/min pacing
+   - Tie narration to visuals (e.g., "As shown in this chart...")
+   - Depth-adjusted detail: Basic (short sentences), Comprehensive (deeper explanations)
+5. Apply Token Optimization Skill: Chunk into 5-8 min segments if Comprehensive; pause after first batch ("Batch 1: Slides 1-8, ~6 min. Continue?").
+6. Output: Markdown format only:
+   - Total estimated time
+   - Numbered slides with narration + cues
+   - Video notes at end (e.g., "Record at 130 wpm, clear enunciation")
+
+After script is complete, ask: "Script ready. Want to create a doc/attach to monday? Or revise first?"
+Execute now. If depth not calibrated, start there.`},
+
+  { id:31, phase:"4", step:"4.2", name:"General Script Revision Prompt", who:"User", where:"Chat",
+    purpose:"Mixed script revisions.",
+    prompt:`Revise the previously generated slide script for [Section ID/Name].
+
+Changes needed:
+- [Change 1, e.g., "Make narration on Slides 4-6 more conversational"]
+- [Change 2, e.g., "Add [Pause 3s] cue after visual reveal on Slide 9"]
+- [etc.]
+
+Edit only specified slides. Keep timing, format, and cues intact unless specified.
+Follow Slide_Script_Skills and Slide_Script_Guide.
+Output the full updated script in Markdown.`},
+
+  { id:32, phase:"4", step:"4.2", name:"Adjust Pacing / Timing Prompt", who:"User", where:"Chat",
+    purpose:"Change total timing or pacing.",
+    prompt:`Adjust pacing in the previously generated slide script for [Section ID/Name].
+
+Specific changes:
+- [e.g., "Reduce total to 10-12 min – shorten Slides 7-10 by ~30%"]
+- [e.g., "Slide 5: Add pacing cue [Speak slower here] for complex concept"]
+
+Follow depth timing from Slide_Script_Guide (e.g., Medium: 10-15 min).
+Output full updated script in Markdown with revised total time estimate.`},
+
+  { id:33, phase:"4", step:"4.2", name:"Strengthen Cues / Emphasis Prompt", who:"User", where:"Chat",
+    purpose:"Update emphasis and cues.",
+    prompt:`Update cues and emphasis in the previously generated slide script for [Section ID/Name].
+
+Focus on:
+- [e.g., "Add [Emphasize: fraud triangle] on Slide 3 and [Pause 2s] after"]
+- [e.g., "All transitions: Make more natural, e.g., 'Let's look at why this fails...'"]
+
+Keep spoken text unchanged unless specified.
+Output full updated script in Markdown.`},
+
+  { id:34, phase:"4", step:"4.2", name:"Tie to Visuals / Textbook Prompt", who:"User", where:"Chat",
+    purpose:"Improve alignment to visuals/textbook.",
+    prompt:`Improve visual references and textbook ties in the previously generated slide script for [Section ID/Name].
+
+Changes:
+- [e.g., "Slides 6-8: Explicitly reference visuals, e.g., 'As this chart shows...'"]
+- [e.g., "Slide 10: Add brief tie-back to textbook example from Study Unit 3"]
+
+No changes to core narration or timing.
+Output full updated script in Markdown.`},
+
+  { id:35, phase:"4", step:"4.2", name:"Shorten / Condense Narration Prompt", who:"User", where:"Chat",
+    purpose:"Reduce narration length.",
+    prompt:`Condense narration in the previously generated slide script for [Section ID/Name].
+
+Specific:
+- [e.g., "Reduce all spoken text to 1-2 sentences per slide where possible"]
+- [e.g., "Remove redundant explanations on Slides 11-13"]
+
+Maintain teaching value and cues.
+Output full updated script in Markdown with new total time estimate.`},
+
+  { id:36, phase:"4", step:"4.3", name:"Add Slide Script to Mondays", who:"Agent", where:"Chat → Monday Tool",
+    purpose:"Attach approved script and update status.",
+    prompt:`You are connected to my monday.com workspace via the official monday connector/MCP.
+
+Task: Search for and update an existing item on the Content Production board with the slide script.
+
+Board URL: https://hock-international-company.monday.com/boards/18398486903
+
+Steps:
+1. Search the board for a task named: [Task Name, e.g., "CIA Part 2 - Study Unit 3: Risk Management - 3c. Cybersecurity Risks"]
+2. If found, update these columns:
+   - Status: "Slide Script Ready for Review"
+   - Assignee/Person: brian@hockinternational.com
+   - Due Date: today's date + 2 days
+   - Slide Script: Upload/attach the slide script file (Markdown or .docx export from this chat)
+   - Description (Long Text): Append: "Slide script added/updated: [Textbook Name] - [Section]. Added on [current date and time EST]. Source: Claude narration script."
+3. If no exact match found, reply: "No matching task found for '[Task Name]'. Confirm if I should create a new item?"
+4. Use these details:
+   Task Name: [exact Task Name to search for]
+   Textbook Name: [e.g., CIA Part 2 - Study Unit 3: Risk Management]
+   Section: [e.g., 3c. Existing and Emerging Cybersecurity Risks and Data Security]
+   File: [the most recent slide script from chat – export as .docx if needed]
+5. After action, return: Updated item ID, direct link, confirmation of all updated fields.
+
+Execute now using the monday connector. Confirm board access and column names first if needed.`},
+
+  { id:37, phase:"5", step:"5.1", name:"Flashcard Guide Prompt", who:"User", where:"Chat",
+    purpose:"Generate flashcards from approved upstream content.", prompt:""},
+
+  { id:38, phase:"6", step:"Close", name:"Close-Out Confirmation", who:"User", where:"Chat",
+    purpose:"Finalize process and close Monday task.", prompt:""},
+];
+
+// ── STATE ──
+let prompts = DATA.map(d => ({ ...d }));
+let editingId = null;
+let openModalId = null;
+
+function filledCount() { return prompts.filter(p => p.prompt.trim()).length; }
+
+function updateStat() {
+  document.getElementById('stat-filled').textContent = filledCount();
+  document.getElementById('stat-total').textContent = prompts.length;
+}
+
+// ── RENDER ──
+function render() {
+  const search = document.getElementById('search').value.toLowerCase();
+  const phase  = document.getElementById('filter-phase').value;
+  const prov   = document.getElementById('filter-provider').value;
+  const hasFilter = search || phase || prov;
+  document.getElementById('btn-clear').classList.toggle('hidden', !hasFilter);
+
+  const filtered = prompts.filter(r => {
+    if (phase && r.phase !== phase) return false;
+    if (prov  && r.who !== prov)   return false;
+    if (search && ![r.name, r.purpose, r.prompt].some(t => t.toLowerCase().includes(search))) return false;
+    return true;
+  });
+
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  PHASE_ORDER.forEach(ph => {
+    const rows = filtered.filter(r => r.phase === ph);
+    if (!rows.length) return;
+    const pi = PHASES[ph];
+
+    const group = document.createElement('div');
+    group.className = 'phase-group';
+
+    group.innerHTML = `
+      <div class="phase-header" style="background:${pi.color}">
+        <span class="phase-tag">PHASE ${ph}</span>
+        <span class="phase-title">${pi.label}</span>
+        <span class="phase-count">${rows.length} prompt${rows.length!==1?'s':''}</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Phase</th><th>Step</th><th>Prompt Name</th>
+            <th>Who Provides</th><th>Where Used</th>
+            <th>Purpose / Agent Interpretation</th><th>Prompt</th>
+          </tr></thead>
+          <tbody id="tbody-${ph.replace('→','_')}"></tbody>
+        </table>
+      </div>`;
+    main.appendChild(group);
+
+    const tbody = group.querySelector('tbody');
+    rows.forEach((row, i) => {
+      const tr = document.createElement('tr');
+      if (i % 2 !== 0) tr.style.background = '#fafbfc';
+      if (row.name.includes('⭐')) tr.style.background = '#fffdf0';
+
+      tr.innerHTML = `
+        <td><span class="phase-pill" style="background:${pi.color}">${row.phase}</span></td>
+        <td class="step-cell">${row.step}</td>
+        <td class="name-cell">${row.name}</td>
+        <td><span class="provider-pill ${row.who==='User'?'provider-user':'provider-agent'}">${row.who}</span></td>
+        <td class="where-cell">${row.where}</td>
+        <td class="purpose-cell">${row.purpose}</td>
+        <td class="prompt-cell" id="cell-${row.id}"></td>`;
+      tbody.appendChild(tr);
+      renderCell(row.id);
+    });
+  });
+
+  updateStat();
+}
+
+function renderCell(id) {
+  const row = prompts.find(r => r.id === id);
+  const cell = document.getElementById('cell-'+id);
+  if (!cell) return;
+
+  if (editingId === id) {
+    cell.innerHTML = `
+      <textarea class="edit-area" id="ta-${id}">${escHtml(row.prompt)}</textarea>
+      <div class="edit-btns">
+        <button class="btn-save" onclick="saveEdit(${id})">Save</button>
+        <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+      </div>`;
+    const ta = document.getElementById('ta-'+id);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = ta.value.length;
+    return;
+  }
+
+  const promptActions = `<button class="btn-edit" onclick="startEdit(${id})" title="Edit prompt">✏️</button>`;
+
+  if (row.prompt.trim()) {
+    const snippet = row.prompt.substring(0, 110) + '…';
+    cell.innerHTML = `
+      <div class="prompt-actions">
+        <div class="prompt-preview" onclick="openModal(${id})">
+          <span class="prompt-snippet">${escHtml(snippet)}</span>
+          <span class="prompt-view-hint">👁 View full prompt</span>
+        </div>
+        ${promptActions}
+      </div>
+      <div class="saved-badge" id="saved-${id}">✓ Saved</div>`;
+  } else {
+    cell.innerHTML = `
+      <div class="prompt-actions">
+        <div class="prompt-empty">⬜ Not yet added</div>
+        ${promptActions}
+      </div>`;
+  }
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── EDIT ──
+function startEdit(id) {
+  editingId = id;
+  renderCell(id);
+}
+function cancelEdit() {
+  editingId = null;
+  render();
+}
+function saveEdit(id) {
+  const ta = document.getElementById('ta-'+id);
+  if (!ta) return;
+  prompts.find(r => r.id === id).prompt = ta.value;
+  editingId = null;
+  render();
+  const badge = document.getElementById('saved-'+id);
+  if (badge) { badge.classList.add('show'); setTimeout(() => badge.classList.remove('show'), 1800); }
+}
+
+// ── MODAL ──
+function openModal(id) {
+  const row = prompts.find(r => r.id === id);
+  openModalId = id;
+  document.getElementById('modal-meta').textContent    = `Phase ${row.phase}  ·  Step ${row.step}  ·  ${row.who}`;
+  document.getElementById('modal-title').textContent   = row.name;
+  document.getElementById('modal-purpose').textContent = row.purpose;
+  document.getElementById('modal-body').textContent    = row.prompt || '(No prompt text yet — click ✏️ to add one.)';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  openModalId = null;
+}
+document.getElementById('modal-close').onclick = closeModal;
+document.getElementById('modal-overlay').onclick = e => { if (e.target.id === 'modal-overlay') closeModal(); };
+document.getElementById('btn-copy').onclick = () => {
+  const row = prompts.find(r => r.id === openModalId);
+  if (!row || !row.prompt) return;
+  navigator.clipboard.writeText(row.prompt);
+  const btn = document.getElementById('btn-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy Prompt', 1500);
+};
+document.getElementById('btn-modal-edit').onclick = () => {
+  closeModal();
+  startEdit(openModalId);
+  setTimeout(() => {
+    const cell = document.getElementById('cell-'+openModalId);
+    if (cell) cell.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 100);
+};
+
+// ── FILTERS ──
+document.getElementById('search').oninput = render;
+document.getElementById('filter-phase').onchange = render;
+document.getElementById('filter-provider').onchange = render;
+document.getElementById('btn-clear').onclick = () => {
+  document.getElementById('search').value = '';
+  document.getElementById('filter-phase').value = '';
+  document.getElementById('filter-provider').value = '';
+  render();
+};
+
+// ── INIT ──
+render();
+</script>
+</body>
+</html>
