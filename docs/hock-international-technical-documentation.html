@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HOCK International — Content Production Agent | Technical Reference</title>
+<style>
+:root {
+  --orange: #F47920;
+  --orange-light: #FEF0E6;
+  --orange-mid: #FBCDA0;
+  --blue: #1B4B8A;
+  --blue-light: #E8EEF7;
+  --blue-mid: #9DB5D4;
+  --bg: #F4F4F1;
+  --surface: #FFFFFF;
+  --surface-soft: #FAFAF8;
+  --border: #E2E2DC;
+  --border-strong: #C8C8C0;
+  --text: #1A1A18;
+  --text-muted: #6B6B64;
+  --text-light: #9A9A92;
+  --green: #166534;
+  --green-light: #DCFCE7;
+  --green-mid: #A7F3C0;
+  --amber: #92400E;
+  --amber-light: #FEF3E2;
+  --red: #991B1B;
+  --red-light: #FEE2E2;
+  --purple: #5B21B6;
+  --purple-light: #EDE9FE;
+  --radius: 8px;
+  --radius-sm: 5px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 2px 12px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.65; }
+
+/* ── Header ── */
+.page-header { background: var(--blue); border-bottom: 4px solid var(--orange); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.logo { display: flex; align-items: baseline; gap: 0; }
+.logo-hock { font-size: 26px; font-weight: 900; color: var(--orange); letter-spacing: -1px; font-style: italic; }
+.logo-int { font-size: 13px; font-weight: 700; color: #fff; background: var(--orange); padding: 2px 8px; border-radius: 2px; margin-left: 6px; letter-spacing: 0.03em; }
+.header-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.2); }
+.header-title { color: #fff; }
+.header-title h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.1px; }
+.header-title p { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.header-meta { display: flex; gap: 8px; align-items: center; }
+.hbadge { font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.04em; text-transform: uppercase; }
+.hbadge-orange { background: var(--orange); color: #fff; }
+.hbadge-outline { border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); }
+
+/* ── Layout ── */
+.layout { display: flex; min-height: calc(100vh - 78px); }
+
+/* ── Sidebar ── */
+.sidebar { width: 224px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 0; position: sticky; top: 0; height: calc(100vh - 78px); overflow-y: auto; }
+.sidebar-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); padding: 0 20px 8px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; cursor: pointer; font-size: 13px; color: var(--text-muted); border-left: 3px solid transparent; transition: all 0.15s; user-select: none; }
+.nav-item:hover { background: var(--bg); color: var(--text); }
+.nav-item.active { background: var(--orange-light); color: var(--orange); border-left-color: var(--orange); font-weight: 600; }
+.nav-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+.sidebar-divider { border: none; border-top: 1px solid var(--border); margin: 10px 20px; }
+.version-box { margin: 16px; padding: 10px 12px; background: var(--blue-light); border-radius: var(--radius-sm); border: 1px solid var(--blue-mid); }
+.version-box p { font-size: 11px; color: var(--blue); line-height: 1.5; }
+.version-box strong { font-weight: 700; }
+
+/* ── Main ── */
+.main { flex: 1; padding: 32px 40px; max-width: 900px; }
+.section { display: none; }
+.section.active { display: block; }
+.section-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.section-header-left h2 { font-size: 19px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.section-header-left p { color: var(--text-muted); font-size: 13.5px; max-width: 600px; }
+.section-icon { font-size: 28px; flex-shrink: 0; }
+
+/* ── Cards ── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+.card-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.card p { color: var(--text-muted); font-size: 13px; line-height: 1.65; }
+.card p + p { margin-top: 8px; }
+.card-orange { border-left: 4px solid var(--orange); }
+.card-blue { border-left: 4px solid var(--blue); }
+.card-green { border-left: 4px solid #16a34a; }
+.card-amber { border-left: 4px solid var(--amber); }
+.card-purple { border-left: 4px solid var(--purple); }
+.card-red { border-left: 4px solid var(--red); }
+
+/* ── Badges ── */
+.badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
+.badge-orange { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange-mid); }
+.badge-blue { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-mid); }
+.badge-green { background: var(--green-light); color: var(--green); border: 1px solid var(--green-mid); }
+.badge-amber { background: var(--amber-light); color: var(--amber); border: 1px solid #FDE68A; }
+.badge-purple { background: var(--purple-light); color: var(--purple); border: 1px solid #C4B5FD; }
+.badge-red { background: var(--red-light); color: var(--red); border: 1px solid #FCA5A5; }
+.badge-gray { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* ── Tables ── */
+.data-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+.data-table th { text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-light); padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--surface-soft); }
+.data-table td { padding: 10px 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); vertical-align: top; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table td:first-child { color: var(--text); font-weight: 500; }
+.data-table tr:hover td { background: var(--surface-soft); }
+
+/* ── Code ── */
+.code-block { background: #1A1D23; border-radius: var(--radius); padding: 14px 18px; margin: 10px 0; overflow-x: auto; }
+.code-block code { font-family: 'SF Mono','Menlo',monospace; font-size: 12px; color: #ABB2BF; line-height: 1.7; white-space: pre; display: block; }
+.c-key { color: #61AFEF; }
+.c-val { color: #98C379; }
+.c-comment { color: #5C6370; }
+.c-orange { color: #E5C07B; }
+.inline-code { font-family: 'SF Mono','Menlo',monospace; font-size: 12px; background: var(--bg); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--blue); }
+
+/* ── Alert ── */
+.alert { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-radius: var(--radius); margin-bottom: 14px; font-size: 13px; line-height: 1.55; }
+.alert-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.alert-orange { background: var(--orange-light); border: 1px solid var(--orange-mid); color: #7A3A0A; }
+.alert-blue { background: var(--blue-light); border: 1px solid var(--blue-mid); color: var(--blue); }
+.alert-green { background: var(--green-light); border: 1px solid var(--green-mid); color: var(--green); }
+.alert-amber { background: var(--amber-light); border: 1px solid #FDE68A; color: var(--amber); }
+
+/* ── Steps list ── */
+.step-list { list-style: none; }
+.step-item { display: flex; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.step-item:last-child { border-bottom: none; padding-bottom: 0; }
+.step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.step-num.orange { background: var(--orange); }
+.step-content { flex: 1; }
+.step-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* ── Phase tabs ── */
+.phase-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.phase-tab { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); color: var(--text-muted); background: var(--surface); transition: all 0.15s; user-select: none; }
+.phase-tab:hover { border-color: var(--orange); color: var(--orange); }
+.phase-tab.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+.phase-panel { display: none; }
+.phase-panel.active { display: block; }
+
+/* ── SVG Flow ── */
+.flow-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; overflow-x: auto; }
+.flow-wrap svg { display: block; margin: 0 auto; }
+
+/* ── Skill cards ── */
+.skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.skill-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.15s; }
+.skill-card:hover { border-color: var(--orange); box-shadow: 0 2px 8px rgba(244,121,32,0.12); }
+.skill-card.active { border-color: var(--orange); border-left: 4px solid var(--orange); background: var(--orange-light); }
+.skill-card h4 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.skill-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.skill-detail { display: none; }
+.skill-detail.active { display: block; }
+
+/* ── Tags ── */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; background: var(--bg); border: 1px solid var(--border); color: var(--text-muted); }
+
+/* ── Changelog ── */
+.changelog-row td:first-child { font-family: 'SF Mono','Menlo',monospace; font-size: 11.5px; color: var(--blue); font-weight: 600; }
+
+/* ── Nav buttons ── */
+.nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+.btn-primary { background: var(--orange); color: #fff; }
+.btn-primary:hover { background: #D4650F; }
+.btn-ghost { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--border-strong); color: var(--text); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Connector cards ── */
+.connector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.connector-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.connector-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.connector-icon { font-size: 20px; }
+.connector-header h4 { font-size: 13px; font-weight: 700; color: var(--text); }
+.connector-header p { font-size: 11.5px; color: var(--text-muted); }
+.connector-body { padding: 14px 18px; }
+.connector-body table { width: 100%; font-size: 12.5px; border-collapse: collapse; }
+.connector-body td { padding: 5px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); vertical-align: top; }
+.connector-body td:first-child { color: var(--text); font-weight: 600; width: 90px; }
+.connector-body tr:last-child td { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="logo">
+        <span class="logo-hock">HOCK</span>
+        <span class="logo-int">International</span>
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-title">
+        <h1>Content Production Agent — Technical Reference</h1>
+        <p>Architecture · Workflow Logic · Connectors · Skills · Maintenance</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="hbadge hbadge-orange">v1.0</span>
+      <span class="hbadge hbadge-outline">March 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-label">Sections</div>
+  <div class="nav-item active" onclick="showSection('overview',this)"><span class="nav-icon">📋</span> Overview</div>
+  <div class="nav-item" onclick="showSection('architecture',this)"><span class="nav-icon">🏗</span> System Architecture</div>
+  <div class="nav-item" onclick="showSection('workflow',this)"><span class="nav-icon">🔀</span> Phase Workflow</div>
+  <div class="nav-item" onclick="showSection('connectors',this)"><span class="nav-icon">🔌</span> Connectors & Webhooks</div>
+  <div class="nav-item" onclick="showSection('skills',this)"><span class="nav-icon">⚡</span> Skill Reference</div>
+  <div class="nav-item" onclick="showSection('maintenance',this)"><span class="nav-icon">🔧</span> Maintenance</div>
+  <hr class="sidebar-divider"/>
+  <div class="version-box">
+    <p><strong>Agent Version:</strong> 1.0<br/>
+    <strong>Last Updated:</strong> Mar 17 2026<br/>
+    <strong>Owner:</strong> Plus 1 Technology<br/>
+    <strong>Client:</strong> HOCK International</p>
+  </div>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div class="section active" id="section-overview">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>System Overview</h2>
+      <p>The HOCK Content Production Agent is a Claude Project that manages the end-to-end production of certification exam prep materials — textbooks, MCQs, slide presentations, narration scripts, and video. Claude generates content; the agent manages approvals, workflow tracking, and external tool actions.</p>
+    </div>
+    <div class="section-icon">📋</div>
+  </div>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">ℹ</span>
+    <div>This document is the authoritative technical reference for the HOCK Content Production Agent. It covers architecture, workflow logic, connector specs, skill behavior, and maintenance procedures. It is intended for internal use, handoff, and client team reference.</div>
+  </div>
+
+  <div class="card card-orange">
+    <div class="card-title">🎯 What the Agent Does</div>
+    <p>The agent phase-locks all content generation to a strict 8-step production order. It invokes the correct skill at each phase, gates every action behind user approval, tracks workflow state across the session, and pushes finalized artifacts to Monday.com, Dropbox, and Gamma using n8n webhooks and MCP connectors.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗂 Production Order (Locked)</div>
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Phase</th><th>Output</th><th>Destination</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Initiation</td><td>Source materials confirmed</td><td>—</td></tr>
+        <tr><td>2</td><td>Textbook Creation</td><td>Word Doc</td><td>Monday — Textbook File Column</td></tr>
+        <tr><td>3</td><td>MCQs Creation</td><td>Excel file</td><td>Monday — MCQ File Column</td></tr>
+        <tr><td>4</td><td>Presentation Outline</td><td>Markdown outline → Gamma</td><td>Monday — Presentation Link + File</td></tr>
+        <tr><td>5</td><td>Gamma Creation</td><td>PPTX + Gamma URL</td><td>Monday — Presentation Link + File</td></tr>
+        <tr><td>6</td><td>Slide Script</td><td>Doc + Speaker Notes</td><td>Monday — Slide Script Column</td></tr>
+        <tr><td>7</td><td>Video</td><td>HeyGen (manual)</td><td>—</td></tr>
+        <tr><td>8</td><td>Close-Out</td><td>All artifacts confirmed</td><td>Monday — Complete</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👥 Intended Audiences</div>
+    <table class="data-table">
+      <thead><tr><th>Audience</th><th>How They Use This Doc</th></tr></thead>
+      <tbody>
+        <tr><td>Plus 1 Technology (Internal)</td><td>Architecture decisions, connector specs, skill maintenance, project updates</td></tr>
+        <tr><td>Handoff / New Developer</td><td>Understand the full system, reproduce the setup, extend phases or skills</td></tr>
+        <tr><td>HOCK Team</td><td>Understand what the agent does at each phase, what fields get updated in Monday, how to interact with it</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-ghost" disabled>← Back</button>
+    <button class="btn btn-primary" onclick="showSection('architecture',document.querySelectorAll('.nav-item')[1])">System Architecture →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ ARCHITECTURE ═══════════════ -->
+<div class="section" id="section-architecture">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>System Architecture</h2>
+      <p>How all components connect — the Claude Project, knowledge files, skills, connectors, and external platforms.</p>
+    </div>
+    <div class="section-icon">🏗</div>
+  </div>
+
+  <!-- Architecture Diagram -->
+  <div class="flow-wrap">
+    <svg viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg" width="780" height="520">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#6B6B64"/>
+        </marker>
+        <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#F47920"/>
+        </marker>
+        <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#1B4B8A"/>
+        </marker>
+      </defs>
+
+      <!-- Claude Project Box -->
+      <rect x="10" y="10" width="480" height="360" rx="10" fill="#F4F4F1" stroke="#C8C8C0" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="250" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#6B6B64" letter-spacing="1" font-family="sans-serif">CLAUDE PROJECT</text>
+
+      <!-- System Prompt -->
+      <rect x="30" y="45" width="200" height="56" rx="6" fill="#1B4B8A"/>
+      <text x="130" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="white" font-family="sans-serif">System Prompt</text>
+      <text x="130" y="85" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.75)" font-family="sans-serif">Agent identity · Rules · Phase order</text>
+
+      <!-- Knowledge Files -->
+      <rect x="260" y="45" width="210" height="56" rx="6" fill="#fff" stroke="#E2E2DC" stroke-width="1.5"/>
+      <text x="365" y="65" text-anchor="middle" font-size="11" font-weight="700" fill="#1A1A18" font-family="sans-serif">Knowledge Files</text>
+      <text x="365" y="80" text-anchor="middle" font-size="10" fill="#6B6B64" font-family="sans-serif">Core Ops · Content Standards</text>
+      <text x="365" y="93" text-anchor="middle" font-size="10" fill="#6B6B64" font-family="sans-serif">Revision Prompts</text>
+
+      <!-- Skills row -->
+      <text x="250" y="128" text-anchor="middle" font-size="10" font-weight="700" fill="#9A9A92" letter-spacing="0.5" font-family="sans-serif">SKILLS (invoked by name at each phase)</text>
+
+      <!-- Skill boxes -->
+      <rect x="30" y="138" width="96" height="40" rx="5" fill="#FEF0E6" stroke="#FBCDA0" stroke-width="1.5"/>
+      <text x="78" y="155" text-anchor="middle" font-size="10" font-weight="700" fill="#F47920" font-family="sans-serif">depth-calibration</text>
+      <text x="78" y="168" text-anchor="middle" font-size="9" fill="#7A3A0A" font-family="sans-serif">All phases first</text>
+
+      <rect x="136" y="138" width="96" height="40" rx="5" fill="#FEF0E6" stroke="#FBCDA0" stroke-width="1.5"/>
+      <text x="184" y="155" text-anchor="middle" font-size="10" font-weight="700" fill="#F47920" font-family="sans-serif">token-optimization</text>
+      <text x="184" y="168" text-anchor="middle" font-size="9" fill="#7A3A0A" font-family="sans-serif">All phases second</text>
+
+      <rect x="242" y="138" width="90" height="40" rx="5" fill="#E8EEF7" stroke="#9DB5D4" stroke-width="1.5"/>
+      <text x="287" y="155" text-anchor="middle" font-size="10" font-weight="700" fill="#1B4B8A" font-family="sans-serif">textbook-style</text>
+      <text x="287" y="168" text-anchor="middle" font-size="9" fill="#1B4B8A" font-family="sans-serif">Phase 2</text>
+
+      <rect x="342" y="138" width="80" height="40" rx="5" fill="#E8EEF7" stroke="#9DB5D4" stroke-width="1.5"/>
+      <text x="382" y="155" text-anchor="middle" font-size="10" font-weight="700" fill="#1B4B8A" font-family="sans-serif">mcq-creation</text>
+      <text x="382" y="168" text-anchor="middle" font-size="9" fill="#1B4B8A" font-family="sans-serif">Phase 3</text>
+
+      <rect x="432" y="138" width="48" height="40" rx="5" fill="#E8EEF7" stroke="#9DB5D4" stroke-width="1.5"/>
+      <text x="456" y="155" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1B4B8A" font-family="sans-serif">slide</text>
+      <text x="456" y="168" text-anchor="middle" font-size="9" fill="#1B4B8A" font-family="sans-serif">Ph 4</text>
+
+      <!-- Skills row 2 -->
+      <rect x="30" y="190" width="90" height="40" rx="5" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1.5"/>
+      <text x="75" y="207" text-anchor="middle" font-size="10" font-weight="700" fill="#5B21B6" font-family="sans-serif">slide-script</text>
+      <text x="75" y="220" text-anchor="middle" font-size="9" fill="#5B21B6" font-family="sans-serif">Phase 6</text>
+
+      <rect x="130" y="190" width="100" height="40" rx="5" fill="#DCFCE7" stroke="#A7F3C0" stroke-width="1.5"/>
+      <text x="180" y="207" text-anchor="middle" font-size="10" font-weight="700" fill="#166534" font-family="sans-serif">monday-workflow</text>
+      <text x="180" y="220" text-anchor="middle" font-size="9" fill="#166534" font-family="sans-serif">Ph1 required · rest optional</text>
+
+      <!-- Claude Engine -->
+      <rect x="30" y="250" width="440" height="100" rx="8" fill="#1B4B8A"/>
+      <text x="250" y="278" text-anchor="middle" font-size="13" font-weight="700" fill="white" font-family="sans-serif">Claude (Sonnet 4.6)</text>
+      <text x="250" y="296" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.75)" font-family="sans-serif">Content Generation · Phase Routing · Skill Invocation</text>
+      <text x="250" y="312" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.75)" font-family="sans-serif">Decision Gates · Session State Management</text>
+      <text x="250" y="328" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.5)" font-family="sans-serif">One decision gate per message · Phase-locked at all times</text>
+
+      <!-- User -->
+      <rect x="30" y="400" width="440" height="50" rx="8" fill="#F47920"/>
+      <text x="250" y="421" text-anchor="middle" font-size="13" font-weight="700" fill="white" font-family="sans-serif">HOCK Team / User</text>
+      <text x="250" y="438" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.8)" font-family="sans-serif">Provides prompts · Reviews content · Approves phases · Triggers actions</text>
+
+      <!-- Arrows user ↔ Claude -->
+      <line x1="250" y1="395" x2="250" y2="358" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="240" y1="358" x2="240" y2="395" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <!-- External platforms -->
+      <!-- n8n -->
+      <rect x="560" y="45" width="120" height="60" rx="8" fill="#fff" stroke="#E2E2DC" stroke-width="1.5"/>
+      <text x="620" y="70" text-anchor="middle" font-size="13" font-weight="700" fill="#F47920" font-family="sans-serif">n8n</text>
+      <text x="620" y="86" text-anchor="middle" font-size="10" fill="#6B6B64" font-family="sans-serif">hockintl.app.n8n.cloud</text>
+      <text x="620" y="98" text-anchor="middle" font-size="9.5" fill="#9A9A92" font-family="sans-serif">Webhook orchestration</text>
+
+      <!-- Monday -->
+      <rect x="700" y="45" width="110" height="60" rx="8" fill="#fff" stroke="#E2E2DC" stroke-width="1.5"/>
+      <text x="755" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#F41472" font-family="sans-serif">Monday.com</text>
+      <text x="755" y="86" text-anchor="middle" font-size="10" fill="#6B6B64" font-family="sans-serif">Task tracking</text>
+      <text x="755" y="98" text-anchor="middle" font-size="9.5" fill="#9A9A92" font-family="sans-serif">Status · Files · Dates</text>
+
+      <!-- Dropbox -->
+      <rect x="560" y="140" width="120" height="60" rx="8" fill="#fff" stroke="#E2E2DC" stroke-width="1.5"/>
+      <text x="620" y="165" text-anchor="middle" font-size="12" font-weight="700" fill="#0061FF" font-family="sans-serif">Dropbox</text>
+      <text x="620" y="181" text-anchor="middle" font-size="10" fill="#6B6B64" font-family="sans-serif">File storage</text>
+      <text x="620" y="193" text-anchor="middle" font-size="9.5" fill="#9A9A92" font-family="sans-serif">MCQs · Scripts · Media</text>
+
+      <!-- Gamma -->
+      <rect x="700" y="140" width="110" height="60" rx="8" fill="#fff" stroke="#E2E2DC" stroke-width="1.5"/>
+      <text x="755" y="165" text-anchor="middle" font-size="12" font-weight="700" fill="#7C3AED" font-family="sans-serif">Gamma</text>
+      <text x="755" y="181" text-anchor="middle" font-size="10" fill="#6B6B64" font-family="sans-serif">Presentation</text>
+      <text x="755" y="193" text-anchor="middle" font-size="9.5" fill="#9A9A92" font-family="sans-serif">Create · Export · Notes</text>
+
+      <!-- HeyGen -->
+      <rect x="630" y="235" width="110" height="55" rx="8" fill="#fff" stroke="#E2E2DC" stroke-width="1.5"/>
+      <text x="685" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#1A1A18" font-family="sans-serif">HeyGen</text>
+      <text x="685" y="274" text-anchor="middle" font-size="10" fill="#6B6B64" font-family="sans-serif">Video (manual)</text>
+      <text x="685" y="286" text-anchor="middle" font-size="9.5" fill="#9A9A92" font-family="sans-serif">Phase 7 only</text>
+
+      <!-- Connector lines -->
+      <!-- Claude → n8n -->
+      <line x1="490" y1="290" x2="555" y2="75" stroke="#F47920" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-orange)"/>
+      <!-- n8n → Monday -->
+      <line x1="682" y1="75" x2="700" y2="75" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- n8n → Dropbox -->
+      <line x1="620" y1="107" x2="620" y2="138" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <!-- Claude → Gamma -->
+      <line x1="490" y1="310" x2="698" y2="170" stroke="#7C3AED" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+      <!-- Claude → HeyGen label -->
+      <line x1="490" y1="325" x2="628" y2="262" stroke="#C8C8C0" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+      <!-- Legend -->
+      <rect x="560" y="330" width="248" height="90" rx="6" fill="#FAFAF8" stroke="#E2E2DC" stroke-width="1"/>
+      <text x="572" y="348" font-size="10" font-weight="700" fill="#6B6B64" font-family="sans-serif">LEGEND</text>
+      <line x1="572" y1="360" x2="600" y2="360" stroke="#F47920" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="606" y="364" font-size="10" fill="#6B6B64" font-family="sans-serif">Claude → n8n (webhook POST)</text>
+      <line x1="572" y1="378" x2="600" y2="378" stroke="#7C3AED" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="606" y="382" font-size="10" fill="#6B6B64" font-family="sans-serif">Claude → Gamma (MCP connector)</text>
+      <line x1="572" y1="396" x2="600" y2="396" stroke="#6B6B64" stroke-width="1.5"/>
+      <text x="606" y="400" font-size="10" fill="#6B6B64" font-family="sans-serif">n8n → platforms (API calls)</text>
+      <line x1="572" y1="414" x2="600" y2="414" stroke="#C8C8C0" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <text x="606" y="418" font-size="10" fill="#6B6B64" font-family="sans-serif">Manual (user action)</text>
+    </svg>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title">🔁 Data Flow Summary</div>
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num orange">1</div>
+        <div class="step-content">
+          <div class="step-title">User → Claude</div>
+          <div class="step-desc">User provides prompts, source materials, and approvals. Claude reads system prompt + knowledge files + skills on every session start.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num orange">2</div>
+        <div class="step-content">
+          <div class="step-title">Claude → Content Generation</div>
+          <div class="step-desc">Claude invokes the correct skill per phase, applies depth calibration and token optimization, generates content in chat, and pauses for user review at defined checkpoints.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num orange">3</div>
+        <div class="step-content">
+          <div class="step-title">Claude → n8n (POST webhooks)</div>
+          <div class="step-desc">On user approval, Claude POSTs to n8n webhook endpoints to save files to Dropbox. n8n handles the Dropbox API calls and returns confirmation.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num orange">4</div>
+        <div class="step-content">
+          <div class="step-title">Claude → Monday (MCP connector)</div>
+          <div class="step-desc">Claude uses the Monday MCP connector to update task status, assignee, dates, and attach files to the correct columns on the HOCK board.</div>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num orange">5</div>
+        <div class="step-content">
+          <div class="step-title">Claude → Gamma (MCP connector)</div>
+          <div class="step-desc">Claude uses the Gamma MCP connector to create presentations from approved outlines, export PPTX, and add speaker notes. Gamma is asynchronous — Claude waits for completed status before returning the gammaUrl.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-ghost" onclick="showSection('overview',document.querySelectorAll('.nav-item')[0])">← Overview</button>
+    <button class="btn btn-primary" onclick="showSection('workflow',document.querySelectorAll('.nav-item')[2])">Phase Workflow →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ WORKFLOW ═══════════════ -->
+<div class="section" id="section-workflow">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>Phase Workflow Logic</h2>
+      <p>All 7 production phases with decision gates, dialog scripts, prerequisites, and Monday field updates. Click a phase tab to view its full flow.</p>
+    </div>
+    <div class="section-icon">🔀</div>
+  </div>
+
+  <!-- Master flow SVG -->
+  <div class="flow-wrap">
+    <svg viewBox="0 0 760 120" xmlns="http://www.w3.org/2000/svg" width="740" height="120">
+      <defs>
+        <marker id="a2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 z" fill="#C8C8C0"/>
+        </marker>
+      </defs>
+      <!-- Phase boxes -->
+      <g font-family="sans-serif">
+        <!-- P1 -->
+        <rect x="4" y="30" width="80" height="50" rx="6" fill="#1B4B8A"/>
+        <text x="44" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="white">Phase 2</text>
+        <text x="44" y="65" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.8)">Textbook</text>
+        <text x="44" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)">Word Doc</text>
+        <!-- arrow -->
+        <line x1="84" y1="55" x2="100" y2="55" stroke="#C8C8C0" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- P2 -->
+        <rect x="100" y="30" width="80" height="50" rx="6" fill="#1B4B8A"/>
+        <text x="140" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="white">Phase 3</text>
+        <text x="140" y="65" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.8)">MCQs</text>
+        <text x="140" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)">Excel</text>
+        <line x1="180" y1="55" x2="196" y2="55" stroke="#C8C8C0" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- P3 -->
+        <rect x="196" y="30" width="84" height="50" rx="6" fill="#F47920"/>
+        <text x="238" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="white">Phase 4</text>
+        <text x="238" y="65" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.8)">Outline</text>
+        <text x="238" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)">Markdown</text>
+        <line x1="280" y1="55" x2="296" y2="55" stroke="#C8C8C0" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- P4 -->
+        <rect x="296" y="30" width="84" height="50" rx="6" fill="#F47920"/>
+        <text x="338" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="white">Phase 5</text>
+        <text x="338" y="65" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.8)">Gamma</text>
+        <text x="338" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)">PPTX + URL</text>
+        <line x1="380" y1="55" x2="396" y2="55" stroke="#C8C8C0" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- P5 -->
+        <rect x="396" y="30" width="84" height="50" rx="6" fill="#5B21B6"/>
+        <text x="438" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="white">Phase 6</text>
+        <text x="438" y="65" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.8)">Script</text>
+        <text x="438" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)">Doc + Notes</text>
+        <line x1="480" y1="55" x2="496" y2="55" stroke="#C8C8C0" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- P6 -->
+        <rect x="496" y="30" width="84" height="50" rx="6" fill="#6B6B64"/>
+        <text x="538" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="white">Phase 7</text>
+        <text x="538" y="65" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.8)">Video</text>
+        <text x="538" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)">HeyGen (manual)</text>
+        <line x1="580" y1="55" x2="596" y2="55" stroke="#C8C8C0" stroke-width="1.5" marker-end="url(#a2)"/>
+        <!-- P7 -->
+        <rect x="596" y="30" width="84" height="50" rx="6" fill="#166534"/>
+        <text x="638" y="52" text-anchor="middle" font-size="9" font-weight="700" fill="white">Phase 8</text>
+        <text x="638" y="65" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.8)">Close-Out</text>
+        <text x="638" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.6)">Complete</text>
+      </g>
+      <!-- Gate symbols -->
+      <text x="92" y="12" text-anchor="middle" font-size="9" fill="#9A9A92" font-family="sans-serif">✓ approved</text>
+      <text x="188" y="12" text-anchor="middle" font-size="9" fill="#9A9A92" font-family="sans-serif">✓ approved</text>
+      <text x="288" y="12" text-anchor="middle" font-size="9" fill="#9A9A92" font-family="sans-serif">✓ outline</text>
+      <text x="388" y="12" text-anchor="middle" font-size="9" fill="#9A9A92" font-family="sans-serif">✓ finalized</text>
+      <text x="488" y="12" text-anchor="middle" font-size="9" fill="#9A9A92" font-family="sans-serif">✓ approved</text>
+      <text x="588" y="12" text-anchor="middle" font-size="9" fill="#9A9A92" font-family="sans-serif">✓ complete</text>
+    </svg>
+  </div>
+
+  <!-- Phase tabs -->
+  <div class="phase-tabs">
+    <div class="phase-tab active" onclick="showPhase('p2',this)">Phase 2 — Textbook</div>
+    <div class="phase-tab" onclick="showPhase('p3',this)">Phase 3 — MCQs</div>
+    <div class="phase-tab" onclick="showPhase('p4',this)">Phase 4 — Outline</div>
+    <div class="phase-tab" onclick="showPhase('p5',this)">Phase 5 — Gamma</div>
+    <div class="phase-tab" onclick="showPhase('p6',this)">Phase 6 — Script</div>
+    <div class="phase-tab" onclick="showPhase('p7',this)">Phase 7 — Video</div>
+    <div class="phase-tab" onclick="showPhase('p8',this)">Phase 8 — Close-Out</div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase-panel active" id="phase-p2">
+    <div class="card card-blue">
+      <div class="card-title"><span class="badge badge-blue">Phase 2</span> Textbook Creation</div>
+      <div style="margin-bottom:10px">
+        <span class="badge badge-gray" style="margin-right:6px">Skills: depth-calibration → textbook-style-guide → token-optimization</span>
+        <span class="badge badge-orange">Monday: always required</span>
+      </div>
+    </div>
+    <div class="flow-wrap">
+      <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" width="680" height="360">
+        <defs><marker id="aw" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#6B6B64"/></marker></defs>
+        <g font-family="sans-serif">
+          <!-- Start -->
+          <ellipse cx="100" cy="24" rx="80" ry="18" fill="#1B4B8A"/>
+          <text x="100" y="28" text-anchor="middle" font-size="10" font-weight="700" fill="white">User provides prompt</text>
+          <line x1="100" y1="42" x2="100" y2="58" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw)"/>
+          <!-- Depth cal -->
+          <rect x="20" y="58" width="160" height="36" rx="6" fill="#FEF0E6" stroke="#F47920" stroke-width="1.5"/>
+          <text x="100" y="74" text-anchor="middle" font-size="10" font-weight="700" fill="#F47920">depth-calibration-skill</text>
+          <text x="100" y="87" text-anchor="middle" font-size="9" fill="#7A3A0A">Present table · wait for approval</text>
+          <line x1="100" y1="94" x2="100" y2="110" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw)"/>
+          <!-- Generate -->
+          <rect x="20" y="110" width="160" height="36" rx="6" fill="#E8EEF7" stroke="#1B4B8A" stroke-width="1.5"/>
+          <text x="100" y="126" text-anchor="middle" font-size="10" font-weight="700" fill="#1B4B8A">Generate in chat</text>
+          <text x="100" y="139" text-anchor="middle" font-size="9" fill="#1B4B8A">Pause after first page</text>
+          <line x1="100" y1="146" x2="100" y2="162" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw)"/>
+          <!-- Decision: revise or finalize -->
+          <polygon points="100,162 180,196 100,230 20,196" fill="#FEF9EE" stroke="#92400E" stroke-width="1.5"/>
+          <text x="100" y="193" text-anchor="middle" font-size="9.5" font-weight="700" fill="#92400E">Revise or</text>
+          <text x="100" y="206" text-anchor="middle" font-size="9.5" font-weight="700" fill="#92400E">Finalize?</text>
+          <!-- Revise branch -->
+          <line x1="20" y1="196" x2="-10" y2="196" stroke="#6B6B64" stroke-width="1.5"/>
+          <line x1="-10" y1="196" x2="-10" y2="128" stroke="#6B6B64" stroke-width="1.5"/>
+          <line x1="-10" y1="128" x2="20" y2="128" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw)"/>
+          <text x="-22" y="170" text-anchor="middle" font-size="9" fill="#92400E" transform="rotate(-90,-22,170)">Revise</text>
+          <!-- Finalize -->
+          <line x1="100" y1="230" x2="100" y2="246" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw)"/>
+          <text x="180" y="200" font-size="9" fill="#166534">Finalized</text>
+          <!-- Word Doc -->
+          <rect x="20" y="246" width="160" height="30" rx="6" fill="#DCFCE7" stroke="#166534" stroke-width="1.5"/>
+          <text x="100" y="265" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">Convert → Word Doc</text>
+          <line x1="100" y1="276" x2="100" y2="292" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw)"/>
+          <!-- Monday -->
+          <rect x="20" y="292" width="160" height="40" rx="6" fill="#F41472" opacity="0.9"/>
+          <text x="100" y="309" text-anchor="middle" font-size="10" font-weight="700" fill="white">Monday Update</text>
+          <text x="100" y="322" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.85)">Textbook File Col · Status · Assignee</text>
+
+          <!-- Right column labels -->
+          <text x="260" y="82" font-size="10" fill="#6B6B64">→ Scope · Cognitive Level · Exam Weight</text>
+          <text x="260" y="128" font-size="10" fill="#6B6B64">→ textbook-style-guide + token-optimization</text>
+          <text x="260" y="162" font-size="10" fill="#6B6B64">→ "Here's the first section. Continue, revise, or stop?"</text>
+          <text x="260" y="265" font-size="10" fill="#6B6B64">→ Ask user before converting</text>
+          <text x="260" y="309" font-size="10" fill="#6B6B64">→ Always required after textbook approval</text>
+          <text x="260" y="322" font-size="10" fill="#6B6B64">→ Ask: save to project?</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Monday Fields Updated</div>
+      <table class="data-table">
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Textbook File Column</td><td>Word Doc attached</td></tr>
+          <tr><td>Status</td><td>Textbook Ready for Review</td></tr>
+          <tr><td>Assignee</td><td>Creator</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase-panel" id="phase-p3">
+    <div class="card card-blue">
+      <div class="card-title"><span class="badge badge-blue">Phase 3</span> MCQs Creation</div>
+      <div><span class="badge badge-gray">Skills: depth-calibration → mcq-creation-skill → token-optimization</span></div>
+    </div>
+    <div class="flow-wrap">
+      <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" width="680" height="320">
+        <defs><marker id="aw3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#6B6B64"/></marker></defs>
+        <g font-family="sans-serif">
+          <ellipse cx="100" cy="22" rx="90" ry="17" fill="#1B4B8A"/>
+          <text x="100" y="26" text-anchor="middle" font-size="10" font-weight="700" fill="white">Approved textbook confirmed</text>
+          <line x1="100" y1="39" x2="100" y2="55" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw3)"/>
+          <rect x="20" y="55" width="160" height="34" rx="6" fill="#FEF0E6" stroke="#F47920" stroke-width="1.5"/>
+          <text x="100" y="70" text-anchor="middle" font-size="10" font-weight="700" fill="#F47920">Batch generation</text>
+          <text x="100" y="82" text-anchor="middle" font-size="9" fill="#7A3A0A">15 first · pause · 10 more</text>
+          <line x1="100" y1="89" x2="100" y2="105" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw3)"/>
+          <polygon points="100,105 180,138 100,171 20,138" fill="#FEF9EE" stroke="#92400E" stroke-width="1.5"/>
+          <text x="100" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#92400E">Revise or</text>
+          <text x="100" y="148" text-anchor="middle" font-size="9.5" font-weight="700" fill="#92400E">Approve?</text>
+          <line x1="20" y1="138" x2="-8" y2="138" stroke="#6B6B64" stroke-width="1.5"/>
+          <line x1="-8" y1="138" x2="-8" y2="72" stroke="#6B6B64" stroke-width="1.5"/>
+          <line x1="-8" y1="72" x2="20" y2="72" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw3)"/>
+          <text x="-20" y="112" text-anchor="middle" font-size="9" fill="#92400E" transform="rotate(-90,-20,112)">Revise</text>
+          <line x1="100" y1="171" x2="100" y2="187" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw3)"/>
+          <rect x="20" y="187" width="160" height="30" rx="6" fill="#DCFCE7" stroke="#166534" stroke-width="1.5"/>
+          <text x="100" y="206" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">Convert → Excel</text>
+          <line x1="100" y1="217" x2="100" y2="233" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw3)"/>
+          <rect x="20" y="233" width="160" height="50" rx="6" fill="#F41472" opacity="0.9"/>
+          <text x="100" y="252" text-anchor="middle" font-size="10" font-weight="700" fill="white">Monday Update</text>
+          <text x="100" y="265" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.85)">MCQ File Col · Status</text>
+          <text x="100" y="278" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.85)">Assignee · Due Date +2</text>
+          <text x="260" y="72" font-size="10" fill="#6B6B64">→ mcq-creation-skill · Choice A = correct</text>
+          <text x="260" y="206" font-size="10" fill="#6B6B64">→ 11-column JSON → .xlsx format</text>
+          <text x="260" y="260" font-size="10" fill="#6B6B64">→ MCQ File Column · Status: MCQs Ready for Review</text>
+          <text x="260" y="275" font-size="10" fill="#6B6B64">→ Assignee: creatorEmail · Start: today · Due: today+2</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Monday Fields Updated</div>
+      <table class="data-table">
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>MCQ File Column</td><td>Excel file attached</td></tr>
+          <tr><td>Status</td><td>MCQs Ready for Review</td></tr>
+          <tr><td>Assignee</td><td>creatorEmail</td></tr>
+          <tr><td>Start Date</td><td>Today</td></tr>
+          <tr><td>Due Date</td><td>Today + 2 days</td></tr>
+          <tr><td>Description</td><td>MCQ update note appended</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase-panel" id="phase-p4">
+    <div class="card card-orange">
+      <div class="card-title"><span class="badge badge-orange">Phase 4</span> Presentation Outline</div>
+      <div><span class="badge badge-gray">Skills: depth-calibration → slide-creation-skill → token-optimization</span></div>
+    </div>
+    <div class="flow-wrap">
+      <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" width="680" height="280">
+        <defs><marker id="aw4" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#6B6B64"/></marker></defs>
+        <g font-family="sans-serif">
+          <ellipse cx="100" cy="22" rx="90" ry="17" fill="#1B4B8A"/>
+          <text x="100" y="26" text-anchor="middle" font-size="10" font-weight="700" fill="white">Textbook + MCQs confirmed</text>
+          <line x1="100" y1="39" x2="100" y2="55" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw4)"/>
+          <rect x="20" y="55" width="160" height="34" rx="6" fill="#FEF0E6" stroke="#F47920" stroke-width="1.5"/>
+          <text x="100" y="70" text-anchor="middle" font-size="10" font-weight="700" fill="#F47920">Generate Markdown outline</text>
+          <text x="100" y="83" text-anchor="middle" font-size="9" fill="#7A3A0A">Titles · bullets · placeholders · notes</text>
+          <line x1="100" y1="89" x2="100" y2="105" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw4)"/>
+          <polygon points="100,105 180,138 100,171 20,138" fill="#FEF9EE" stroke="#92400E" stroke-width="1.5"/>
+          <text x="100" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#92400E">Revise or</text>
+          <text x="100" y="148" text-anchor="middle" font-size="9.5" font-weight="700" fill="#92400E">Approve?</text>
+          <line x1="20" y1="138" x2="-8" y2="138" stroke="#6B6B64" stroke-width="1.5"/>
+          <line x1="-8" y1="138" x2="-8" y2="72" stroke="#6B6B64" stroke-width="1.5"/>
+          <line x1="-8" y1="72" x2="20" y2="72" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw4)"/>
+          <line x1="100" y1="171" x2="100" y2="187" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw4)"/>
+          <rect x="20" y="187" width="160" height="34" rx="6" fill="#7C3AED"/>
+          <text x="100" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="white">Create in Gamma</text>
+          <text x="100" y="216" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.85)">MCP connector · HOCK theme</text>
+          <line x1="100" y1="221" x2="100" y2="237" stroke="#6B6B64" stroke-width="1.5" marker-end="url(#aw4)"/>
+          <rect x="20" y="237" width="160" height="30" rx="6" fill="#DCFCE7" stroke="#166534" stroke-width="1.5"/>
+          <text x="100" y="256" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">Return Gamma link → Phase 5</text>
+          <text x="260" y="72" font-size="10" fill="#6B6B64">→ slide-creation-skill · Gamma-ready Markdown</text>
+          <text x="260" y="203" font-size="10" fill="#6B6B64">→ DO NOT trigger until outline approved</text>
+          <text x="260" y="216" font-size="10" fill="#6B6B64">→ Async — wait for completed status</text>
+          <text x="260" y="256" font-size="10" fill="#6B6B64">→ Transitions to Phase 5 (Gamma Creation)</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Phase 5 -->
+  <div class="phase-panel" id="phase-p5">
+    <div class="card card-orange">
+      <div class="card-title"><span class="badge badge-orange">Phase 5</span> Gamma Creation</div>
+      <div><span class="badge badge-gray">Prerequisite: approved outline from Phase 4</span></div>
+    </div>
+    <div class="alert alert-amber">
+      <span class="alert-icon">⚠</span>
+      <div><strong>Gamma is asynchronous.</strong> Do not treat the initial create response as final. Wait for completed status before using <span class="inline-code">gammaUrl</span> or <span class="inline-code">exportUrl</span>. All post-creation edits must be made by the user at the Gamma URL — never use the connector to edit.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Monday Fields Updated</div>
+      <table class="data-table">
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Presentation Link Column</td><td>Gamma URL</td></tr>
+          <tr><td>Presentation File Column</td><td>PPTX downloaded via connector</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">🔁 Revision Flow</div>
+      <ul class="step-list">
+        <li class="step-item"><div class="step-num orange">1</div><div class="step-content"><div class="step-title">Return Gamma link to user</div><div class="step-desc">"Here's your Gamma link. Are any revisions needed, or is it finalized?"</div></div></li>
+        <li class="step-item"><div class="step-num orange">2</div><div class="step-content"><div class="step-title">If revisions needed</div><div class="step-desc">Direct user to Gamma URL. Say: "Once your changes are complete, let me know so I can download the PowerPoint."</div></div></li>
+        <li class="step-item"><div class="step-num orange">3</div><div class="step-content"><div class="step-title">On finalized</div><div class="step-desc">Retrieve Gamma URL → download PPTX via connector → update Monday Presentation Link + File columns.</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Phase 6 -->
+  <div class="phase-panel" id="phase-p6">
+    <div class="card card-purple">
+      <div class="card-title"><span class="badge badge-purple">Phase 6</span> Slide Script</div>
+      <div><span class="badge badge-gray">Skills: slide-script-skill → token-optimization</span> <span class="badge badge-amber">Prerequisite: presentation in project</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Monday Fields Updated</div>
+      <table class="data-table">
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Slide Script Column</td><td>Script doc attached</td></tr>
+          <tr><td>Status</td><td>Slide Script Ready for Review</td></tr>
+          <tr><td>Assignee</td><td>brian@hockinternational.com</td></tr>
+          <tr><td>Due Date</td><td>Today + 2 days</td></tr>
+          <tr><td>Description</td><td>Slide script update note appended</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert alert-blue">
+      <span class="alert-icon">ℹ</span>
+      <div>After Monday update, ask: <em>"Would you like me to add the script to the Gamma presentation as speaker notes?"</em> If yes — use Gamma connector to add speaker notes.</div>
+    </div>
+  </div>
+
+  <!-- Phase 7 -->
+  <div class="phase-panel" id="phase-p7">
+    <div class="card card-green">
+      <div class="card-title"><span class="badge badge-green">Phase 7</span> Video Production</div>
+    </div>
+    <div class="alert alert-orange">
+      <span class="alert-icon">⚠</span>
+      <div>Video is created <strong>manually</strong> by the user in HeyGen. Claude does not automate video creation. No content generation skills are invoked in this phase.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Steps</div>
+      <ul class="step-list">
+        <li class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">User creates video in HeyGen</div><div class="step-desc">Uses approved slide script and PPTX as source material.</div></div></li>
+        <li class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">User confirms completion to Claude</div><div class="step-desc">Agent does not proceed to close-out until video is explicitly confirmed.</div></div></li>
+        <li class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Update Monday if directed</div><div class="step-desc">Status: Video is Ready for Review</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Phase 8 -->
+  <div class="phase-panel" id="phase-p8">
+    <div class="card card-green">
+      <div class="card-title"><span class="badge badge-green">Phase 8</span> Close-Out</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Close-Out Checklist</div>
+      <table class="data-table">
+        <thead><tr><th>Artifact</th><th>Saved To</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Textbook (Word Doc)</td><td>Monday — Textbook File Column</td><td>Textbook Ready for Review</td></tr>
+          <tr><td>MCQs (Excel)</td><td>Monday — MCQ File Column</td><td>MCQs Ready for Review</td></tr>
+          <tr><td>Presentation (PPTX)</td><td>Monday — Presentation File Column</td><td>—</td></tr>
+          <tr><td>Gamma URL</td><td>Monday — Presentation Link Column</td><td>—</td></tr>
+          <tr><td>Slide Script (Doc)</td><td>Monday — Slide Script Column</td><td>Slide Script Ready for Review</td></tr>
+          <tr><td>Video</td><td>HeyGen (manual)</td><td>Video is Ready for Review</td></tr>
+          <tr><td>All above</td><td>—</td><td><strong>Complete</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-ghost" onclick="showSection('architecture',document.querySelectorAll('.nav-item')[1])">← Architecture</button>
+    <button class="btn btn-primary" onclick="showSection('connectors',document.querySelectorAll('.nav-item')[3])">Connectors →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ CONNECTORS ═══════════════ -->
+<div class="section" id="section-connectors">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>Connectors & Webhook Specs</h2>
+      <p>Full specifications for every external connector — method, endpoint, inputs, and behavior rules.</p>
+    </div>
+    <div class="section-icon">🔌</div>
+  </div>
+
+  <div class="alert alert-orange">
+    <span class="alert-icon">⚠</span>
+    <div><strong>Approval required.</strong> No connector is triggered without explicit user confirmation. Claude must ask before every external action.</div>
+  </div>
+
+  <div class="connector-grid">
+    <!-- n8n Save -->
+    <div class="connector-card">
+      <div class="connector-header" style="background: var(--orange-light); border-bottom-color: var(--orange-mid);">
+        <span class="connector-icon">📤</span>
+        <div><h4>Dropbox — Save File</h4><p>n8n webhook · POST</p></div>
+      </div>
+      <div class="connector-body">
+        <table>
+          <tr><td>Method</td><td><span class="inline-code">POST</span></td></tr>
+          <tr><td>Endpoint</td><td style="font-size:11px; font-family:'SF Mono',monospace; color:var(--blue)">hockintl.app.n8n.cloud/<br/>webhook/hock-save-dropbox-file</td></tr>
+          <tr><td>Input: content</td><td>Full file content (markdown or text)</td></tr>
+          <tr><td>Input: fileName</td><td>Artifact name per naming standard</td></tr>
+          <tr><td>Input: folderPath</td><td>Target Dropbox folder path</td></tr>
+          <tr><td>Used When</td><td>Artifact finalized — MCQs, scripts</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- n8n Get -->
+    <div class="connector-card">
+      <div class="connector-header" style="background: var(--blue-light); border-bottom-color: var(--blue-mid);">
+        <span class="connector-icon">📥</span>
+        <div><h4>Dropbox — Get File</h4><p>n8n webhook · POST</p></div>
+      </div>
+      <div class="connector-body">
+        <table>
+          <tr><td>Method</td><td><span class="inline-code">POST</span></td></tr>
+          <tr><td>Endpoint</td><td style="font-size:11px; font-family:'SF Mono',monospace; color:var(--blue)">hockintl.app.n8n.cloud/<br/>webhook/hock-get-dropbox-file</td></tr>
+          <tr><td>Input: filePath</td><td>Full Dropbox path to file</td></tr>
+          <tr><td>Used When</td><td>Retrieving a previously stored artifact</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Monday -->
+    <div class="connector-card">
+      <div class="connector-header" style="background: #FEE2F8; border-bottom-color: #F9A8E8;">
+        <span class="connector-icon">📊</span>
+        <div><h4>Monday.com</h4><p>MCP connector</p></div>
+      </div>
+      <div class="connector-body">
+        <table>
+          <tr><td>Board</td><td style="font-size:11px">hock-international-company<br/>.monday.com/boards/18398486903</td></tr>
+          <tr><td>Actions</td><td>Search task · Update status · Update assignee · Update due date · Attach files</td></tr>
+          <tr><td>Columns</td><td>Textbook File · MCQ File · Presentation Link · Presentation File · Slide Script</td></tr>
+          <tr><td>Rule</td><td>Use existing board statuses only. Never create a new item without confirmation.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Gamma -->
+    <div class="connector-card">
+      <div class="connector-header" style="background: var(--purple-light); border-bottom-color: #C4B5FD;">
+        <span class="connector-icon">🎨</span>
+        <div><h4>Gamma</h4><p>MCP connector</p></div>
+      </div>
+      <div class="connector-body">
+        <table>
+          <tr><td>Actions</td><td>Create presentation · Export PowerPoint · Add speaker notes</td></tr>
+          <tr><td>Theme</td><td style="font-size:11px; font-family:'SF Mono',monospace; color:var(--blue)">gamma.app/themes/share/<br/>0mk4i94ypgimwxi</td></tr>
+          <tr><td>Phases</td><td>Phase 4 (Outline) + Phase 5 (Gamma Creation) + Phase 6 (speaker notes)</td></tr>
+          <tr><td>Async Rule</td><td>Wait for completed status before using gammaUrl or exportUrl</td></tr>
+          <tr><td>Edit Rule</td><td>Never edit via connector after creation — user edits at Gamma URL directly</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">⚡ Example Payload — Save File</div>
+    <div class="code-block"><code><span class="c-comment">// POST https://hockintl.app.n8n.cloud/webhook/hock-save-dropbox-file</span>
+{
+  <span class="c-key">"content"</span>: <span class="c-val">"# Study Unit 3: Risk Management\n\n..."</span>,
+  <span class="c-key">"fileName"</span>: <span class="c-val">"CIA26_SU03_MCQ_Final.xlsx"</span>,
+  <span class="c-key">"folderPath"</span>: <span class="c-val">"/HOCK/CIA/Part1/SU03"</span>
+}</code></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-ghost" onclick="showSection('workflow',document.querySelectorAll('.nav-item')[2])">← Phase Workflow</button>
+    <button class="btn btn-primary" onclick="showSection('skills',document.querySelectorAll('.nav-item')[4])">Skill Reference →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ SKILLS ═══════════════ -->
+<div class="section" id="section-skills">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>Skill Reference</h2>
+      <p>All 7 project skills — what each does, when it fires, what it gates, and what breaks if it's skipped.</p>
+    </div>
+    <div class="section-icon">⚡</div>
+  </div>
+
+  <div class="alert alert-blue">
+    <span class="alert-icon">ℹ</span>
+    <div>Skills are invoked by their <span class="inline-code">name:</span> frontmatter field, not the filename. If the frontmatter name doesn't match exactly what's in the system prompt, the skill will not fire. Verify frontmatter after every file upload or edit.</div>
+  </div>
+
+  <div class="skill-grid">
+    <div class="skill-card active" onclick="showSkill('s1',this)">
+      <h4>depth-calibration-skill</h4>
+      <p>Determines content depth before any generation. Always invoked first.</p>
+    </div>
+    <div class="skill-card" onclick="showSkill('s2',this)">
+      <h4>token-optimization</h4>
+      <p>Sets chunking and batching strategy for confirmed depth. Always second.</p>
+    </div>
+    <div class="skill-card" onclick="showSkill('s3',this)">
+      <h4>textbook-style-guide</h4>
+      <p>Style, structure, and tone standards for all textbook content.</p>
+    </div>
+    <div class="skill-card" onclick="showSkill('s4',this)">
+      <h4>mcq-creation-skill</h4>
+      <p>MCQ construction rules, output format, and quality gates.</p>
+    </div>
+    <div class="skill-card" onclick="showSkill('s5',this)">
+      <h4>slide-creation-skill</h4>
+      <p>Gamma-ready Markdown outline generation rules and Gamma trigger gate.</p>
+    </div>
+    <div class="skill-card" onclick="showSkill('s6',this)">
+      <h4>slide-script-skill</h4>
+      <p>Narration script generation matched to finalized slide deck.</p>
+    </div>
+    <div class="skill-card" onclick="showSkill('s7',this)">
+      <h4>monday-workflow-skill</h4>
+      <p>Monday.com interaction rules — always required Phase 1, user-directed elsewhere.</p>
+    </div>
+  </div>
+
+  <!-- Skill details -->
+  <div class="skill-detail active" id="skill-s1">
+    <div class="card card-orange">
+      <div class="card-title">depth-calibration-skill</div>
+      <table class="data-table">
+        <tr><td>Frontmatter name</td><td><span class="inline-code">depth-calibration-skill</span></td></tr>
+        <tr><td>Invoke when</td><td>Before ANY content generation — textbook, MCQs, slides, scripts</td></tr>
+        <tr><td>Phase</td><td>All phases — always first</td></tr>
+        <tr><td>Gates</td><td>No content generated until depth confirmed by user</td></tr>
+        <tr><td>Output</td><td>Confirmation table: Scope · Cognitive Level · Exam Weight · Recommended Depth</td></tr>
+        <tr><td>Breaks if skipped</td><td>Content generated at wrong depth — wrong word count, MCQ count, slide count</td></tr>
+      </table>
+      <div class="tags"><span class="tag">Scope: Narrow / Moderate / Broad</span><span class="tag">Cognitive: Basic / Medium / Comprehensive</span><span class="tag">Weight: Low / Medium / High</span></div>
+    </div>
+  </div>
+
+  <div class="skill-detail" id="skill-s2">
+    <div class="card card-orange">
+      <div class="card-title">token-optimization</div>
+      <table class="data-table">
+        <tr><td>Frontmatter name</td><td><span class="inline-code">token-optimization</span></td></tr>
+        <tr><td>Invoke when</td><td>Before all content generation — immediately after depth confirmed</td></tr>
+        <tr><td>Phase</td><td>All phases — always second</td></tr>
+        <tr><td>Gates</td><td>Sets chunking plan before output begins</td></tr>
+        <tr><td>Output</td><td>Chunking strategy: segment sizes, batch sizes, checkpoint cadence</td></tr>
+        <tr><td>Breaks if skipped</td><td>Comprehensive content hits token limits mid-generation with no recovery plan</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="skill-detail" id="skill-s3">
+    <div class="card card-blue">
+      <div class="card-title">textbook-style-guide</div>
+      <table class="data-table">
+        <tr><td>Frontmatter name</td><td><span class="inline-code">textbook-style-guide</span></td></tr>
+        <tr><td>Invoke when</td><td>Phase 2 — Textbook Creation and all textbook revisions</td></tr>
+        <tr><td>Output</td><td>65% prose / 25% bullets / 10% examples · H1→H2→H3 hierarchy · Summary table</td></tr>
+        <tr><td>Do NOT apply to</td><td>MCQs, slides, or scripts — those have dedicated skills</td></tr>
+        <tr><td>Breaks if skipped</td><td>Bullet-heavy output, wrong tone, missing summary table, inconsistent hierarchy</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="skill-detail" id="skill-s4">
+    <div class="card card-blue">
+      <div class="card-title">mcq-creation-skill</div>
+      <table class="data-table">
+        <tr><td>Frontmatter name</td><td><span class="inline-code">mcq-creation-skill</span></td></tr>
+        <tr><td>Invoke when</td><td>Phase 3 — MCQs Creation and all MCQ revisions</td></tr>
+        <tr><td>Prerequisite</td><td>Approved textbook must exist as source material</td></tr>
+        <tr><td>Output format</td><td>11-column JSON → .xlsx: Category · Q ID · Text · A/B/C/D · 4 Explanations</td></tr>
+        <tr><td>Key rules</td><td>Choice A always correct · Balance answer lengths · No extreme qualifier words</td></tr>
+        <tr><td>Breaks if skipped</td><td>Wrong output format, unbalanced choices, missing explanations</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="skill-detail" id="skill-s5">
+    <div class="card card-orange">
+      <div class="card-title">slide-creation-skill</div>
+      <table class="data-table">
+        <tr><td>Frontmatter name</td><td><span class="inline-code">slide-creation-skill</span></td></tr>
+        <tr><td>Invoke when</td><td>Phase 4 — Presentation Outline only</td></tr>
+        <tr><td>Prerequisite</td><td>Approved textbook AND MCQs both complete</td></tr>
+        <tr><td>Output</td><td>Gamma-ready Markdown outline: titles · bullets · visual placeholders · speaker notes</td></tr>
+        <tr><td>Hard rule</td><td>Do NOT create in Gamma until outline is explicitly approved</td></tr>
+        <tr><td>Breaks if skipped</td><td>Gamma created from unapproved content · wrong slide count for depth</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="skill-detail" id="skill-s6">
+    <div class="card card-purple">
+      <div class="card-title">slide-script-skill</div>
+      <table class="data-table">
+        <tr><td>Frontmatter name</td><td><span class="inline-code">slide-script-skill</span></td></tr>
+        <tr><td>Invoke when</td><td>Phase 6 — Slide Script only</td></tr>
+        <tr><td>Prerequisite</td><td>Finalized Gamma presentation added to project resources</td></tr>
+        <tr><td>Output</td><td>Markdown script per slide: narration · [Pause Xs] · [Emphasize: term] · [Transition]</td></tr>
+        <tr><td>Hard rule</td><td>Ask: "Has the presentation been added to the project?" before generating</td></tr>
+        <tr><td>Breaks if skipped</td><td>Script doesn't match slides · wrong timing · missing cues</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="skill-detail" id="skill-s7">
+    <div class="card card-green">
+      <div class="card-title">monday-workflow-skill</div>
+      <table class="data-table">
+        <tr><td>Frontmatter name</td><td><span class="inline-code">monday-workflow-skill</span></td></tr>
+        <tr><td>Phase 1 (Textbook)</td><td>Always required — ask Markdown or Word Doc → post to correct column</td></tr>
+        <tr><td>All other phases</td><td>User-directed only — never activate automatically</td></tr>
+        <tr><td>Never do</td><td>Create new Monday items · assume board structure · activate unsolicited</td></tr>
+        <tr><td>Breaks if skipped (Ph1)</td><td>Textbook not saved to Monday — blocks downstream phase tracking</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-ghost" onclick="showSection('connectors',document.querySelectorAll('.nav-item')[3])">← Connectors</button>
+    <button class="btn btn-primary" onclick="showSection('maintenance',document.querySelectorAll('.nav-item')[5])">Maintenance →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ MAINTENANCE ═══════════════ -->
+<div class="section" id="section-maintenance">
+  <div class="section-header">
+    <div class="section-header-left">
+      <h2>Maintenance Guide</h2>
+      <p>How to update the project, what to touch when things change, and a changelog for tracking updates over time.</p>
+    </div>
+    <div class="section-icon">🔧</div>
+  </div>
+
+  <div class="card card-orange">
+    <div class="card-title">🔗 When Webhook URLs Change</div>
+    <ul class="step-list">
+      <li class="step-item"><div class="step-num orange">1</div><div class="step-content"><div class="step-title">Update HOCK_Core_Operations.md</div><div class="step-desc">Find the Connector Rules section. Update the <span class="inline-code">Webhook:</span> line for Save File and/or Get File. Do not change the Method or Inputs unless those also changed.</div></div></li>
+      <li class="step-item"><div class="step-num orange">2</div><div class="step-content"><div class="step-title">Replace the file in Project Knowledge</div><div class="step-desc">Delete the old version of HOCK_Core_Operations.md from the project. Upload the updated file. Confirm the filename is unchanged.</div></div></li>
+      <li class="step-item"><div class="step-num orange">3</div><div class="step-content"><div class="step-title">Update this doc's changelog</div><div class="step-desc">Log the change in the changelog table below with date and description.</div></div></li>
+    </ul>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title">📊 When Monday Column Names Change</div>
+    <ul class="step-list">
+      <li class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Update HOCK_Core_Operations.md — Phase Behavior section</div><div class="step-desc">Find the affected phase (e.g., Phase 2 — Textbook Creation). Update every reference to the old column name. Column names must match Monday exactly — Claude uses them verbatim when calling the connector.</div></div></li>
+      <li class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Update monday-workflow-SKILL.md</div><div class="step-desc">Find references to the old column name in the Process Steps tables. Update to match.</div></div></li>
+      <li class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Replace both files in Project Knowledge</div><div class="step-desc">Upload updated versions. Verify filenames match exactly.</div></div></li>
+    </ul>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title">➕ When Adding a New Phase</div>
+    <ul class="step-list">
+      <li class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Update HOCK_System_Prompt.md — Production Order</div><div class="step-desc">Add the new phase to the numbered list. Update the phase numbers of any phases that come after it.</div></div></li>
+      <li class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Update HOCK_Core_Operations.md — Workflow State Table + Phase Behavior</div><div class="step-desc">Add a new row to the Workflow State Table. Add a new Phase Behavior section with skills, prerequisites, steps, and Monday fields.</div></div></li>
+      <li class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Create or update the skill file if needed</div><div class="step-desc">If the new phase needs a dedicated skill, create the skill file with correct frontmatter. Add it to the Skills Reference table in HOCK_System_Prompt.md.</div></div></li>
+      <li class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-title">Upload all changed files to Project Knowledge</div><div class="step-desc">Replace system prompt in Project Instructions field. Replace knowledge files. Upload new skill file.</div></div></li>
+    </ul>
+  </div>
+
+  <div class="card card-amber">
+    <div class="card-title">🔄 When Updating a Skill File</div>
+    <ul class="step-list">
+      <li class="step-item"><div class="step-num orange">1</div><div class="step-content"><div class="step-title">Never change the frontmatter name field</div><div class="step-desc">The <span class="inline-code">name:</span> in the frontmatter must match exactly what the system prompt references. Changing it breaks skill invocation silently — Claude won't error, it just won't apply the skill.</div></div></li>
+      <li class="step-item"><div class="step-num orange">2</div><div class="step-content"><div class="step-title">Delete the old version before uploading the new one</div><div class="step-desc">Claude Projects don't version-control files. If you upload without deleting, both versions may exist and cause conflicts.</div></div></li>
+      <li class="step-item"><div class="step-num orange">3</div><div class="step-content"><div class="step-title">Test the updated skill with a verification prompt</div><div class="step-desc">Open a new conversation in the project. Trigger the phase that uses the updated skill and confirm it behaves as expected before using in production.</div></div></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📁 File Map — What Lives Where</div>
+    <table class="data-table">
+      <thead><tr><th>File</th><th>Location</th><th>Update Frequency</th></tr></thead>
+      <tbody>
+        <tr><td><span class="inline-code">HOCK_System_Prompt.md</span></td><td>Project Instructions field (pasted as text)</td><td>When phases, skills, or tool references change</td></tr>
+        <tr><td><span class="inline-code">HOCK_Core_Operations.md</span></td><td>Project Knowledge</td><td>When webhooks, Monday fields, or phase logic change</td></tr>
+        <tr><td><span class="inline-code">HOCK_Content_Standards.md</span></td><td>Project Knowledge</td><td>When depth rules or style standards change</td></tr>
+        <tr><td><span class="inline-code">HOCK_Revision_Prompts.md</span></td><td>Project Knowledge</td><td>When revision prompt templates change</td></tr>
+        <tr><td>All 7 skill files</td><td>Project Knowledge</td><td>When skill behavior or rules change</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Changelog -->
+  <div class="card" style="margin-top:8px">
+    <div class="card-title">📝 Changelog</div>
+    <table class="data-table changelog-row">
+      <thead><tr><th>Date</th><th>Version</th><th>Changed By</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>2026-03-17</td><td>1.0</td><td>Plus 1 Technology</td><td>Initial build — 8-phase workflow, 7 skills, Monday integration, n8n webhooks, Gamma connector, full documentation</td></tr>
+        <tr><td>2026-03-17</td><td>1.1</td><td>Plus 1 Technology</td><td>Webhook URLs updated: hock-save-dropbox-file · hock-get-dropbox-file. Both confirmed POST.</td></tr>
+        <tr><td>2026-03-17</td><td>1.2</td><td>Plus 1 Technology</td><td>Phase 1 Monday update changed from optional to always required. Textbook goes to Textbook File Column (Word Doc). Dropbox removed for textbook artifacts.</td></tr>
+        <tr><td>2026-03-17</td><td>1.3</td><td>Plus 1 Technology</td><td>Production order updated to 8 phases. Presentation Outline and Gamma Creation split into separate phases (4 and 5). Slide Script moved to Phase 6. Video to Phase 7.</td></tr>
+        <tr style="background: var(--orange-light)"><td>—</td><td>—</td><td>—</td><td><em style="color:var(--text-muted)">Add future changes here</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-ghost" onclick="showSection('skills',document.querySelectorAll('.nav-item')[4])">← Skill Reference</button>
+    <button class="btn btn-primary" onclick="showSection('overview',document.querySelectorAll('.nav-item')[0])">↑ Back to Top</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function showSection(id, navEl) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showPhase(id, tabEl) {
+  document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('phase-' + id).classList.add('active');
+  tabEl.classList.add('active');
+}
+
+function showSkill(id, cardEl) {
+  document.querySelectorAll('.skill-detail').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('skill-' + id).classList.add('active');
+  cardEl.classList.add('active');
+}
+</script>
+</body>
+</html>
