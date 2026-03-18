@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HOCK International — Claude Project Setup Guide</title>
+<style>
+:root{
+  --bg:#F7F4EE;--surface:#FFFFFF;--surface2:#F3EFE8;--surface3:#EDE8DF;
+  --border:#DDD7CC;--border2:#C9C3B7;
+  --text:#1C1814;--muted:#6B6458;--faint:#9C9487;
+  --orange:#F47920;--orange-bg:rgba(244,121,32,.10);--orange-br:rgba(244,121,32,.30);--orange-light:#FEF0E6;
+  --blue:#1B4B8A;--blue-bg:rgba(27,75,138,.08);--blue-br:rgba(27,75,138,.25);--blue-light:#EBF0F8;
+  --green:#2D7A3A;--green-bg:rgba(45,122,58,.09);--green-br:rgba(45,122,58,.25);--green-light:#EAF3DE;
+  --monday:#F41472;--monday-bg:rgba(244,20,114,.08);--monday-br:rgba(244,20,114,.25);
+  --gamma:#6D28D9;--gamma-bg:rgba(109,40,217,.08);--gamma-br:rgba(109,40,217,.25);
+  --amber:#B45309;--amber-bg:rgba(180,83,9,.08);--amber-br:rgba(180,83,9,.25);--amber-light:#FEF3E2;
+  --r:10px;--r-sm:6px;
+  --shadow:0 1px 4px rgba(0,0,0,.07),0 2px 12px rgba(0,0,0,.04);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+/* HEADER */
+.page-header{background:var(--surface);border-bottom:3px solid var(--orange);padding:22px 36px 18px;box-shadow:var(--shadow-sm)}
+.hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.h-hock{font-size:22px;font-weight:900;font-style:italic;color:var(--orange);letter-spacing:-.5px}
+.h-intl{font-size:9px;font-weight:800;background:var(--orange);color:#fff;padding:2px 7px;border-radius:3px;letter-spacing:.06em;text-transform:uppercase}
+.h-div{width:1px;height:20px;background:var(--border);margin:0 6px}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.badge-orange{background:var(--orange-light);color:var(--orange);border:1px solid var(--orange-br)}
+.badge-blue{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-br)}
+.badge-green{background:var(--green-light);color:var(--green);border:1px solid var(--green-br)}
+.badge-amber{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-br)}
+.badge-monday{background:var(--monday-bg);color:var(--monday);border:1px solid var(--monday-br)}
+.badge-gamma{background:var(--gamma-bg);color:var(--gamma);border:1px solid var(--gamma-br)}
+.page-header h1{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.page-header p{color:var(--muted);font-size:13px;margin-top:3px}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 88px)}
+
+/* SIDEBAR */
+.sidebar{width:218px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:calc(100vh - 88px);overflow-y:auto}
+.sidebar-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:0 18px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;font-size:13px;color:var(--muted);border-left:3px solid transparent;transition:all .15s;user-select:none}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--orange-light);color:var(--orange);border-left-color:var(--orange);font-weight:600}
+.nav-step{width:20px;height:20px;border-radius:50%;background:var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:var(--faint)}
+.nav-item.active .nav-step{background:var(--orange);color:#fff}
+.nav-item.done .nav-step{background:var(--green);color:#fff}
+.nav-item.done{color:var(--muted)}
+.sidebar-divider{border:none;border-top:1px solid var(--border);margin:10px 18px}
+.progress-bar{background:var(--border);height:3px;border-radius:2px;margin:14px 18px 0;overflow:hidden}
+.progress-fill{height:100%;background:var(--orange);border-radius:2px;transition:width .3s}
+
+/* MAIN */
+.main{flex:1;padding:28px 36px;max-width:880px}
+.section{display:none}.section.active{display:block}
+.section-header{margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-header h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:5px}
+.section-header p{color:var(--muted);font-size:13px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card p{color:var(--muted);font-size:13px;line-height:1.65}
+.card p+p{margin-top:8px}
+.card-orange{border-left:4px solid var(--orange)}
+.card-blue{border-left:4px solid var(--blue)}
+.card-green{border-left:4px solid var(--green)}
+.card-amber{border-left:4px solid var(--amber)}
+.card-monday{border-left:4px solid var(--monday)}
+.card-gamma{border-left:4px solid var(--gamma)}
+
+/* STEPS */
+.step-list{list-style:none;margin-top:4px}
+.step-item{display:flex;gap:13px;padding:11px 0;border-bottom:1px solid var(--border)}
+.step-item:last-child{border-bottom:none;padding-bottom:0}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step-content{flex:1}
+.step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* TABLES */
+.file-table{width:100%;border-collapse:collapse;margin-top:8px}
+.file-table th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);padding:7px 11px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.file-table td{padding:9px 11px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border);vertical-align:top}
+.file-table tr:last-child td{border-bottom:none}
+.file-table td:first-child{color:var(--text);font-weight:500}
+.fname{font-family:'SF Mono','Menlo',monospace;font-size:12px;background:var(--bg);padding:2px 7px;border-radius:4px;border:1px solid var(--border);color:var(--blue);display:inline-block}
+code{font-family:'SF Mono','Menlo',monospace;font-size:12px;background:var(--blue-light);padding:1px 5px;border-radius:3px;color:var(--blue)}
+
+/* ALERTS */
+.alert{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border-radius:var(--r);margin-bottom:14px;font-size:13px;line-height:1.6}
+.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.alert-orange{background:var(--orange-light);border:1px solid var(--orange-br);color:#C45F10}
+.alert-blue{background:var(--blue-light);border:1px solid var(--blue-br);color:var(--blue)}
+.alert-green{background:var(--green-light);border:1px solid var(--green-br);color:var(--green)}
+.alert-amber{background:var(--amber-light);border:1px solid var(--amber-br);color:var(--amber)}
+.alert strong{font-weight:700}
+
+/* CHECKLIST */
+.checklist{list-style:none}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.check-item:last-child{border-bottom:none}
+.check-box{width:17px;height:17px;border:2px solid var(--border2);border-radius:4px;flex-shrink:0;margin-top:2px;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green);color:#fff;font-size:10px}
+.check-item.checked .check-box::after{content:'✓';font-weight:800}
+.check-label{font-size:13px;font-weight:500;color:var(--text)}
+.check-item.checked .check-label{color:var(--faint);text-decoration:line-through}
+.check-sublabel{font-size:12px;color:var(--faint);margin-top:2px}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500;background:var(--bg);border:1px solid var(--border);color:var(--muted)}
+
+/* COMPARE */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.compare-card{padding:13px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface2)}
+.compare-card h4{font-size:13px;font-weight:700;margin-bottom:8px}
+.compare-card ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.compare-card li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0}
+.dot-blue{background:var(--blue)}
+
+/* CODE BLOCK */
+.code-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 14px;margin:10px 0;font-family:'SF Mono','Menlo',monospace;font-size:12px;line-height:1.65;color:var(--blue)}
+.code-comment{color:var(--faint)}
+
+/* NAV BUTTONS */
+.nav-buttons{display:flex;justify-content:space-between;margin-top:22px;padding-top:16px;border-top:1px solid var(--border)}
+.btn{padding:8px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);transition:all .15s}
+.btn-primary{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn-primary:hover{background:#D9640E}
+.btn-ghost{background:var(--surface);color:var(--muted)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* ── VISUAL MOCKUP STYLES ── */
+.mockup-shell{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);margin-bottom:14px}
+.mockup-topbar{background:var(--surface2);border-bottom:1px solid var(--border);padding:9px 15px;display:flex;align-items:center;justify-content:space-between}
+.mock-av{width:26px;height:26px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.mock-projname{font-size:13px;font-weight:600;color:var(--text)}
+.mock-btn{padding:4px 11px;border-radius:6px;font-size:11px;font-weight:600;cursor:default}
+.mock-btn-ghost{border:1px solid var(--border);color:var(--muted);background:var(--surface)}
+.mock-btn-orange{background:var(--orange);color:#fff}
+.mockup-body{display:grid;grid-template-columns:150px 1fr}
+.mock-sidebar{border-right:1px solid var(--border);padding:8px 0}
+.mock-navitem{padding:7px 13px;font-size:12px;color:var(--faint)}
+.mock-navitem.active{background:var(--orange-light);color:var(--orange);border-left:3px solid var(--orange);font-weight:600}
+.mock-content{padding:14px 16px}
+.mock-section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.mock-section-sub{font-size:11px;color:var(--muted);margin-bottom:11px}
+.mock-textarea{width:100%;height:88px;border:2px solid var(--orange);border-radius:7px;padding:8px 10px;font-size:11px;color:var(--muted);background:var(--surface2);font-family:monospace;resize:none;outline:none;line-height:1.5}
+.mock-annotation{position:relative;margin-bottom:10px}
+.mock-ann-tag{position:absolute;top:-22px;right:0;background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 9px;border-radius:4px;white-space:nowrap}
+.mock-warn{padding:8px 11px;background:var(--orange-light);border:1px solid var(--orange-br);border-radius:7px;font-size:11.5px;color:#C45F10;display:flex;gap:7px;line-height:1.5;margin-top:8px}
+.mock-file-row{display:flex;align-items:center;gap:9px;padding:7px 9px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);margin-bottom:5px}
+.mock-file-num{width:19px;height:19px;border-radius:4px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--blue);font-weight:700;flex-shrink:0}
+.mock-file-name{font-size:11px;font-weight:600;font-family:monospace;color:var(--text)}
+.mock-file-desc{font-size:10px;color:var(--faint)}
+.mock-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.mock-auto-row{display:flex;align-items:center;gap:9px;padding:7px 9px;border:1px dashed var(--border2);border-radius:7px;margin-bottom:5px}
+.mock-auto-tag{font-size:10px;color:var(--faint);padding:2px 7px;border-radius:4px;background:var(--surface2);border:1px solid var(--border);margin-left:auto}
+.mock-upload-btn{padding:4px 11px;border-radius:6px;background:var(--orange);color:#fff;font-size:11px;font-weight:600}
+.mock-info-bar{padding:6px 9px;background:var(--blue-light);border:1px solid var(--blue-br);border-radius:6px;font-size:11px;color:var(--blue);margin-bottom:9px}
+.mock-conn-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:7px;position:relative}
+.mock-conn-row.monday{border:2px solid var(--orange-br);background:var(--orange-light)}
+.mock-conn-row.gamma{border:2px solid var(--orange-br);background:var(--orange-light)}
+.mock-conn-ico{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;font-weight:900;font-style:italic}
+.mock-conn-ico.monday{background:var(--monday-bg)}
+.mock-conn-ico.gamma{background:var(--gamma-bg)}
+.mock-conn-info{flex:1}
+.mock-conn-name{font-size:12px;font-weight:700;color:var(--text)}
+.mock-conn-sub{font-size:11px;color:var(--faint)}
+.mock-req{font-size:10px;font-weight:700;color:var(--orange);padding:2px 7px;background:#fff;border:1px solid var(--orange-br);border-radius:4px}
+.mock-connect-btn{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;color:#fff}
+.mock-connect-btn.monday{background:var(--monday)}
+.mock-connect-btn.gamma{background:var(--gamma)}
+.mock-ann-bubble{position:absolute;top:-20px;right:0;font-size:10px;font-weight:700;padding:2px 9px;border-radius:4px;color:#fff;white-space:nowrap}
+.mock-connected-row{display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid var(--green-br);border-radius:7px;background:var(--green-light);margin-bottom:5px}
+.mock-connected-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.mock-path-row{display:flex;align-items:center;gap:6px;margin-bottom:9px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+.mock-path-chip{padding:2px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px;font-size:11px;color:var(--text);font-family:monospace}
+.mock-path-chip.active{background:var(--orange-light);border-color:var(--orange-br);color:var(--orange);font-weight:600;font-family:inherit}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="hdr-top">
+    <span class="h-hock">HOCK</span>
+    <span class="h-intl">International</span>
+    <div class="h-div"></div>
+    <span class="badge badge-orange">Setup Guide</span>
+    <span class="badge badge-blue">Claude Projects</span>
+    <span class="badge badge-green">Plus 1 Technology</span>
+  </div>
+  <h1>Content Production Agent — Project Setup Guide</h1>
+  <p>Step-by-step instructions for configuring the HOCK Claude Project with system instructions, knowledge files, skills, and connectors.</p>
+</div>
+
+<div class="layout">
+
+  <nav class="sidebar">
+    <div class="sidebar-label">Setup Steps</div>
+    <div class="nav-item active" onclick="show('overview',this)" data-section="overview">
+      <div class="nav-step">★</div>Overview
+    </div>
+    <div class="nav-item" onclick="show('step1',this)" data-section="step1">
+      <div class="nav-step">1</div>Create Project
+    </div>
+    <div class="nav-item" onclick="show('step2',this)" data-section="step2">
+      <div class="nav-step">2</div>System Prompt
+    </div>
+    <div class="nav-item" onclick="show('step3',this)" data-section="step3">
+      <div class="nav-step">3</div>Knowledge Files
+    </div>
+    <div class="nav-item" onclick="show('step4',this)" data-section="step4">
+      <div class="nav-step">4</div>Connect Tools
+    </div>
+    <div class="nav-item" onclick="show('step5',this)" data-section="step5">
+      <div class="nav-step">5</div>Verify Setup
+    </div>
+    <hr class="sidebar-divider"/>
+    <div class="nav-item" onclick="show('checklist',this)" data-section="checklist">
+      <div class="nav-step">✓</div>Final Checklist
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="pf" style="width:0%"></div></div>
+  </nav>
+
+  <main class="main">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="section-overview">
+      <div class="section-header">
+        <h2>What You're Setting Up</h2>
+        <p>The HOCK Content Production Agent is a Claude Project configured with system instructions, knowledge files, skills, and tool connectors that work together to manage the full certification course production workflow.</p>
+      </div>
+      <div class="alert alert-blue">
+        <span class="alert-icon">ℹ</span>
+        <div><strong>Before you start:</strong> Make sure you have all required files downloaded and ready. You'll also need access to Monday.com and Gamma to connect them in Step 4.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📁 Files You'll Need</div>
+        <table class="file-table">
+          <thead><tr><th>File</th><th>Goes Into</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><span class="fname">HOCK_System_Prompt.md</span></td><td><span class="badge badge-orange">Instructions field</span></td><td>Agent identity, phase rules, skill invocation map</td></tr>
+            <tr><td><span class="fname">HOCK_Core_Operations.md</span></td><td><span class="badge badge-blue">Project Knowledge</span></td><td>Phase router, state table, connectors, artifact naming</td></tr>
+            <tr><td><span class="fname">HOCK_Content_Standards.md</span></td><td><span class="badge badge-blue">Project Knowledge</span></td><td>Depth calibration, style rules, MCQ format, token chunking</td></tr>
+            <tr><td><span class="fname">HOCK_Revision_Prompts.md</span></td><td><span class="badge badge-blue">Project Knowledge</span></td><td>All 20+ revision templates for textbook, MCQ, slides, scripts</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">⚡ Skills — Pre-Configured, Nothing for You to Do</div>
+        <p>All 7 skills are already uploaded and configured in Claude at the account level by Plus 1 Technology. They are not project files — they live in Claude itself and load automatically based on what phase the agent is in. The HOCK team does not need to upload, manage, or configure anything related to skills.</p>
+        <div class="tags" style="margin-top:10px">
+          <span class="tag">depth-calibration-skill</span><span class="tag">token-optimization</span><span class="tag">textbook-style-guide</span>
+          <span class="tag">mcq-creation-skill</span><span class="tag">slide-creation-skill</span><span class="tag">slide-script-skill</span>
+          <span class="tag">monday-workflow-skill</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔗 Connectors to Enable</div>
+        <table class="file-table">
+          <thead><tr><th>Tool</th><th>Used For</th><th>Where to Connect</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-monday">Monday.com</span></td><td>Task updates, file columns, status, assignee, dates</td><td>claude.ai → Settings → Integrations</td></tr>
+            <tr><td><span class="badge badge-gamma">Gamma</span></td><td>Create presentations, export PowerPoint, add speaker notes</td><td>claude.ai → Settings → Integrations</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" disabled>← Back</button>
+        <button class="btn btn-primary" onclick="show('step1',document.querySelector('[data-section=step1]'))">Start Setup →</button>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="section" id="section-step1">
+      <div class="section-header">
+        <h2>Step 1 — Create the Claude Project</h2>
+        <p>Set up a new Project in Claude.ai and name it correctly before adding any files.</p>
+      </div>
+      <div class="card card-orange">
+        <div class="card-title">📋 Instructions</div>
+        <ul class="step-list">
+          <li class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Navigate to Claude.ai → Projects</div><div class="step-desc">Click <strong>Projects</strong> in the left sidebar, then click <strong>Create Project</strong>.</div></div></li>
+          <li class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Name the project</div><div class="step-desc">Use: <span class="fname">HOCK International — Content Production Agent</span></div></div></li>
+          <li class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Leave the description optional</div><div class="step-desc">You can add: "AI-managed content production agent for HOCK certification course creation — textbooks, MCQs, slides, scripts, and video."</div></div></li>
+          <li class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-title">Do not add any files yet</div><div class="step-desc">Create the project first. You'll add the system prompt, knowledge files, and skills in the next steps in a specific order.</div></div></li>
+        </ul>
+      </div>
+      <div class="alert alert-amber">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Important:</strong> Add the system prompt before any knowledge files. Claude loads the system prompt first — if it's missing, the agent won't know how to route knowledge file references.</div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="show('overview',document.querySelector('[data-section=overview]'))">← Back</button>
+        <button class="btn btn-primary" onclick="show('step2',document.querySelector('[data-section=step2]'))">Next: System Prompt →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 — SYSTEM PROMPT -->
+    <div class="section" id="section-step2">
+      <div class="section-header">
+        <h2>Step 2 — Add the System Prompt</h2>
+        <p>The system prompt is the agent's identity and operating brain. It goes in a dedicated text field — not as a knowledge file upload.</p>
+      </div>
+      <div class="alert alert-blue">
+        <span class="alert-icon">ℹ</span>
+        <div><strong>File to use:</strong> <span class="fname">HOCK_System_Prompt.md</span> — paste the full contents into the Project Instructions text field shown below.</div>
+      </div>
+
+      <!-- VISUAL MOCKUP -->
+      <div class="mockup-shell">
+        <div class="mockup-topbar">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div class="mock-av">H</div>
+            <div class="mock-projname">HOCK Content Production Agent</div>
+          </div>
+          <div style="display:flex;gap:7px">
+            <div class="mock-btn mock-btn-ghost">Edit project</div>
+            <div class="mock-btn mock-btn-orange">Settings</div>
+          </div>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-navitem">General</div>
+            <div class="mock-navitem active">Project Instructions</div>
+            <div class="mock-navitem">Project Knowledge</div>
+            <div class="mock-navitem">Members</div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-section-title">Project Instructions</div>
+            <div class="mock-section-sub">These instructions apply to all conversations in this project.</div>
+            <div class="mock-annotation">
+              <div class="mock-ann-tag">← Paste here — text field ONLY, not a file upload</div>
+              <textarea class="mock-textarea" readonly>You are the HOCK International Content Production Agent. You operate in a strict phase-locked workflow...
+
+[Paste full contents of HOCK_System_Prompt.md here]</textarea>
+            </div>
+            <div class="mock-warn">
+              <span style="flex-shrink:0">⚠</span>
+              <span>Do <strong>not</strong> upload the system prompt as a knowledge file — it must go in this text field or phase-locked behavior won't activate.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-orange">
+        <div class="card-title">📋 How to Do It</div>
+        <ul class="step-list">
+          <li class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Open Project Settings</div><div class="step-desc">Inside the project, click <strong>Settings</strong> or <strong>Edit Project</strong>. Then click <strong>Project Instructions</strong> in the left sidebar.</div></div></li>
+          <li class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Open HOCK_System_Prompt.md and copy all</div><div class="step-desc">Open in any text editor. Press Ctrl+A / Cmd+A to select all, then Ctrl+C / Cmd+C to copy.</div></div></li>
+          <li class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Paste into the Project Instructions text field</div><div class="step-desc">Paste the entire contents exactly as written. Do not summarize, truncate, or reformat.</div></div></li>
+          <li class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-title">Save the settings</div><div class="step-desc">Click <strong>Save</strong> or <strong>Done</strong>. The system prompt is now active for every conversation in this project.</div></div></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🧠 What's in the System Prompt</div>
+        <div class="tags">
+          <span class="tag">Agent identity</span><span class="tag">Production order (locked)</span><span class="tag">Core operating rules</span>
+          <span class="tag">Workflow state rule</span><span class="tag">Session state tracking</span><span class="tag">Skills invocation map</span>
+          <span class="tag">Phase transition rule</span><span class="tag">Response style</span><span class="tag">External tool references</span>
+        </div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="show('step1',document.querySelector('[data-section=step1]'))">← Back</button>
+        <button class="btn btn-primary" onclick="show('step3',document.querySelector('[data-section=step3]'))">Next: Knowledge Files →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 — KNOWLEDGE FILES -->
+    <div class="section" id="section-step3">
+      <div class="section-header">
+        <h2>Step 3 — Add Knowledge Files</h2>
+        <p>Three knowledge files go into Project Knowledge. These load into every conversation and are cross-referenced by the system prompt.</p>
+      </div>
+      <div class="alert alert-amber">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Order matters:</strong> Upload Core Operations first, then Content Standards, then Revision Prompts. This matches the reference order in the system prompt.</div>
+      </div>
+
+      <!-- VISUAL MOCKUP -->
+      <div class="mockup-shell">
+        <div class="mockup-topbar">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div class="mock-av">H</div>
+            <div class="mock-projname">HOCK Content Production Agent</div>
+          </div>
+          <div class="mock-btn mock-btn-orange">Settings</div>
+        </div>
+        <div class="mockup-body">
+          <div class="mock-sidebar">
+            <div class="mock-navitem">General</div>
+            <div class="mock-navitem">Project Instructions</div>
+            <div class="mock-navitem active">Project Knowledge</div>
+            <div class="mock-navitem">Members</div>
+          </div>
+          <div class="mock-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <div>
+                <div class="mock-section-title">Project Knowledge</div>
+                <div class="mock-section-sub" style="margin-bottom:0">Files available in every conversation.</div>
+              </div>
+              <div class="mock-upload-btn">+ Add content</div>
+            </div>
+            <div class="mock-info-bar">Upload in this order — matches the system prompt cross-reference sequence.</div>
+            <div class="mock-file-row">
+              <div class="mock-file-num">1</div>
+              <div style="flex:1"><div class="mock-file-name">HOCK_Core_Operations.md</div><div class="mock-file-desc">Phase router · webhooks · artifact naming</div></div>
+              <div class="mock-dot"></div>
+            </div>
+            <div class="mock-file-row">
+              <div class="mock-file-num">2</div>
+              <div style="flex:1"><div class="mock-file-name">HOCK_Content_Standards.md</div><div class="mock-file-desc">Depth calibration · style rules · MCQ format</div></div>
+              <div class="mock-dot"></div>
+            </div>
+            <div class="mock-file-row">
+              <div class="mock-file-num">3</div>
+              <div style="flex:1"><div class="mock-file-name">HOCK_Revision_Prompts.md</div><div class="mock-file-desc">All 20+ revision templates</div></div>
+              <div class="mock-dot"></div>
+            </div>
+            <div class="mock-auto-row">
+              <span style="font-size:13px">⚡</span>
+              <div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--muted)">Skills (7 files)</div><div style="font-size:10px;color:var(--faint)">Pre-configured — load automatically, no upload needed.</div></div>
+              <div class="mock-auto-tag">auto</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-blue">
+        <div class="card-title">📁 File 1 — HOCK_Core_Operations.md</div>
+        <p>Upload first. This is the routing brain — the system prompt references it by name. Contains the phase router, workflow state table, connector webhooks, artifact naming, and intent labels.</p>
+        <div class="tags" style="margin-top:10px">
+          <span class="tag">Phase Router</span><span class="tag">Workflow State Table</span><span class="tag">Phase Behavior</span>
+          <span class="tag">Connector Webhooks</span><span class="tag">Artifact Naming</span><span class="tag">Intent Labels</span>
+        </div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-title">📁 File 2 — HOCK_Content_Standards.md</div>
+        <p>Upload second. Quick-reference summary for depth calibration, textbook style rules, MCQ output format, and token chunking tables.</p>
+        <div class="tags" style="margin-top:10px">
+          <span class="tag">Depth Calibration Matrix</span><span class="tag">Textbook Style Rules</span><span class="tag">MCQ Format</span><span class="tag">Token Chunking</span>
+        </div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-title">📁 File 3 — HOCK_Revision_Prompts.md</div>
+        <p>Upload last. Contains all 20+ revision prompt templates used during live content editing. Do not trim or summarize this file.</p>
+        <div class="tags" style="margin-top:10px">
+          <span class="tag">Textbook Revisions (5 types)</span><span class="tag">MCQ Revisions (5 types)</span>
+          <span class="tag">Slide Outline Revisions (6 types)</span><span class="tag">Script Revisions (5 types)</span>
+        </div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="show('step2',document.querySelector('[data-section=step2]'))">← Back</button>
+        <button class="btn btn-primary" onclick="show('step4',document.querySelector('[data-section=step4]'))">Next: Connect Tools →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 — CONNECTORS -->
+    <div class="section" id="section-step4">
+      <div class="section-header">
+        <h2>Step 4 — Connect Monday.com and Gamma</h2>
+        <p>The agent fires connector actions throughout the workflow — updating Monday tasks, creating Gamma presentations, and exporting PowerPoints. Both tools must be connected before the agent can use them.</p>
+      </div>
+      <div class="alert alert-orange">
+        <span class="alert-icon">⚠</span>
+        <div><strong>Required for full functionality:</strong> Without these connections, the agent will ask to fire connector actions but they won't execute. Connect both before running your first production session.</div>
+      </div>
+
+      <!-- VISUAL MOCKUP -->
+      <div class="mockup-shell">
+        <div class="mockup-topbar" style="flex-direction:column;align-items:flex-start;gap:8px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Integrations</div>
+          <div class="mock-path-row" style="margin:0">
+            <span>Navigate to:</span>
+            <span class="mock-path-chip">claude.ai</span>
+            <span>→</span>
+            <span class="mock-path-chip">Settings</span>
+            <span>→</span>
+            <span class="mock-path-chip active">Integrations</span>
+          </div>
+        </div>
+        <div style="padding:14px 16px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:9px">Required for HOCK Agent</div>
+
+          <div class="mock-conn-row gamma" style="margin-bottom:10px;position:relative">
+            <div class="mock-ann-bubble" style="background:var(--gamma)">← Click Connect → sign in to Gamma → Allow</div>
+            <div class="mock-conn-ico gamma">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="mock-conn-info">
+              <div class="mock-conn-name">Gamma</div>
+              <div class="mock-conn-sub">Create and export AI presentations</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px">
+              <div class="mock-req">Required</div>
+              <div class="mock-connect-btn gamma">Connect</div>
+            </div>
+          </div>
+
+          <div class="mock-conn-row monday" style="position:relative">
+            <div class="mock-ann-bubble" style="background:var(--monday)">← Click Connect → sign in to Monday → Allow</div>
+            <div class="mock-conn-ico monday" style="color:var(--monday);font-size:16px;font-weight:900;font-style:italic">m</div>
+            <div class="mock-conn-info">
+              <div class="mock-conn-name">Monday.com</div>
+              <div class="mock-conn-sub">Update tasks, columns, and statuses</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px">
+              <div class="mock-req">Required</div>
+              <div class="mock-connect-btn monday">Connect</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;padding:9px 11px;background:var(--green-light);border:1px solid var(--green-br);border-radius:7px;font-size:11.5px;color:var(--green);display:flex;gap:7px">
+            <span style="flex-shrink:0">✓</span>
+            <span>Once both show as <strong>Connected</strong>, the agent can fire permission modals throughout the workflow. You'll click <strong>Allow</strong> each time to approve the action.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-monday">
+        <div class="card-title">📊 Monday.com — What the Agent Updates</div>
+        <table class="file-table">
+          <thead><tr><th>Phase</th><th>Columns Updated</th><th>Data Set</th></tr></thead>
+          <tbody>
+            <tr><td>Phase 1 — Textbook</td><td>Textbook File · Status · Assignee · Dates</td><td>Word Doc · Textbook Ready for Review</td></tr>
+            <tr><td>Phase 2 — MCQs</td><td>MCQs File · Status · Assignee · Due Date</td><td>Excel · MCQs Ready for Review · +2 days</td></tr>
+            <tr><td>Phase 4 — Gamma</td><td>Presentation Link · Presentation File</td><td>Gamma URL · PPTX file</td></tr>
+            <tr><td>Phase 5 — Script</td><td>Slide Script · Status · Assignee · Due Date</td><td>Word Doc · Slide Script Ready for Review</td></tr>
+            <tr><td>Phase 6 — Video</td><td>Status</td><td>Video is Ready for Review</td></tr>
+            <tr><td>Phase 7 — Close-Out</td><td>Status</td><td>Complete</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card card-gamma">
+        <div class="card-title">🎨 Gamma — What the Agent Does</div>
+        <table class="file-table">
+          <thead><tr><th>Action</th><th>When</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>Create presentation</td><td>Phase 3 — after outline approved</td><td>Uses HOCK theme ID: <code>0mk4i94ypgimwxi</code></td></tr>
+            <tr><td>Export PowerPoint</td><td>Phase 4 — after presentation finalized</td><td>Downloads PPTX, uploads to Monday</td></tr>
+            <tr><td>Add speaker notes</td><td>Phase 5 — optional after script approved</td><td>Adds narration to each slide</td></tr>
+          </tbody>
+        </table>
+        <div class="alert alert-blue" style="margin-top:12px;margin-bottom:0">
+          <span class="alert-icon">ℹ</span>
+          <div><strong>Important:</strong> After Gamma creates a presentation, all edits happen at the Gamma URL directly — never through the connector. The connector is only used for create, export, and speaker notes actions.</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="show('step3',document.querySelector('[data-section=step3]'))">← Back</button>
+        <button class="btn btn-primary" onclick="show('step5',document.querySelector('[data-section=step5]'))">Next: Skills →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 — VERIFY -->
+    <div class="section" id="section-step5">
+      <div class="section-header">
+        <h2>Step 5 — Verify the Setup</h2>
+        <p>Run these test prompts in the project before handing it off. Each test confirms a different layer of the agent is working correctly.</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">✅ Test 1 — Identity &amp; Phase Awareness</div>
+        <div class="code-block"><span class="code-comment"># Paste this into a new conversation inside the project</span>
+<span>What phase are we in and what are you waiting for before we can begin?</span></div>
+        <p>Expected: Agent identifies it's in Initiation phase, states it needs source materials uploaded and a textbook prompt before proceeding. It should NOT start generating content.</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">✅ Test 2 — Depth Calibration Trigger</div>
+        <div class="code-block"><span>I want to start the textbook for CIA Part 1, Domain 1 — Foundations of Internal Auditing.</span></div>
+        <p>Expected: Agent invokes depth-calibration-skill, analyzes scope/cognitive level/exam weight, presents a table. It should NOT generate content yet.</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">✅ Test 3 — Phase Lock</div>
+        <div class="code-block"><span>Skip the textbook and just generate MCQs for me now.</span></div>
+        <p>Expected: Agent blocks the request, explains MCQs require an approved textbook first, and asks the correct gating question to get back on track.</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">✅ Test 4 — Monday Skill Boundary</div>
+        <div class="code-block"><span>Update Monday after this is done.</span></div>
+        <p>Expected: For Phase 1 textbook, agent automatically triggers Monday update after finalization. For all other phases, agent confirms it will only update Monday when explicitly instructed.</p>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title">🔧 If Something Doesn't Behave Right</div>
+        <ul class="step-list">
+          <li class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Agent doesn't recognize its phase rules</div><div class="step-desc">Check that HOCK_Core_Operations.md was uploaded to Project Knowledge and the filename wasn't changed.</div></div></li>
+          <li class="step-item"><div class="step-num">2</div><div class="step-content"><div class="step-title">Agent skips depth calibration</div><div class="step-desc">Confirm the system prompt was saved correctly in the Project Instructions text field and not truncated.</div></div></li>
+          <li class="step-item"><div class="step-num">3</div><div class="step-content"><div class="step-title">Agent ignores phase locking and generates out of order</div><div class="step-desc">Re-check that the system prompt was saved in the <strong>Project Instructions text field</strong> — not uploaded as a knowledge file.</div></div></li>
+          <li class="step-item"><div class="step-num">4</div><div class="step-content"><div class="step-title">Connector modal doesn't appear for Monday or Gamma</div><div class="step-desc">Go to claude.ai → Settings → Integrations and confirm both Monday.com and Gamma show as Connected.</div></div></li>
+        </ul>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="show('step4',document.querySelector('[data-section=step4]'))">← Back</button>
+        <button class="btn btn-primary" onclick="show('checklist',document.querySelector('[data-section=checklist]'))">Final Checklist →</button>
+      </div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div class="section" id="section-checklist">
+      <div class="section-header">
+        <h2>Final Setup Checklist</h2>
+        <p>Click each item to mark it complete. All items must be checked before the project is ready for production use.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">🏗 Project Setup</div>
+        <ul class="checklist">
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">Project created in Claude.ai with correct name</div><div class="check-sublabel">HOCK International — Content Production Agent</div></div></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">HOCK_System_Prompt.md pasted into Project Instructions text field</div><div class="check-sublabel">Not uploaded as a file — pasted as text in the instructions field</div></div></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">📁 Knowledge Files</div>
+        <ul class="checklist">
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">HOCK_Core_Operations.md uploaded to Project Knowledge (first)</div></div></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">HOCK_Content_Standards.md uploaded to Project Knowledge (second)</div></div></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">HOCK_Revision_Prompts.md uploaded to Project Knowledge (third)</div></div></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🔗 Connectors</div>
+        <ul class="checklist">
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">Monday.com connected in claude.ai → Settings → Integrations</div><div class="check-sublabel">Signed in and authorized — shows as Connected</div></div></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">Gamma connected in claude.ai → Settings → Integrations</div><div class="check-sublabel">Signed in and authorized — shows as Connected</div></div></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">✅ Verification Tests</div>
+        <ul class="checklist">
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">Test 1 passed — Agent identifies phase and waits for materials</div></div></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">Test 2 passed — Agent invokes depth calibration before generating</div></div></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">Test 3 passed — Agent blocks out-of-order generation</div></div></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div><div class="check-label">Test 4 passed — Monday Phase 1 auto-triggers; other phases require explicit instruction</div></div></li>
+        </ul>
+      </div>
+      <div class="alert alert-green" id="completionAlert" style="display:none">
+        <span class="alert-icon">🎉</span>
+        <div><strong>Setup complete!</strong> The HOCK Content Production Agent project is configured and ready for production use.</div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" onclick="show('step5',document.querySelector('[data-section=step5]'))">← Back</button>
+        <button class="btn btn-primary" onclick="checkDone()">Mark Complete ✓</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const SECTIONS=['overview','step1','step2','step3','step4','step5','checklist'];
+let curIdx=0;
+
+function show(id,navEl){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  curIdx=SECTIONS.indexOf(id);
+  document.getElementById('pf').style.width=Math.round((curIdx/(SECTIONS.length-1))*100)+'%';
+  window.scrollTo(0,0);
+}
+
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  checkDone();
+}
+
+function checkDone(){
+  const total=document.querySelectorAll('.check-item').length;
+  const checked=document.querySelectorAll('.check-item.checked').length;
+  document.getElementById('completionAlert').style.display=checked===total?'flex':'none';
+}
+</script>
+</body>
+</html>
