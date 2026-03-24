@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>HOCK Production System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+:root{
+  --orange:#F47920;--orange-lt:#FFF3E8;--orange-bd:#FFDAB8;
+  --blue:#0F4C97;--blue-lt:#EEF4FF;--blue-bd:#C8DCFF;
+  --bg:#F6F3EE;--surface:#FFFFFF;--s2:#F9F6F1;
+  --text:#1C1814;--text2:#3E3830;--muted:#7A6F65;--border:#E8E0D4;
+  --green:#1A7A4A;--green-lt:#EBF7F1;--green-bd:#B8E4CC;
+  --red:#B42318;--red-lt:#FEF2F2;--red-bd:#F5C2BF;
+  --amber:#B45309;--amber-lt:#FFFBEB;--amber-bd:#FDE68A;
+  --purple:#6D28D9;--purple-lt:#F5F0FF;--purple-bd:#DDD0FA;
+  --r:16px;--rs:10px;
+  --sh:0 2px 16px rgba(28,24,20,.07);
+  --shm:0 6px 32px rgba(28,24,20,.11);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:3px solid var(--orange);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:68px;box-shadow:0 2px 12px rgba(28,24,20,.08);}
+.logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:var(--orange);line-height:1;}
+.logo-tag{font-size:10px;font-weight:900;background:var(--blue);color:#fff;padding:3px 7px;border-radius:4px;letter-spacing:.06em;text-transform:uppercase;}
+.hdiv{width:1px;height:34px;background:var(--border);margin:0 16px;}
+.hdr-label{font-size:14px;font-weight:700;color:var(--text2);}
+.hdr-sub{font-size:11px;color:var(--muted);}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+
+/* ── MODE TOGGLE ── */
+.mtog{display:flex;background:var(--s2);border:1px solid var(--border);border-radius:999px;padding:4px;gap:2px;}
+.mtog button{border:none;background:transparent;border-radius:999px;padding:8px 18px;font-size:12px;font-weight:800;cursor:pointer;color:var(--muted);transition:all .2s;}
+#tBtn.on{background:var(--blue);color:#fff;box-shadow:0 2px 10px rgba(15,76,151,.25);}
+#eBtn.on{background:var(--orange);color:#fff;box-shadow:0 2px 10px rgba(244,121,32,.25);}
+.mind{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:5px 11px;border-radius:999px;border:1px solid;}
+.mind.t{background:var(--blue-lt);color:var(--blue);border-color:var(--blue-bd);}
+.mind.e{background:var(--orange-lt);color:var(--orange);border-color:var(--orange-bd);}
+
+/* ── SHELL ── */
+.shell{display:grid;grid-template-columns:230px 1fr;height:calc(100vh - 68px);}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:14px 10px;}
+.slbl{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:8px 10px 4px;}
+.ni{border:none;background:transparent;width:100%;text-align:left;padding:9px 11px;border-radius:var(--rs);cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:9px;margin-bottom:2px;}
+.ni:hover{background:var(--s2);}
+.ni.on{background:var(--orange-lt);border:1px solid var(--orange-bd);}
+.ni-icon{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;font-size:12px;flex-shrink:0;margin-top:1px;}
+.ni-t{font-size:12px;font-weight:700;color:var(--text);display:block;}
+.ni-s{font-size:11px;color:var(--muted);line-height:1.3;display:block;margin-top:1px;}
+.ni.on .ni-t{color:var(--orange);}
+
+/* ── CONTENT ── */
+.content{overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:18px;}
+.view{display:none;}
+.view.on{display:flex;flex-direction:column;gap:16px;}
+
+/* ── LAYOUT ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);}
+.card.bl-o{border-left:4px solid var(--orange);}
+.card.bl-b{border-left:4px solid var(--blue);}
+.card.bl-g{border-left:4px solid var(--green);}
+.card.bl-r{border-left:4px solid var(--red);}
+.card.bl-a{border-left:4px solid var(--amber);}
+.card.bl-p{border-left:4px solid var(--purple);}
+.ct{font-size:15px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.cs{font-size:12px;color:var(--muted);margin-bottom:12px;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(130deg,#fff 52%,var(--orange-lt));border:1px solid var(--border);border-radius:var(--r);padding:24px 28px;display:flex;justify-content:space-between;align-items:flex-start;box-shadow:var(--sh);}
+.hero h1{font-family:'Playfair Display',serif;font-size:26px;color:var(--text);line-height:1.1;margin-bottom:7px;}
+.hero p{font-size:13px;color:var(--muted);max-width:560px;line-height:1.6;}
+.hbadges{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;margin-left:18px;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;}
+.chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid var(--border);}
+.chip.o{background:var(--orange-lt);color:var(--orange);border-color:var(--orange-bd);}
+.chip.b{background:var(--blue-lt);color:var(--blue);border-color:var(--blue-bd);}
+.chip.g{background:var(--green-lt);color:var(--green);border-color:var(--green-bd);}
+.chip.r{background:var(--red-lt);color:var(--red);border-color:var(--red-bd);}
+.chip.a{background:var(--amber-lt);color:var(--amber);border-color:var(--amber-bd);}
+.chip.p{background:var(--purple-lt);color:var(--purple);border-color:var(--purple-bd);}
+.chip.gray{background:var(--s2);color:var(--muted);}
+
+/* ── CALLOUT ── */
+.co{border-radius:var(--rs);padding:12px 14px;display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);}
+.coi{font-size:15px;flex-shrink:0;margin-top:1px;}
+.cob h4{font-size:13px;font-weight:800;margin-bottom:3px;}
+.cob p,.cob li{font-size:13px;color:var(--text2);line-height:1.55;}
+.cob ul{padding-left:14px;}
+.co.o{background:var(--orange-lt);border-color:var(--orange-bd);}
+.co.g{background:var(--green-lt);border-color:var(--green-bd);}
+.co.b{background:var(--blue-lt);border-color:var(--blue-bd);}
+.co.r{background:var(--red-lt);border-color:var(--red-bd);}
+.co.a{background:var(--amber-lt);border-color:var(--amber-bd);}
+.co.o .cob h4{color:var(--orange);}
+.co.g .cob h4{color:var(--green);}
+.co.b .cob h4{color:var(--blue);}
+.co.r .cob h4{color:var(--red);}
+.co.a .cob h4{color:var(--amber);}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{background:var(--s2);padding:8px 11px;text-align:left;font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:2px solid var(--border);}
+.tbl td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--s2);}
+.mono{font-family:'Courier New',monospace;font-size:11px;color:var(--blue);background:var(--blue-lt);padding:2px 6px;border-radius:4px;white-space:nowrap;}
+
+/* ── CODE ── */
+.code{background:#1C1814;color:#F0E8DC;border-radius:var(--rs);padding:12px 14px;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;overflow-x:auto;margin-top:8px;}
+.code .k{color:#F47920;}.code .s{color:#6EE7B7;}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:7px;}
+.si{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;}
+.sn{width:20px;height:20px;border-radius:999px;background:var(--orange);color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;flex-shrink:0;margin-top:2px;}
+.sb h4{font-size:13px;font-weight:800;margin-bottom:2px;}
+.sb p{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ── CHECK LIST ── */
+.clist{display:flex;flex-direction:column;gap:7px;}
+.cli{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);}
+.clico{font-size:14px;flex-shrink:0;margin-top:2px;}
+.clit h4{font-size:13px;font-weight:700;margin-bottom:2px;}
+.clit p{font-size:12px;color:var(--muted);}
+.cli.ok{background:var(--green-lt);border-color:var(--green-bd);}
+.cli.warn{background:var(--amber-lt);border-color:var(--amber-bd);}
+.cli.bad{background:var(--red-lt);border-color:var(--red-bd);}
+
+/* ── METRIC CARDS ── */
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:center;box-shadow:var(--sh);}
+.mn{font-family:'Playfair Display',serif;font-size:42px;font-weight:800;line-height:1;margin-bottom:5px;}
+.ml{font-size:13px;font-weight:700;color:var(--muted);}
+.ms{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;}
+.mc.mo .mn{color:var(--orange);}
+.mc.mb .mn{color:var(--blue);}
+.mc.mg .mn{color:var(--green);}
+.mc.mp .mn{color:var(--purple);}
+
+/* ── ARCH NODES ── */
+.arch{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.an{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .2s;}
+.an:hover{transform:translateY(-2px);box-shadow:var(--shm);}
+.an.sel{border-color:var(--orange);background:var(--orange-lt);box-shadow:0 0 0 3px rgba(244,121,32,.12);}
+.an-ico{font-size:22px;margin-bottom:6px;}
+.an-lay{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:2px;}
+.an-nm{font-size:13px;font-weight:900;color:var(--text);margin-bottom:3px;}
+.an-d{font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* ── PHASE STRIP ── */
+.pstrip{display:flex;overflow-x:auto;padding-bottom:2px;}
+.pb{flex-shrink:0;position:relative;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-right:none;padding:11px 16px 11px 19px;transition:all .15s;min-width:105px;}
+.pb:first-child{border-radius:11px 0 0 11px;padding-left:13px;}
+.pb:last-child{border-radius:0 11px 11px 0;border-right:1px solid var(--border);}
+.pb::after{content:'';position:absolute;right:-11px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-left:11px solid var(--border);z-index:2;}
+.pb:last-child::after{display:none;}
+.pb::before{content:'';position:absolute;right:-9px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:17px solid transparent;border-bottom:17px solid transparent;border-left:10px solid var(--surface);z-index:3;}
+.pb:last-child::before{display:none;}
+.pb:hover{background:var(--s2);}
+.pb:hover::before{border-left-color:var(--s2);}
+.pb.sel{background:var(--orange-lt);border-color:var(--orange-bd);}
+.pb.sel::before{border-left-color:var(--orange-lt);}
+.pb-n{font-size:9px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+.pb-l{font-size:12px;font-weight:800;color:var(--text);margin-top:2px;}
+.pb.sel .pb-n,.pb.sel .pb-l{color:var(--orange);}
+
+/* ── KV ── */
+.kv{display:flex;flex-direction:column;}
+.kvr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);}
+.kvr:last-child{border-bottom:none;}
+.kvl{color:var(--muted);font-weight:600;flex-shrink:0;}
+.kvv{font-weight:700;text-align:right;font-size:12px;}
+
+/* ── SECTION LABEL ── */
+.slb{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+
+/* ═══════════════════════════════════════
+   MODE VISIBILITY — THE CORE LOGIC
+   
+   Executive mode (.e-mode on body):
+     - Shows .E elements only
+     - Hides ALL .T elements
+   
+   Technical mode (default, no class):
+     - Shows .T elements only  
+     - Hides ALL .E elements
+   
+   .E = exec-only content (plain english, business outcomes, no IDs/code)
+   .T = tech-only content  (IDs, schemas, payloads, implementation detail)
+═══════════════════════════════════════ */
+body.e-mode .T{display:none !important;}
+body:not(.e-mode) .E{display:none !important;}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div style="display:flex;align-items:center;">
+    <div><div class="logo">HOCK</div><div class="logo-tag">International</div></div>
+    <div class="hdiv"></div>
+    <div><div class="hdr-label">Content Production System</div><div class="hdr-sub">Technical Documentation &amp; Workflow Reference</div></div>
+  </div>
+  <div class="hdr-right">
+    <div id="mind" class="mind t">⚙ Technical View</div>
+    <div class="mtog">
+      <button id="tBtn" class="on" onclick="setMode('tech')">⚙ Technical</button>
+      <button id="eBtn" onclick="setMode('exec')">👔 Executive</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="slbl">Sections</div>
+  <button class="ni on" onclick="nav('overview',this)"><div class="ni-icon" style="background:var(--orange-lt)">🗺</div><div><span class="ni-t">Overview</span><span class="ni-s">System &amp; platform map</span></div></button>
+  <button class="ni" onclick="nav('phases',this)"><div class="ni-icon" style="background:var(--blue-lt)">🔄</div><div><span class="ni-t">Production Phases</span><span class="ni-s">All 8 phases</span></div></button>
+  <button class="ni" onclick="nav('monday',this)"><div class="ni-icon" style="background:var(--purple-lt)">📋</div><div><span class="ni-t">Monday.com</span><span class="ni-s">Workflow &amp; tracking</span></div></button>
+  <button class="ni" onclick="nav('n8n',this)"><div class="ni-icon" style="background:var(--red-lt)">⚡</div><div><span class="ni-t">n8n Orchestration</span><span class="ni-s">Workflows &amp; file delivery</span></div></button>
+  <button class="ni" onclick="nav('mcq',this)"><div class="ni-icon" style="background:var(--green-lt)">📝</div><div><span class="ni-t">MCQ Creation</span><span class="ni-s">Questions &amp; upload</span></div></button>
+  <button class="ni" onclick="nav('content',this)"><div class="ni-icon" style="background:var(--amber-lt)">📖</div><div><span class="ni-t">Content Standards</span><span class="ni-s">Depth &amp; output targets</span></div></button>
+  <button class="ni" onclick="nav('validation',this)"><div class="ni-icon" style="background:var(--green-lt)">✅</div><div><span class="ni-t">Validation</span><span class="ni-s">Setup &amp; readiness</span></div></button>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+
+<!-- ╔══════════════════════════════════╗
+     ║          OVERVIEW               ║
+     ╚══════════════════════════════════╝ -->
+<section class="view on" id="view-overview">
+
+  <!-- ══ EXEC: Business summary ══ -->
+  <div class="E hero">
+    <div>
+      <h1>HOCK Production System</h1>
+      <p>An end-to-end pipeline that produces certification exam prep materials — from textbook to video — with consistent quality, clear ownership, and automatic tracking in Monday.com at every step.</p>
+    </div>
+    <div class="hbadges"><span class="chip o">8 Phases</span><span class="chip g">Fully approval-gated</span></div>
+  </div>
+
+  <!-- EXEC: 4 metrics that matter to a decision-maker -->
+  <div class="E g4">
+    <div class="mc mo"><div class="mn">8</div><div class="ml">Production Phases</div><div class="ms">Textbook → MCQs → Slides → Script → Video, in order</div></div>
+    <div class="mc mb"><div class="mn">5</div><div class="ml">Connected Platforms</div><div class="ms">Claude, Monday.com, n8n, Gamma, LearnDash</div></div>
+    <div class="mc mg"><div class="mn">3</div><div class="ml">Human Approval Gates</div><div class="ms">Nothing moves forward without an explicit YES</div></div>
+    <div class="mc mp"><div class="mn">0</div><div class="ml">Manual File Steps</div><div class="ms">Every file conversion and delivery happens automatically</div></div>
+  </div>
+
+  <!-- EXEC: Plain language 3-step explanation -->
+  <div class="E card">
+    <div class="ct">How It Works</div>
+    <div class="cs">Three steps per production run — no technical setup required each time</div>
+    <div class="g3" style="margin-top:12px;">
+      <div class="co o"><div class="coi">1️⃣</div><div class="cob"><h4>Start with a phase prompt</h4><p>Each phase begins with a pre-written prompt pasted into Claude. The system picks up from there with all context already loaded.</p></div></div>
+      <div class="co b"><div class="coi">2️⃣</div><div class="cob"><h4>Review and approve</h4><p>Content is delivered in batches. Nothing moves to the next step — and nothing is saved externally — until you say yes.</p></div></div>
+      <div class="co g"><div class="coi">3️⃣</div><div class="cob"><h4>Delivery happens automatically</h4><p>Once approved, Monday is updated, files are attached, and Kevin gets his subtask — no manual steps from the team.</p></div></div>
+    </div>
+  </div>
+
+  <!-- EXEC: Ownership table — no IDs, no jargon -->
+  <div class="E card">
+    <div class="ct">Who Owns What</div>
+    <div class="cs">Ownership, deliverable, and status for each phase</div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>Phase</th><th>What Gets Made</th><th>Owner</th><th>Status When Done</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 — Textbook</strong></td><td>Study Unit textbook as a Word document</td><td>Brian</td><td><span class="chip g">Textbook Ready for Review</span></td></tr>
+        <tr><td><strong>2 — MCQs</strong></td><td>Question bank as an Excel file</td><td>Creator</td><td><span class="chip g">MCQs Ready for Review</span></td></tr>
+        <tr><td><strong>3 — Outline</strong></td><td>Slide structure draft (internal only, no save)</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>4 — Slides</strong></td><td>Live Gamma presentation + PowerPoint export</td><td>Creator</td><td><span class="chip b">Need PPTX added</span></td></tr>
+        <tr><td><strong>5 — Script</strong></td><td>Narration script for video recording</td><td>Brian</td><td><span class="chip g">Slide Script Ready for Review</span></td></tr>
+        <tr><td><strong>6 — Video</strong></td><td>Recorded video (created in HeyGen externally)</td><td>Creator</td><td><span class="chip g">Video is Ready for Review</span></td></tr>
+        <tr><td><strong>Close-Out</strong></td><td>All statuses marked complete in Monday</td><td>—</td><td><span class="chip g">Complete</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EXEC: What triggers approval gates — no technical language -->
+  <div class="E card bl-a">
+    <div class="ct">What Requires Your Decision</div>
+    <div class="cs">The system pauses and waits at exactly these three points</div>
+    <div class="clist" style="margin-top:10px;">
+      <div class="cli warn"><div class="clico">✋</div><div class="clit"><h4>Approve each deliverable before the next phase starts</h4><p>Textbook, MCQs, slide outline, and script each require your sign-off before anything downstream begins. The agent does not move on its own.</p></div></div>
+      <div class="cli warn"><div class="clico">✋</div><div class="clit"><h4>Confirm before saving anything to Monday</h4><p>The agent asks "Ready to save to Monday?" before updating any task, status, or file. Nothing is posted without a yes.</p></div></div>
+      <div class="cli warn"><div class="clico">✋</div><div class="clit"><h4>Confirm Word Doc conversion in Phase 1</h4><p>After the textbook is approved, the agent asks before running the document conversion. This is the one file step that needs confirmation.</p></div></div>
+    </div>
+  </div>
+
+
+  <!-- ══ TECH: Architecture ══ -->
+  <div class="T hero">
+    <div>
+      <h1>System Architecture</h1>
+      <p>Phase-locked pipeline. Claude enforces sequencing and generates all content. n8n handles file conversion and Monday delivery. Every external action requires explicit user YES. Session state is maintained throughout each chat.</p>
+    </div>
+    <div class="hbadges"><span class="chip b">Board: 18398486903</span><span class="chip o">8 Locked Phases</span></div>
+  </div>
+
+  <!-- TECH: Clickable platform map — content exec never sees -->
+  <div class="T card">
+    <div class="ct">Platform Map — Click Any Node</div>
+    <div class="cs">Each platform has a distinct, non-interchangeable role in the pipeline</div>
+    <div class="arch" id="archGrid" style="margin-top:12px;">
+      <div class="an sel" data-n="claude" onclick="selNode(this)">
+        <div class="an-ico">🤖</div><div class="an-lay">Behavior Engine</div>
+        <div class="an-nm">Claude Project</div><div class="an-d">Phase locking, skill invocation, session state, content generation.</div>
+      </div>
+      <div class="an" data-n="knowledge" onclick="selNode(this)">
+        <div class="an-ico">📚</div><div class="an-lay">Reference Layer</div>
+        <div class="an-nm">Project Knowledge</div><div class="an-d">Rules docs, workflow specs, standards files, and the syllabus PDF.</div>
+      </div>
+      <div class="an" data-n="n8n" onclick="selNode(this)">
+        <div class="an-ico">⚡</div><div class="an-lay">Orchestration</div>
+        <div class="an-nm">n8n (Shared Auth)</div><div class="an-d">Converts files and delivers to Monday columns via named webhooks.</div>
+      </div>
+      <div class="an" data-n="monday" onclick="selNode(this)">
+        <div class="an-ico">📋</div><div class="an-lay">State Tracker</div>
+        <div class="an-nm">Monday.com</div><div class="an-d">Statuses, assignees, dates, file columns, subtasks — board 18398486903.</div>
+      </div>
+      <div class="an" data-n="gamma" onclick="selNode(this)">
+        <div class="an-ico">🎨</div><div class="an-lay">Slide Output</div>
+        <div class="an-nm">Gamma</div><div class="an-d">Called once in Phase 4. Returns gammaUrl. Never polled.</div>
+      </div>
+    </div>
+    <div id="nodeDetail" style="margin-top:14px;"></div>
+  </div>
+
+  <!-- TECH: Hard rules the agent enforces -->
+  <div class="T g2">
+    <div class="card bl-r">
+      <div class="ct">Critical Infrastructure Requirements</div>
+      <div class="steps" style="margin-top:10px;">
+        <div class="si"><div class="sn">1</div><div class="sb"><h4>System Prompt in Project Instructions only</h4><p>Never upload as a Knowledge file — this degrades phase locking. Paste directly into Project Instructions field.</p></div></div>
+        <div class="si"><div class="sn">2</div><div class="sb"><h4>Shared n8n account — not individual logins</h4><p>One basic shared user account for HOCK employees. Individual accounts break cross-user workflow execution.</p></div></div>
+        <div class="si"><div class="sn">3</div><div class="sb"><h4>Syllabus PDF in Project Knowledge</h4><p>Required for reading Study Unit structure, lettered sub-items, and % weights. Agent cannot calibrate depth without it.</p></div></div>
+        <div class="si"><div class="sn">4</div><div class="sb"><h4>Monday + Gamma connectors active before production</h4><p>mondayItemId retrieved via <span class="mono">search_task</span> — agent never asks user for it.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-b">
+      <div class="ct">Agent Enforcement Rules</div>
+      <div class="clist" style="margin-top:10px;">
+        <div class="cli bad"><div class="clico">🔒</div><div class="clit"><h4>Phase-locked: no downstream without approved upstream</h4><p>MCQs require textbook. Outline requires both. Script requires PDF or gammaUrl.</p></div></div>
+        <div class="cli bad"><div class="clico">🚫</div><div class="clit"><h4>One decision gate per message</h4><p>Agent never presents more than one question or action request per response.</p></div></div>
+        <div class="cli bad"><div class="clico">✋</div><div class="clit"><h4>No external actions without explicit YES</h4><p>Gamma create, Monday MCP calls, and n8n:execute_workflow all require explicit user confirmation.</p></div></div>
+        <div class="cli ok"><div class="clico">⚡</div><div class="clit"><h4>Kevin subtasks fire automatically after Phase 1 and Phase 2</h4><p>No user gate. Subtask ID stored immediately in session state.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔══════════════════════════════════╗
+     ║       PRODUCTION PHASES         ║
+     ╚══════════════════════════════════╝ -->
+<section class="view" id="view-phases">
+
+  <!-- ══ EXEC: 8 simple phase cards — business outcomes only ══ -->
+  <div class="E hero">
+    <div><h1>Production Phases</h1><p>Eight phases in sequence. Nothing starts until the previous phase is approved. Each card shows the output, who is responsible, and what Monday status gets set on completion.</p></div>
+    <div class="hbadges"><span class="chip o">Locked sequence</span></div>
+  </div>
+  <div id="execPhaseGrid" class="E" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
+
+  <!-- ══ TECH: Interactive strip + detail panel ══ -->
+  <div class="T hero">
+    <div><h1>Production Phases</h1><p>Click any phase to inspect its trigger, prerequisite, output, exact Monday MCP actions, skills to invoke, and Kevin subtask spec.</p></div>
+    <div class="hbadges"><span class="chip b">Locked Sequence</span></div>
+  </div>
+  <div class="T card">
+    <div class="ct">Phase Map</div>
+    <div style="margin-top:12px;"><div class="pstrip" id="pstrip"></div></div>
+  </div>
+  <div id="pdetail" class="T"></div>
+
+  <div class="T card bl-b">
+    <div class="ct">Same-Chat Phase Transition Rules</div>
+    <div class="cs">Agent uses existing session state — never re-asks for stored values</div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>From</th><th>To</th><th>Agent Does</th></tr></thead>
+      <tbody>
+        <tr><td>Phase 1 done</td><td>Phase 2</td><td>Asks: "Is the textbook finalized and ready as MCQ source material?" Waits for YES.</td></tr>
+        <tr><td>Phase 2 done</td><td>Phase 3</td><td>Confirms approved textbook AND approved MCQs both exist in session. Requires both.</td></tr>
+        <tr><td>Phase 3/4 done</td><td>Phase 5</td><td>Tries <span class="mono">text_mm0va5zg</span> on mondayItemId first. Falls back to requesting PDF filename.</td></tr>
+        <tr><td>Phase 5 done</td><td>Phase 6</td><td>Confirms script finalized. Reminds user to create video in HeyGen.</td></tr>
+        <tr><td>Phase 6 done</td><td>Close-Out</td><td>Confirms all artifacts present. Updates Monday status → Complete.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+
+<!-- ╔══════════════════════════════════╗
+     ║         MONDAY.COM              ║
+     ╚══════════════════════════════════╝ -->
+<section class="view" id="view-monday">
+
+  <!-- ══ EXEC: What Monday does for you, no column IDs ══ -->
+  <div class="E hero">
+    <div><h1>Monday.com — Automatic Tracking</h1><p>Every phase transition updates the Monday board automatically. Status, owner, dates, and attached files are all handled without manual entry from the team.</p></div>
+    <div class="hbadges"><span class="chip g">Zero manual updates</span></div>
+  </div>
+
+  <div class="E g3">
+    <div class="card bl-o">
+      <div class="ct">What Gets Tracked Per Phase</div>
+      <div class="clist" style="margin-top:10px;">
+        <div class="cli ok"><div class="clico">✅</div><div class="clit"><h4>Phase status</h4><p>Each phase sets a specific status when the deliverable is ready for review.</p></div></div>
+        <div class="cli ok"><div class="clico">✅</div><div class="clit"><h4>Owner assignment</h4><p>Brian is assigned on textbook and script phases. Creator is assigned on MCQs, slides, and video.</p></div></div>
+        <div class="cli ok"><div class="clico">✅</div><div class="clit"><h4>Start and due dates</h4><p>Always set to today through today + 2 days, automatically.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-b">
+      <div class="ct">Files That Get Attached</div>
+      <div class="clist" style="margin-top:10px;">
+        <div class="cli ok"><div class="clico">📄</div><div class="clit"><h4>Textbook as Word Document</h4><p>Converted from Markdown and attached to the Textbook File column.</p></div></div>
+        <div class="cli ok"><div class="clico">📊</div><div class="clit"><h4>MCQ Excel File</h4><p>Generated from the approved question JSON and attached to the MCQs File column.</p></div></div>
+        <div class="cli ok"><div class="clico">🎨</div><div class="clit"><h4>Gamma Presentation Link</h4><p>Posted to the Presentation Link column immediately after the slide deck is created.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-a">
+      <div class="ct">Kevin Gets Notified Automatically</div>
+      <div class="cs">Two subtasks created with no action required from the team</div>
+      <div class="clist" style="margin-top:10px;">
+        <div class="cli warn"><div class="clico">⚡</div><div class="clit"><h4>After Phase 1 — Textbook</h4><p>Kevin gets a task to create a secure textbook file and upload it to Dropbox.</p></div></div>
+        <div class="cli warn"><div class="clico">⚡</div><div class="clit"><h4>After Phase 2 — MCQs</h4><p>Kevin gets a task to import the question bank into the LearnDash quiz plugin.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="E card">
+    <div class="ct">Phase Status Summary</div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>Phase</th><th>Monday Status</th><th>Assigned To</th><th>Kevin Subtask?</th></tr></thead>
+      <tbody>
+        <tr><td>1 — Textbook</td><td><span class="chip g">Textbook Ready for Review</span></td><td>Brian</td><td><span class="chip a">⚡ Auto-created</span></td></tr>
+        <tr><td>2 — MCQs</td><td><span class="chip g">MCQs Ready for Review</span></td><td>Creator</td><td><span class="chip a">⚡ Auto-created</span></td></tr>
+        <tr><td>3/4 — Slides</td><td><span class="chip b">Need PPTX added</span></td><td>Creator</td><td>—</td></tr>
+        <tr><td>5 — Script</td><td><span class="chip g">Slide Script Ready for Review</span></td><td>Brian</td><td>—</td></tr>
+        <tr><td>6 — Video</td><td><span class="chip g">Video is Ready for Review</span></td><td>Creator</td><td>—</td></tr>
+        <tr><td>Close-Out</td><td><span class="chip g">Complete</span></td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ TECH: Column IDs, subtask specs, global rules ══ -->
+  <div class="T hero">
+    <div><h1>Monday.com — Implementation Reference</h1><p>Board ID: <span class="mono">18398486903</span>. All updates are separate MCP calls — never batched. mondayItemId is always retrieved via <span class="mono">search_task</span>, never asked from user.</p></div>
+    <div class="hbadges">
+      <div class="kv" style="min-width:200px;">
+        <div class="kvr"><span class="kvl">Board ID</span><span class="mono">18398486903</span></div>
+        <div class="kvr"><span class="kvl">Brian</span><span class="mono">brian@hockinternational.com</span></div>
+        <div class="kvr"><span class="kvl">Kevin subtasks</span><span class="mono">Kevin Hock (name, not email)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="T card">
+    <div class="ct">All Column IDs</div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>Column</th><th>Column ID</th><th>Phase</th><th>How Used</th></tr></thead>
+      <tbody>
+        <tr><td>Textbook Markdown</td><td><span class="mono">text_mm1h6708</span></td><td>1</td><td><span class="mono">change_column_value</span> — full markdown text</td></tr>
+        <tr><td>Textbook File</td><td><span class="mono">textbook_file</span></td><td>1</td><td>n8n DOCX attachment target</td></tr>
+        <tr><td>Exam</td><td><span class="mono">text_mm07k7n0</span></td><td>1</td><td>certificationProgram value</td></tr>
+        <tr><td>Study Unit</td><td><span class="mono">text_mm07tpee</span></td><td>1</td><td>studyUnitId value</td></tr>
+        <tr><td>Topic</td><td><span class="mono">text_mm07wwxc</span></td><td>1</td><td>Study unit title</td></tr>
+        <tr><td>Section to Create Textbook From</td><td><span class="mono">text_mm0e1gdr</span></td><td>1</td><td>Section identifier</td></tr>
+        <tr><td>MCQs Markdown Text</td><td><span class="mono">text_mm1qfseb</span></td><td>2</td><td>Complete MCQ JSON array — source for n8n Excel workflow</td></tr>
+        <tr><td>MCQs File</td><td><span class="mono">file_mm0vtzzb</span></td><td>2</td><td>n8n Excel attachment target</td></tr>
+        <tr><td>Presentation Link (item)</td><td><span class="mono">text_mm0va5zg</span></td><td>3/4</td><td>gammaUrl — posted immediately on Gamma creation</td></tr>
+        <tr><td>Presentation Link (subitem)</td><td><span class="mono">text_mm1qs6ds</span></td><td>3/4</td><td>gammaUrl at subitem level</td></tr>
+        <tr><td>Presentation File</td><td><span class="mono">file_mm0vegwe</span></td><td>3/4</td><td>PPTX attachment (user exports manually from Gamma)</td></tr>
+        <tr><td>Slide Script</td><td><span class="mono">text_mm1jd9yd</span></td><td>5</td><td>Script text post</td></tr>
+        <tr><td>Phase (item)</td><td><span class="mono">color_mm0ev3wn</span></td><td>All</td><td>Updated on every phase transition — separate MCP call</td></tr>
+        <tr><td>Phase (subitem)</td><td><span class="mono">color_mm1qmfkr</span></td><td>All</td><td>Subitem-level phase label</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="T g2">
+    <div class="card bl-a">
+      <div class="ct">Kevin Subtask — Phase 1</div>
+      <div class="kv" style="margin-top:10px;">
+        <div class="kvr"><span class="kvl">subtaskName</span><span class="kvv">Create New Textbook with Secure PDF Finder and upload to Dropbox</span></div>
+        <div class="kvr"><span class="kvl">assigneeName</span><span class="mono">Kevin Hock</span></div>
+        <div class="kvr"><span class="kvl">initialStatus</span><span class="mono">In Progress</span></div>
+        <div class="kvr"><span class="kvl">dueDate</span><span class="mono">startDate + 2</span></div>
+        <div class="kvr"><span class="kvl">storeAs</span><span class="mono">kevinSubtaskId</span></div>
+        <div class="kvr"><span class="kvl">user gate?</span><span class="kvv" style="color:var(--green);">None — fires automatically</span></div>
+      </div>
+    </div>
+    <div class="card bl-a">
+      <div class="ct">Kevin Subtask — Phase 2</div>
+      <div class="kv" style="margin-top:10px;">
+        <div class="kvr"><span class="kvl">subtaskName</span><span class="kvv">Import to WATU Pro Quiz plugin in LearnDash</span></div>
+        <div class="kvr"><span class="kvl">assigneeName</span><span class="mono">Kevin Hock</span></div>
+        <div class="kvr"><span class="kvl">initialStatus</span><span class="mono">In Progress</span></div>
+        <div class="kvr"><span class="kvl">dueDate</span><span class="mono">startDate + 2</span></div>
+        <div class="kvr"><span class="kvl">storeAs</span><span class="mono">kevinSubtaskId</span></div>
+        <div class="kvr"><span class="kvl">user gate?</span><span class="kvv" style="color:var(--green);">None — fires automatically</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="T card bl-r">
+    <div class="ct">Global Monday Rules — Never Violate</div>
+    <div class="clist" style="margin-top:10px;">
+      <div class="cli bad"><div class="clico">⚠️</div><div class="clit"><h4>Every update is a separate MCP call — never batch</h4><p>Status, assignee, dates, and phase column are each their own <span class="mono">change_column_value</span> call. Batching is not supported and will fail silently.</p></div></div>
+      <div class="cli bad"><div class="clico">⚠️</div><div class="clit"><h4>Never ask user for mondayItemId</h4><p>Always retrieve via <span class="mono">search_task</span>. If missing from session state, run search automatically. Never hardcode.</p></div></div>
+      <div class="cli bad"><div class="clico">⚠️</div><div class="clit"><h4>Phase column must update alongside every status change</h4><p><span class="mono">color_mm0ev3wn</span> — separate call — on every phase transition without exception.</p></div></div>
+      <div class="cli ok"><div class="clico">🔗</div><div class="clit"><h4>Always surface the direct task link</h4><p>Format: <code>https://hock-international-company.monday.com/boards/18398486903/pulses/[mondayItemId]</code></p></div></div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔══════════════════════════════════╗
+     ║        N8N ORCHESTRATION        ║
+     ╚══════════════════════════════════╝ -->
+<section class="view" id="view-n8n">
+
+  <!-- ══ EXEC: Plain English — no webhook URLs, no payloads ══ -->
+  <div class="E hero">
+    <div><h1>File Delivery — Automatic</h1><p>After content is approved, a background automation converts it into the right file format and attaches it to the Monday task. No one on the team needs to touch a file manually.</p></div>
+    <div class="hbadges"><span class="chip r">Shared account required</span></div>
+  </div>
+
+  <div class="E co r" style="margin-bottom:0;">
+    <div class="coi">🚨</div>
+    <div class="cob">
+      <h4>Action Required: Set Up a Shared n8n Account</h4>
+      <p>HOCK needs one shared login for all employees to use when connecting to the automation system. If individual employee accounts are used instead, workflows will break when people change roles or leave. A shared account keeps the connection stable regardless of who is running a production session.</p>
+    </div>
+  </div>
+
+  <div class="E g2">
+    <div class="card bl-o">
+      <div class="ct">Phase 1 — Textbook to Word Doc</div>
+      <div class="cs">Runs after Brian confirms he wants the Word document version</div>
+      <div class="steps" style="margin-top:10px;">
+        <div class="si"><div class="sn">1</div><div class="sb"><h4>The textbook is already saved to Monday</h4><p>The Markdown version was posted automatically when the phase was approved.</p></div></div>
+        <div class="si"><div class="sn">2</div><div class="sb"><h4>n8n reads it and converts it to a .docx file</h4><p>The automation handles the conversion — no template or tool needed from the team.</p></div></div>
+        <div class="si"><div class="sn">3</div><div class="sb"><h4>The Word Doc appears in the Monday task</h4><p>Attached to the Textbook File column automatically.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-b">
+      <div class="ct">Phase 2 — MCQs to Excel File</div>
+      <div class="cs">Runs after the MCQ JSON is confirmed saved to Monday</div>
+      <div class="steps" style="margin-top:10px;">
+        <div class="si"><div class="sn">1</div><div class="sb"><h4>The MCQ data is already saved to Monday</h4><p>A structured JSON file was posted when the questions were approved.</p></div></div>
+        <div class="si"><div class="sn">2</div><div class="sb"><h4>n8n reads it and builds an Excel spreadsheet</h4><p>Columns are structured to match the import format required by LearnDash.</p></div></div>
+        <div class="si"><div class="sn">3</div><div class="sb"><h4>The Excel file appears in the Monday task</h4><p>Attached to the MCQs File column automatically.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TECH: Webhook URLs, payloads, execution rules ══ -->
+  <div class="T hero">
+    <div><h1>n8n Orchestration Layer</h1><p>Always called via <span class="mono">n8n:execute_workflow</span> with webhook input type. Direct HTTP POST to webhook URLs is never permitted. <span class="mono">mondayItemId</span> must exist in session state before any call.</p></div>
+    <div class="hbadges"><span class="chip r">Shared Account Required</span><span class="chip b">MCP only — no direct HTTP</span></div>
+  </div>
+
+  <div class="T co r">
+    <div class="coi">🚨</div>
+    <div class="cob">
+      <h4>Critical: Shared n8n Account for HOCK Employees</h4>
+      <p>Create a basic shared n8n user account. This authenticates all Claude-connected workflows. Individual accounts cause cross-user failures and cannot be recovered without full reconfiguration of the connector.</p>
+    </div>
+  </div>
+
+  <div class="T card">
+    <div class="ct">Workflow Registry</div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>Workflow Name</th><th>Phase</th><th>Webhook URL</th><th>Trigger Condition</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Monday_update_item_Textbook</strong></td><td>1</td>
+          <td><span class="mono">hockintl.app.n8n.cloud/webhook/add-textbook-file</span></td>
+          <td>User confirms YES to DOCX conversion</td>
+        </tr>
+        <tr>
+          <td><strong>MCQ Markdown → Monday File</strong></td><td>2</td>
+          <td><span class="mono">hockintl.app.n8n.cloud/webhook/monday-excel-upload</span></td>
+          <td>After JSON post to <span class="mono">text_mm1qfseb</span> is confirmed complete</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="T g2">
+    <div class="card bl-o">
+      <div class="ct">Phase 1 Payload</div>
+      <div class="cs">Input body for n8n:execute_workflow — webhook input type</div>
+      <div class="code">{<br>&nbsp;&nbsp;<span class="k">"mondayItemId"</span>: <span class="s">"&lt;from session state&gt;"</span>,<br>&nbsp;&nbsp;<span class="k">"columnId"</span>: <span class="s">"text_mm1h6708"</span>,<br>&nbsp;&nbsp;<span class="k">"markdownContent"</span>: <span class="s">"&lt;full textbook markdown&gt;"</span>,<br>&nbsp;&nbsp;<span class="k">"certificationProgram"</span>: <span class="s">"CMA Part 1"</span>,<br>&nbsp;&nbsp;<span class="k">"studyUnitId"</span>: <span class="s">"2796"</span><br>}</div>
+    </div>
+    <div class="card bl-b">
+      <div class="ct">Phase 2 Payload</div>
+      <div class="cs">Input body for n8n:execute_workflow — webhook input type</div>
+      <div class="code">[{<br>&nbsp;&nbsp;<span class="k">"mondayItemId"</span>: <span class="s">"&lt;from session state&gt;"</span>,<br>&nbsp;&nbsp;<span class="k">"columnId"</span>: <span class="s">"text_mm1qfseb"</span><br>}]</div>
+    </div>
+  </div>
+
+  <div class="T card bl-r">
+    <div class="ct">Execution Rules — Absolute</div>
+    <div class="clist" style="margin-top:10px;">
+      <div class="cli bad"><div class="clico">🚫</div><div class="clit"><h4>Never direct HTTP POST to webhook URLs</h4><p>Always use <span class="mono">n8n:execute_workflow</span> via the n8n MCP connector. Direct calls bypass authentication and will fail.</p></div></div>
+      <div class="cli bad"><div class="clico">🚫</div><div class="clit"><h4>Never call without mondayItemId in session state</h4><p>Run <span class="mono">search_task</span> first if mondayItemId is null. An empty ID will fail silently at the Monday end.</p></div></div>
+      <div class="cli bad"><div class="clico">🚫</div><div class="clit"><h4>Never send empty or test payloads</h4><p>Always construct the full input body from session state. Never hardcode IDs in the payload.</p></div></div>
+      <div class="cli bad"><div class="clico">🚫</div><div class="clit"><h4>Phase 2 only: never call before column post is confirmed</h4><p>The JSON must be confirmed written to <span class="mono">text_mm1qfseb</span> before triggering the Excel workflow. No column post = no source data.</p></div></div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔══════════════════════════════════╗
+     ║         MCQ CREATION            ║
+     ╚══════════════════════════════════╝ -->
+<section class="view" id="view-mcq">
+
+  <!-- ══ EXEC: What MCQs are and how they get delivered ══ -->
+  <div class="E hero">
+    <div><h1>MCQ Creation</h1><p>Scenario-based exam questions generated directly from the approved textbook. Reviewed in batches, then saved to Monday and automatically converted to an Excel file for LearnDash import.</p></div>
+    <div class="hbadges"><span class="chip o">Requires approved textbook</span></div>
+  </div>
+
+  <div class="E g3">
+    <div class="card bl-o">
+      <div class="ct">What Makes a Quality MCQ</div>
+      <div class="clist" style="margin-top:10px;">
+        <div class="cli ok"><div class="clico">✅</div><div class="clit"><h4>Forces reasoning, not just recall</h4><p>Candidates must work through the scenario to eliminate wrong answers — not just recognize a keyword.</p></div></div>
+        <div class="cli ok"><div class="clico">✅</div><div class="clit"><h4>All four answer options are similar in length</h4><p>A noticeably longer correct answer tips off the candidate. Every option is balanced before the batch is finalized.</p></div></div>
+        <div class="cli ok"><div class="clico">✅</div><div class="clit"><h4>Each wrong answer has a teaching explanation</h4><p>All four options get a full explanation — not just the correct one. These are learning moments, not just feedback.</p></div></div>
+        <div class="cli bad"><div class="clico">🚫</div><div class="clit"><h4>No absolute language anywhere</h4><p>Words like "always," "never," and "exclusively" make wrong answers obvious and are prohibited.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-b">
+      <div class="ct">How Many Questions Per Study Unit?</div>
+      <div class="cs">Depends on the depth level assigned during calibration</div>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
+        <div class="co g"><div class="coi">🟢</div><div class="cob"><h4>Basic depth → 8 to 12 questions</h4><p>Recall-level difficulty. Narrow topic, lower exam weight.</p></div></div>
+        <div class="co a"><div class="coi">🟡</div><div class="cob"><h4>Medium depth → 15 to 20 questions</h4><p>Apply and analyze. Moderate topic with balanced exam weight.</p></div></div>
+        <div class="co r"><div class="coi">🔴</div><div class="cob"><h4>Comprehensive → 20 to 30 questions</h4><p>Evaluate and synthesize. Broad topic with high exam weight.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-g">
+      <div class="ct">How Questions Are Reviewed and Delivered</div>
+      <div class="steps" style="margin-top:10px;">
+        <div class="si"><div class="sn">1</div><div class="sb"><h4>First 15 questions are delivered for review</h4><p>Agent pauses and waits for feedback before continuing.</p></div></div>
+        <div class="si"><div class="sn">2</div><div class="sb"><h4>Remaining questions delivered after confirmation</h4><p>Second batch follows on explicit YES.</p></div></div>
+        <div class="si"><div class="sn">3</div><div class="sb"><h4>Approved → saved and converted automatically</h4><p>JSON saved to Monday. Excel file built and attached via automation.</p></div></div>
+        <div class="si"><div class="sn">4</div><div class="sb"><h4>Kevin gets a LearnDash import task</h4><p>Assigned automatically — no action required from the team.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TECH: JSON schema, construction rules, upload sequence ══ -->
+  <div class="T hero">
+    <div><h1>MCQ Creation — Implementation Rules</h1><p>Phase 2. Requires confirmed approved textbook. Output is a raw JSON array only — no markdown fences, no plain text, no labels. First batch always 15 questions.</p></div>
+    <div class="hbadges"><span class="chip o">First batch: 15</span><span class="chip b">Raw JSON array output only</span></div>
+  </div>
+
+  <div class="T g2">
+    <div class="card bl-o">
+      <div class="ct">Question Construction Rules</div>
+      <div class="clist" style="margin-top:10px;">
+        <div class="cli bad"><div class="clico">1</div><div class="clit"><h4>Choice A is always the correct answer</h4><p>B, C, D are plausible distractors. This is fixed — never randomized.</p></div></div>
+        <div class="cli bad"><div class="clico">2</div><div class="clit"><h4>All four choices must be similar in length</h4><p>Compare lengths after writing. Rewrite if uneven — a longer correct answer signals it.</p></div></div>
+        <div class="cli bad"><div class="clico">3</div><div class="clit"><h4>No extreme words anywhere in choices</h4><p>Banned: always, never, exclusively, only, solely, under no circumstances.</p></div></div>
+        <div class="cli bad"><div class="clico">4</div><div class="clit"><h4>Scenario-based — candidates must reason to eliminate</h4><p>Not recall-based. Each question should require applying knowledge to a scenario.</p></div></div>
+        <div class="cli bad"><div class="clico">5</div><div class="clit"><h4>Never reference "the content," "the material," or "the textbook"</h4><p>Strictly prohibited in all question and choice text.</p></div></div>
+        <div class="cli bad"><div class="clico">6</div><div class="clit"><h4>All four choices get a full explanation</h4><p>50–100+ words each. No "This choice is correct/incorrect because" opener — state the reasoning directly.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-g">
+      <div class="ct">Required JSON Schema</div>
+      <div class="cs">Return ONLY a raw JSON array. No fences, no text before or after, no labels.</div>
+      <div class="code">[{<br>&nbsp;&nbsp;<span class="k">"category"</span>: <span class="s">"2796"</span>,<br>&nbsp;&nbsp;<span class="k">"question_id"</span>: <span class="s">"CMA26 2796-001"</span>,<br>&nbsp;&nbsp;<span class="k">"question"</span>: <span class="s">"Question text..."</span>,<br>&nbsp;&nbsp;<span class="k">"choices"</span>: {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"A"</span>: <span class="s">"..."</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"B"</span>: <span class="s">"..."</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"C"</span>: <span class="s">"..."</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"D"</span>: <span class="s">"..."</span><br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;<span class="k">"explanations"</span>: {<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"A"</span>: <span class="s">"..."</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"B"</span>: <span class="s">"..."</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"C"</span>: <span class="s">"..."</span>,<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"D"</span>: <span class="s">"..."</span><br>&nbsp;&nbsp;},<br>&nbsp;&nbsp;<span class="k">"correct_answer"</span>: <span class="s">"A"</span><br>}]</div>
+      <div class="chips" style="margin-top:10px;">
+        <span class="chip r">No ```json fences</span>
+        <span class="chip r">No trailing commas</span>
+        <span class="chip g">correct_answer always "A"</span>
+        <span class="chip r">All fields required</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="T card bl-p">
+    <div class="ct">Phase 2 Upload Sequence — Exact Order</div>
+    <div class="steps" style="margin-top:10px;">
+      <div class="si"><div class="sn">1</div><div class="sb"><h4>Confirm mondayItemId in session state</h4><p>If missing: run <span class="mono">search_task</span> automatically. Never ask user.</p></div></div>
+      <div class="si"><div class="sn">2</div><div class="sb"><h4>Monday MCP — four separate calls</h4><p>Status → <code>MCQs Ready for Review</code> | Phase → <code>MCQs Creation</code> (<span class="mono">color_mm0ev3wn</span>) | Assignee → creatorEmail | Start → today | Due → today+2</p></div></div>
+      <div class="si"><div class="sn">3</div><div class="sb"><h4>Post complete JSON to column text_mm1qfseb</h4><p><span class="mono">change_column_value</span>: board <code>18398486903</code> | item <code>mondayItemId</code> | column <code>text_mm1qfseb</code> | value: <code>{"text": "[full JSON array]"}</code></p></div></div>
+      <div class="si"><div class="sn">4</div><div class="sb"><h4>Call n8n MCQ workflow — only after Step 3 confirmed</h4><p><span class="mono">n8n:execute_workflow</span> with payload: <code>[{"mondayItemId": "...", "columnId": "text_mm1qfseb"}]</code></p></div></div>
+      <div class="si"><div class="sn">5</div><div class="sb"><h4>Create Kevin subtask — auto, no user gate</h4><p>Name: <em>Import to WATU Pro Quiz plugin in LearnDash</em> | assigneeName: <code>Kevin Hock</code> | Store <span class="mono">kevinSubtaskId</span> | Separate calls: status → In Progress, assignee, start, due</p></div></div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔══════════════════════════════════╗
+     ║       CONTENT STANDARDS         ║
+     ╚══════════════════════════════════╝ -->
+<section class="view" id="view-content">
+
+  <!-- ══ EXEC: Depth in plain English, output targets ══ -->
+  <div class="E hero">
+    <div><h1>Content Standards</h1><p>Every deliverable is calibrated to the right depth before production begins. Depth is determined by three factors — how many concepts are covered, what level of thinking the exam expects, and how much the topic is weighted on the exam.</p></div>
+    <div class="hbadges"><span class="chip o">Calibration required before every run</span></div>
+  </div>
+
+  <div class="E g3">
+    <div class="card bl-g">
+      <div class="ct">Basic Depth</div>
+      <div class="cs">Narrow topic · recall level · lower-weighted exam section</div>
+      <div class="kv" style="margin-top:10px;">
+        <div class="kvr"><span class="kvl">Textbook</span><span class="kvv">~1,200–1,800 words</span></div>
+        <div class="kvr"><span class="kvl">MCQs</span><span class="kvv">8–12 questions</span></div>
+        <div class="kvr"><span class="kvl">Slides</span><span class="kvv">5–8 slides</span></div>
+        <div class="kvr"><span class="kvl">Narration</span><span class="kvv">~5–8 minutes</span></div>
+      </div>
+    </div>
+    <div class="card bl-a">
+      <div class="ct">Medium Depth</div>
+      <div class="cs">Moderate topic · apply and analyze · balanced exam weight</div>
+      <div class="kv" style="margin-top:10px;">
+        <div class="kvr"><span class="kvl">Textbook</span><span class="kvv">~2,400–3,600 words</span></div>
+        <div class="kvr"><span class="kvl">MCQs</span><span class="kvv">15–20 questions</span></div>
+        <div class="kvr"><span class="kvl">Slides</span><span class="kvv">10–15 slides</span></div>
+        <div class="kvr"><span class="kvl">Narration</span><span class="kvv">~10–15 minutes</span></div>
+      </div>
+    </div>
+    <div class="card bl-r">
+      <div class="ct">Comprehensive Depth</div>
+      <div class="cs">Broad topic · evaluate and synthesize · heavily weighted section</div>
+      <div class="kv" style="margin-top:10px;">
+        <div class="kvr"><span class="kvl">Textbook</span><span class="kvv">~4,200–6,000 words</span></div>
+        <div class="kvr"><span class="kvl">MCQs</span><span class="kvv">20–30 questions</span></div>
+        <div class="kvr"><span class="kvl">Slides</span><span class="kvv">15–25 slides</span></div>
+        <div class="kvr"><span class="kvl">Narration</span><span class="kvv">~15–25 minutes</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="E card">
+    <div class="ct">Content Voice &amp; Writing Standards</div>
+    <div class="g2" style="margin-top:12px;">
+      <div class="co o"><div class="coi">🎯</div><div class="cob"><h4>Who the content is written for</h4><p>Professionals with 2–4 years of experience studying for a specific certification. The tone is senior explaining to junior — direct, intelligent, and assumes capability without assuming prior knowledge of the specific topic.</p></div></div>
+      <div class="co b"><div class="coi">📐</div><div class="cob"><h4>How the content is structured</h4><p>65% narrative prose, 25% bullet lists, 10% examples and tables. No hedging language, no filler transitions, no AI writing patterns. Key terms are bolded on first mention only. Standards are cited by number and woven into prose naturally.</p></div></div>
+    </div>
+  </div>
+
+  <!-- ══ TECH: Calibration matrix, skills, textbook structure ══ -->
+  <div class="T hero">
+    <div><h1>Content Standards — Implementation Reference</h1><p>Depth calibration runs before every content type. Three required inputs: scope (concept count), cognitive level (highest action verb from the syllabus sub-item), and exam weight (% for this section). Confirmed with user before generation begins.</p></div>
+    <div class="hbadges"><span class="chip o">Calibrate before every generation</span></div>
+  </div>
+
+  <div class="T card">
+    <div class="ct">Depth Calibration — 3 Inputs</div>
+    <div class="g3" style="margin-top:12px;">
+      <div class="card bl-b" style="box-shadow:none;">
+        <div class="ct">Step 1 — Scope</div>
+        <div class="cs">Count distinct concepts in the syllabus line item</div>
+        <div class="chips" style="margin-top:6px;"><span class="chip g">Narrow: 1–2 concepts</span><span class="chip a">Moderate: 3–5</span><span class="chip r">Broad: 6+</span></div>
+      </div>
+      <div class="card bl-o" style="box-shadow:none;">
+        <div class="ct">Step 2 — Cognitive Level</div>
+        <div class="cs">Use action verb from the specific sub-item (not parent). If multiple, use highest.</div>
+        <div class="chips" style="margin-top:6px;"><span class="chip g">Basic: define, list, describe</span><span class="chip a">Medium: apply, compare, assess</span><span class="chip r">Comp: evaluate, design, integrate</span></div>
+      </div>
+      <div class="card bl-p" style="box-shadow:none;">
+        <div class="ct">Step 3 — Exam Weight</div>
+        <div class="cs">From syllabus. If not explicit, infer from section position.</div>
+        <div class="chips" style="margin-top:6px;"><span class="chip g">Low: under 10%</span><span class="chip a">Medium: 10–20%</span><span class="chip r">High: over 20%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="T g2">
+    <div class="card bl-o">
+      <div class="ct">Textbook Generation Structure</div>
+      <div class="cs">One prompt = one complete Study Unit (all lettered sub-sections)</div>
+      <div class="steps" style="margin-top:10px;">
+        <div class="si"><div class="sn">A</div><div class="sb"><h4>Exam Introduction — first Study Unit only</h4><p>Exam name, duration, question count, all sections with % weights (read from syllabus). Written once — never repeated.</p></div></div>
+        <div class="si"><div class="sn">B</div><div class="sb"><h4>Study Unit Introduction — every Study Unit</h4><p><code># Study Unit [N]: [Title]</code> (H1). 3–4 prose paragraphs. Connects all lettered sub-sections.</p></div></div>
+        <div class="si"><div class="sn">C</div><div class="sb"><h4>First lettered sub-section → PAUSE</h4><p><code>## Na. Title</code> (H2 matching syllabus exactly). Prose, H3 concept headings, examples. Stop and ask before continuing.</p></div></div>
+        <div class="si"><div class="sn">D</div><div class="sb"><h4>Remaining sub-sections on YES</h4><p>All remaining lettered sub-sections in sequence. ONE Summary Table (2-column: Key Concept | Summary) after the final sub-section only — never after each sub-section.</p></div></div>
+      </div>
+    </div>
+    <div class="card bl-b">
+      <div class="ct">Skill Invocation Reference</div>
+      <div class="cs">Invoke by name at the correct phase — no substitutions</div>
+      <table class="tbl" style="margin-top:10px;">
+        <thead><tr><th>Skill</th><th>When to Invoke</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mono">depth-calibration-skill</span></td><td>Before ANY content generation — textbook, MCQs, slides, or scripts</td></tr>
+          <tr><td><span class="mono">textbook-style-guide</span></td><td>Phase 1 — all textbook generation and revisions</td></tr>
+          <tr><td><span class="mono">mcq-creation-skill</span></td><td>Phase 2 — always used alongside HOCK_MCQ_Rules.md</td></tr>
+          <tr><td><span class="mono">slide-creation-skill</span></td><td>Phase 3 — outline only; do not create in Gamma without approval</td></tr>
+          <tr><td><span class="mono">slide-script-skill</span></td><td>Phase 5 — after presentation source confirmed accessible</td></tr>
+          <tr><td><span class="mono">token-optimization</span></td><td>Before all generation — determines chunking and batching strategy</td></tr>
+          <tr><td><span class="mono">monday-workflow-skill</span></td><td>Phase 1 always; Phases 2, 3, 5 on explicit user instruction only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ╔══════════════════════════════════╗
+     ║     VALIDATION & READINESS      ║
+     ╚══════════════════════════════════╝ -->
+<section class="view" id="view-validation">
+
+  <!-- ══ EXEC: 5 things to confirm, no technical language ══ -->
+  <div class="E hero">
+    <div><h1>Go-Live Readiness</h1><p>Five things must be confirmed before production begins. Skipping any one of them will cause the system to fail partway through a run — some silently, some visibly.</p></div>
+    <div class="hbadges"><span class="chip o">All 5 required</span></div>
+  </div>
+
+  <div class="E card">
+    <div class="ct">Go / No-Go Checklist</div>
+    <div class="clist" style="margin-top:12px;">
+      <div class="cli bad"><div class="clico">📋</div><div class="clit"><h4>System behavior instructions are loaded in the right place</h4><p>The rules that control how the agent behaves must be placed in the Project Instructions field — not uploaded as a document. If they're in the wrong place, the agent won't enforce the production sequence reliably.</p></div></div>
+      <div class="cli bad"><div class="clico">📂</div><div class="clit"><h4>All reference files and the course syllabus are in Project Knowledge</h4><p>Includes the content rules, MCQ rules, workflow guides, revision templates, phase prompts, and the syllabus PDF for the course being produced.</p></div></div>
+      <div class="cli bad"><div class="clico">⚡</div><div class="clit"><h4>A shared employee account is set up in the automation system (n8n)</h4><p>Not individual logins. One shared account that all HOCK employees use. Without this, file conversions break when staff changes happen.</p></div></div>
+      <div class="cli bad"><div class="clico">📋</div><div class="clit"><h4>The Monday.com connection is active</h4><p>The agent must be able to read and write to the production board in Monday. Status updates, file attachments, and Kevin's subtasks all depend on this connection being live.</p></div></div>
+      <div class="cli bad"><div class="clico">🎨</div><div class="clit"><h4>The Gamma slide tool is connected</h4><p>Required for Phase 4 only. The agent creates the slide deck once and immediately saves the link — Gamma must be authenticated before that phase starts.</p></div></div>
+    </div>
+  </div>
+
+  <div class="E card bl-r">
+    <div class="ct">What Breaks Without Each Item</div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>What's Missing</th><th>What Breaks</th><th>Severity</th></tr></thead>
+      <tbody>
+        <tr><td>Shared automation account</td><td>File delivery fails when team members change. Workflows stop working across employees.</td><td><span class="chip r">Critical</span></td></tr>
+        <tr><td>Instructions in wrong location</td><td>Agent behavior becomes inconsistent. Phase locking weakens unpredictably.</td><td><span class="chip r">Critical</span></td></tr>
+        <tr><td>Course syllabus not uploaded</td><td>Agent cannot identify Study Unit structure, sub-items, or how heavily topics are weighted.</td><td><span class="chip r">Critical</span></td></tr>
+        <tr><td>Monday connection inactive</td><td>All status tracking, file attachments, and Kevin's subtasks stop working entirely.</td><td><span class="chip r">Critical</span></td></tr>
+        <tr><td>Gamma not connected</td><td>Phase 4 slide creation is completely blocked. Phases 5 and 6 cannot begin without the slide link.</td><td><span class="chip a">Phase 4+ blocked</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ TECH: Session state table, technical pre-production setup ══ -->
+  <div class="T hero">
+    <div><h1>Validation &amp; Deployment Readiness</h1><p>All five setup conditions must be confirmed before any production run. Session state is maintained throughout the chat — the agent never re-asks for values already stored.</p></div>
+    <div class="hbadges"><span class="chip o">All 5 required</span></div>
+  </div>
+
+  <div class="T card">
+    <div class="ct">Pre-Production Setup Checklist — Technical Detail</div>
+    <div class="clist" style="margin-top:12px;">
+      <div class="cli bad"><div class="clico">1</div><div class="clit"><h4>HOCK_System_Prompt pasted into Project Instructions field</h4><p>Not uploaded to Knowledge. Uploading as a file causes the system prompt to be treated as reference material rather than behavioral instructions — phase locking degrades significantly.</p></div></div>
+      <div class="cli bad"><div class="clico">2</div><div class="clit"><h4>All knowledge files loaded into Project Knowledge</h4><p>Required: <span class="mono">HOCK_Content_Standards</span> · <span class="mono">HOCK_MCQ_Rules</span> · <span class="mono">HOCK_Monday_Workflow</span> · <span class="mono">HOCK_Revision_Prompts</span> · <span class="mono">HOCK_Phase_Prompts</span> + course syllabus PDF.</p></div></div>
+      <div class="cli bad"><div class="clico">3</div><div class="clit"><h4>Shared n8n basic user account created for HOCK employees</h4><p>One account used by all employees. Authenticates all Claude-connected n8n workflows. Individual accounts fail across users and require full reconfiguration to fix.</p></div></div>
+      <div class="cli bad"><div class="clico">4</div><div class="clit"><h4>Monday.com MCP connector active on board 18398486903</h4><p>Must support: <span class="mono">search_task</span>, <span class="mono">change_column_value</span>, <span class="mono">create_subtask</span>. Agent validates mondayItemId via search_task before the first Monday action.</p></div></div>
+      <div class="cli bad"><div class="clico">5</div><div class="clit"><h4>Gamma MCP connector active and authenticated</h4><p>Called once in Phase 4 via the Gamma connector. Response returns <span class="mono">gammaUrl</span> which is stored in session state immediately and posted to <span class="mono">text_mm0va5zg</span>.</p></div></div>
+    </div>
+  </div>
+
+  <div class="T card bl-b">
+    <div class="ct">Session State Reference</div>
+    <div class="cs">Values maintained for the full session — never re-asked when staying in the same chat</div>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>Key</th><th>How It's Set</th><th>Required Before</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">currentPhase</span></td><td>Updated on every phase transition</td><td>All phase actions</td></tr>
+        <tr><td><span class="mono">certificationProgram</span></td><td>Parsed from the Phase 1 prompt on session start</td><td>All phases — Monday metadata columns</td></tr>
+        <tr><td><span class="mono">studyUnitId</span></td><td>Parsed from the Phase 1 prompt on session start</td><td>All phases — numbering, column values</td></tr>
+        <tr><td><span class="mono">mondayItemId</span></td><td>Retrieved via <span class="mono">search_task</span> — never hardcoded or asked from user</td><td>Any Monday MCP call or n8n workflow</td></tr>
+        <tr><td><span class="mono">gammaUrl</span></td><td>Stored immediately when Gamma create call returns</td><td>Phase 5 — locating presentation source</td></tr>
+        <tr><td><span class="mono">kevinSubtaskId</span></td><td>Stored immediately after each Kevin subtask creation call</td><td>Subtask status, assignee, and date updates</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+
+</main>
+</div>
+
+<script>
+/* ── VIEW NAVIGATION ── */
+function nav(id, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(b => b.classList.remove('on'));
+  document.getElementById('view-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+
+/* ── MODE TOGGLE ──
+   Executive mode: body gets class e-mode
+   CSS rule: body.e-mode .T { display:none !important }
+   CSS rule: body:not(.e-mode) .E { display:none !important }
+   Result: completely different content blocks shown per mode.
+   .E elements = plain business language, no IDs/code/schemas
+   .T elements = column IDs, payloads, schemas, exact step sequences
+*/
+function setMode(mode) {
+  const exec = mode === 'exec';
+  document.body.classList.toggle('e-mode', exec);
+  document.getElementById('eBtn').classList.toggle('on', exec);
+  document.getElementById('tBtn').classList.toggle('on', !exec);
+  const ind = document.getElementById('mind');
+  ind.textContent = exec ? '👔 Executive View' : '⚙ Technical View';
+  ind.className = 'mind ' + (exec ? 'e' : 't');
+}
+
+/* ── ARCH NODES ── */
+const nodeInfo = {
+  claude: {
+    c: 'o', title: 'Claude Project — Behavior Engine',
+    pts: [
+      'System prompt must be in Project Instructions — never uploaded as a Knowledge file.',
+      'Enforces production order: Initiation → Textbook → MCQs → Outline → Gamma → Script → Video → Close-Out.',
+      'Invokes the correct skill before generating each content type (depth-calibration-skill first, always).',
+      'Session state maintained across phases: certificationProgram, studyUnitId, mondayItemId, gammaUrl, kevinSubtaskId.',
+      'One decision gate per message. No external action without explicit user YES.'
+    ]
+  },
+  knowledge: {
+    c: 'b', title: 'Project Knowledge — Reference Layer',
+    pts: [
+      'Required files: HOCK_Content_Standards, HOCK_MCQ_Rules, HOCK_Monday_Workflow, HOCK_Revision_Prompts, HOCK_Phase_Prompts.',
+      'Course syllabus PDF is required — agent reads it to determine Study Unit structure, lettered sub-items, and % weights.',
+      'Do NOT place the system prompt here — it must be in Project Instructions to enforce phase behavior.',
+      'Skills are invoked at phase level — Knowledge files are reference material, not instruction layers.',
+      'Agent reads syllabus each time to get exact sub-item titles — never infers or assumes from prior runs.'
+    ]
+  },
+  n8n: {
+    c: 'r', title: 'n8n — Shared Orchestration Layer',
+    pts: [
+      'Must use one shared basic user account for HOCK employees — individual accounts cause cross-user auth failures.',
+      'Phase 1 workflow: Monday_update_item_Textbook → webhook/add-textbook-file → converts markdown to DOCX.',
+      'Phase 2 workflow: MCQ Markdown → Monday File → webhook/monday-excel-upload → builds Excel from JSON.',
+      'Always called via n8n:execute_workflow with webhook input type. Never via direct HTTP POST.',
+      'mondayItemId must be in session state before any n8n call is made. Run search_task if missing.'
+    ]
+  },
+  monday: {
+    c: 'p', title: 'Monday.com — State Tracker (Board: 18398486903)',
+    pts: [
+      'Every field update is a separate MCP call — never batch status + assignee + dates into one call.',
+      'Agent never asks user for mondayItemId — always retrieved via search_task automatically.',
+      'Phase column (color_mm0ev3wn) must be updated alongside status on every phase transition.',
+      'Kevin subtasks auto-created with no user gate after Phase 1 and Phase 2 Monday updates.',
+      'Task link format: https://hock-international-company.monday.com/boards/18398486903/pulses/[mondayItemId]'
+    ]
+  },
+  gamma: {
+    c: 'p', title: 'Gamma — Slide Output (Phase 4 Only)',
+    pts: [
+      'Called once only — agent does not poll, does not retry, does not call create again.',
+      'gammaUrl is returned directly in the response — store in session state immediately.',
+      'After creation: post gammaUrl to text_mm0va5zg, set status → Need PPTX added (no user gate).',
+      'User exports PPTX manually from Gamma and adds to Monday. User exports PDF and adds to Claude project.',
+      'Phase 5 script generation cannot begin until PDF filename is confirmed in the Claude project.'
+    ]
+  }
+};
+
+function selNode(el) {
+  document.querySelectorAll('.an').forEach(n => n.classList.remove('sel'));
+  el.classList.add('sel');
+  const d = nodeInfo[el.dataset.n];
+  document.getElementById('nodeDetail').innerHTML =
+    `<div class="co ${d.c}"><div class="coi">ℹ️</div><div class="cob"><h4>${d.title}</h4><ul>${d.pts.map(p => `<li>${p}</li>`).join('')}</ul></div></div>`;
+}
+selNode(document.querySelector('.an[data-n="claude"]'));
+
+/* ── PHASE DATA ── */
+const phases = [
+  {
+    name: 'Initiation',
+    // Exec fields
+    execOut: 'Session context loaded',
+    execWho: '—', execStatus: null,
+    execNote: 'The agent reads certificationProgram, studyUnitId, and topic from the phase prompt and retrieves the Monday task ID automatically. No setup required from the team.',
+    // Tech fields
+    trigger: 'Paste Phase 1 prompt into a new chat',
+    prereq: 'None — session start',
+    output: 'Session state initialized (certificationProgram, studyUnitId, mondayItemId)',
+    monday: null,
+    kevin: null,
+    tools: ['Monday MCP — search_task'],
+    steps: [
+      'Agent parses certificationProgram, studyUnitId, and topic from the phase prompt.',
+      'mondayItemId retrieved automatically via search_task — never asked from user.',
+      'Session state initialized. Depth calibration queued before first content generation.'
+    ]
+  },
+  {
+    name: 'Textbook',
+    execOut: 'Study Unit textbook (Word Document)',
+    execWho: 'Brian', execStatus: 'Textbook Ready for Review',
+    execNote: 'Claude generates the full Study Unit textbook from the course syllabus. Delivered in sections for review. After approval, a Word Doc is automatically converted and attached to the Monday task.',
+    trigger: 'Session start with Phase 1 prompt',
+    prereq: 'Syllabus PDF in Project Knowledge',
+    output: 'Approved Markdown → Monday text_mm1h6708 → DOCX via n8n',
+    monday: 'Status → Textbook Ready for Review | Phase → Textbook Creation (color_mm0ev3wn) | Assignee → brian@hockinternational.com | Start → today | Due → today+2',
+    kevin: 'Create New Textbook with Secure PDF Finder and upload to Dropbox',
+    tools: ['depth-calibration-skill', 'textbook-style-guide', 'token-optimization', 'Monday MCP', 'n8n:execute_workflow'],
+    steps: [
+      'Invoke depth-calibration-skill → present summary table → wait for YES.',
+      'Invoke token-optimization → determine chunking strategy.',
+      'Generate Exam Intro (first SU only) → Study Unit Intro (H1 + 3–4 paragraphs) → first lettered sub-section → PAUSE.',
+      'On YES: generate remaining lettered sub-sections. ONE Summary Table after the final sub-section only.',
+      'On approval: invoke monday-workflow-skill → post Markdown to text_mm1h6708 → separate MCP calls: status, phase, assignee, dates.',
+      'Ask about DOCX conversion → on YES: n8n:execute_workflow with full payload.',
+      'Kevin subtask auto-created (no user gate). Store kevinSubtaskId. Separate calls: status, assignee, dates.'
+    ]
+  },
+  {
+    name: 'MCQs',
+    execOut: 'Question bank (Excel file)',
+    execWho: 'Creator', execStatus: 'MCQs Ready for Review',
+    execNote: 'Scenario-based exam questions generated from the approved textbook. Delivered in two batches for review, then saved to Monday and automatically converted into an Excel file.',
+    trigger: 'Confirmed approved textbook in session — explicit YES required',
+    prereq: 'Approved textbook must exist in session',
+    output: 'Valid JSON array → Monday text_mm1qfseb → Excel via n8n',
+    monday: 'Status → MCQs Ready for Review | Phase → MCQs Creation (color_mm0ev3wn) | Assignee → creatorEmail | Start → today | Due → today+2',
+    kevin: 'Import to WATU Pro Quiz plugin in LearnDash',
+    tools: ['depth-calibration-skill', 'mcq-creation-skill', 'token-optimization', 'Monday MCP', 'n8n:execute_workflow'],
+    steps: [
+      'Confirm approved textbook available in session — required before invoking mcq-creation-skill.',
+      'Invoke depth-calibration-skill → confirm or re-analyze → wait for YES.',
+      'First batch: 15 questions → deliver → pause → wait for explicit YES before continuing.',
+      'Second batch: remaining questions.',
+      'On approval: → Monday updates (4 separate MCP calls) → post JSON to text_mm1qfseb → n8n MCQ workflow → Kevin subtask auto-created.'
+    ]
+  },
+  {
+    name: 'Outline',
+    execOut: 'Slide outline (internal review)',
+    execWho: '—', execStatus: null,
+    execNote: 'The textbook and MCQs are restructured into a Gamma-ready slide outline. This is a review-only phase — nothing is saved externally until the outline is approved and Gamma is built.',
+    trigger: 'Confirmed approved textbook AND MCQs — both required',
+    prereq: 'Approved textbook AND approved MCQs both in session',
+    output: 'Gamma-ready Markdown slide outline — delivered for review',
+    monday: null, kevin: null,
+    tools: ['depth-calibration-skill', 'slide-creation-skill', 'token-optimization'],
+    steps: [
+      'Confirm both approved textbook and approved MCQs in session — requires YES on both.',
+      'Invoke depth-calibration-skill → confirm slide count → wait for YES.',
+      'Invoke slide-creation-skill → generate Gamma-ready Markdown outline: slide titles, bullets, visual placeholders.',
+      'Deliver outline. Ask: "Do you need changes, or is this ready to build in Gamma?"',
+      'Allow revisions using slide-creation-skill. On approval → proceed to Phase 4.'
+    ]
+  },
+  {
+    name: 'Gamma Slides',
+    execOut: 'Live presentation + PowerPoint',
+    execWho: 'Creator', execStatus: 'Need PPTX added',
+    execNote: 'Gamma builds the presentation from the approved outline. A live link is saved to Monday immediately. The team then exports the PowerPoint for records and a PDF for the next phase.',
+    trigger: 'Slide outline approved',
+    prereq: 'Approved slide outline',
+    output: 'Live gammaUrl → session state → Monday text_mm0va5zg',
+    monday: 'gammaUrl → text_mm0va5zg | Status → Need PPTX added | Phase → Slide Creation (color_mm0ev3wn) | Assignee → creatorEmail | Start → today | Due → today+2',
+    kevin: null,
+    tools: ['Gamma connector (create once only)', 'Monday MCP'],
+    steps: [
+      'Call Gamma connector create ONCE — do not poll, do not call again.',
+      'Store gammaUrl from response in session state immediately.',
+      'Surface gammaUrl to user.',
+      'Update Monday (no user gate): gammaUrl → text_mm0va5zg | Status → Need PPTX added | Phase, assignee, dates.',
+      'Instruct user: export PPTX (add to Monday task) + export PDF (add to Claude project).',
+      'Wait for user to confirm PDF is in project and provide filename. Do NOT begin Phase 5 without this confirmation.'
+    ]
+  },
+  {
+    name: 'Script',
+    execOut: 'Narration script for video',
+    execWho: 'Brian', execStatus: 'Slide Script Ready for Review',
+    execNote: 'Slide-by-slide narration written from the presentation. Includes pacing, pause, and emphasis cues timed for a natural video recording. Reviewed before saving to Monday.',
+    trigger: 'User confirms PDF is in the Claude project and provides filename',
+    prereq: 'Presentation PDF in Claude project (or gammaUrl accessible via Monday)',
+    output: 'Markdown narration script → Monday text_mm1jd9yd',
+    monday: 'Status → Slide Script Ready for Review | Phase → Script Creation (color_mm0ev3wn) | Assignee → brian@hockinternational.com | Start → today | Due → today+2',
+    kevin: null,
+    tools: ['slide-script-skill', 'token-optimization', 'Monday MCP'],
+    steps: [
+      'Try to read gammaUrl from session state or Monday column text_mm0va5zg.',
+      'If not accessible: ask user to attach PDF to project and provide filename. Wait for confirmation.',
+      'Confirm presentation source with user before generating.',
+      'Invoke slide-script-skill → narration per slide with [Pause Xs], [Emphasize: term], [Transition to next slide] cues.',
+      'Apply token-optimization chunking if comprehensive depth. Pause after first segment — wait for YES.',
+      'On approval → Monday MCP: 4 separate calls (status, phase, assignee, dates). Surface task link.'
+    ]
+  },
+  {
+    name: 'Video',
+    execOut: 'HeyGen video',
+    execWho: 'Creator', execStatus: 'Video is Ready for Review',
+    execNote: 'The approved script is used to create the video in HeyGen externally. Once the team confirms the video is done, Monday is updated automatically.',
+    trigger: 'Script finalized — user records video in HeyGen externally',
+    prereq: 'Approved narration script',
+    output: 'Video in HeyGen. Monday updated on user confirmation.',
+    monday: 'Status → Video is Ready for Review | Assignee → creatorEmail',
+    kevin: null,
+    tools: ['Monday MCP'],
+    steps: [
+      'Confirm script is finalized.',
+      'Remind user to record video in HeyGen using the approved narration script.',
+      'Wait for user to confirm video is complete.',
+      'Update Monday: Status → Video is Ready for Review | Assignee → creatorEmail.'
+    ]
+  },
+  {
+    name: 'Close-Out',
+    execOut: 'Project record finalized',
+    execWho: '—', execStatus: 'Complete',
+    execNote: 'All phases confirmed complete. Monday updated to Complete. Every artifact — textbook, MCQs, slides, script, video — is accessible from the Monday task.',
+    trigger: 'User confirms all phases are complete',
+    prereq: 'All 6 phase deliverables confirmed present',
+    output: 'Monday status → Complete. All task links active.',
+    monday: 'Status → Complete',
+    kevin: null,
+    tools: ['Monday MCP'],
+    steps: [
+      'Confirm all artifacts are present: textbook, MCQs, Gamma link, script, video.',
+      'Update Monday status → Complete.',
+      'Surface final Monday task link to user.',
+      'Production run fully closed out.'
+    ]
+  }
+];
+
+/* ── BUILD EXEC PHASE GRID ── */
+const epg = document.getElementById('execPhaseGrid');
+epg.innerHTML = phases.map((p, i) => `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:10px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;border-radius:999px;background:var(--orange);color:#fff;font-size:13px;font-weight:900;display:grid;place-items:center;flex-shrink:0;">${i+1}</div>
+        <div>
+          <div style="font-size:15px;font-weight:900;color:var(--text);">${p.name}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:1px;">${p.execOut}</div>
+        </div>
+      </div>
+      ${p.execStatus ? `<span class="chip g" style="flex-shrink:0;">${p.execStatus}</span>` : '<span class="chip gray" style="flex-shrink:0;">Internal</span>'}
+    </div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.6;">${p.execNote}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;padding-top:8px;border-top:1px solid var(--border);">
+      ${p.execWho !== '—' ? `<span class="chip o">Owner: ${p.execWho}</span>` : ''}
+      ${p.kevin ? `<span class="chip a">⚡ Kevin subtask auto-created</span>` : ''}
+    </div>
+  </div>`).join('');
+
+/* ── BUILD TECH PHASE STRIP ── */
+function buildStrip(ai) {
+  document.getElementById('pstrip').innerHTML = phases.map((p, i) => `
+    <div class="pb ${i === ai ? 'sel' : ''}" onclick="selPhase(${i})">
+      <div class="pb-n">Phase ${i+1}</div>
+      <div class="pb-l">${p.name}</div>
+    </div>`).join('');
+}
+
+function selPhase(idx) {
+  buildStrip(idx);
+  const p = phases[idx];
+  document.getElementById('pdetail').innerHTML = `
+    <div class="card bl-o">
+      <div class="ct" style="font-size:16px;margin-bottom:10px;">Phase ${idx+1} — ${p.name}</div>
+      <div class="g3">
+        <div>
+          <div class="slb">Trigger</div>
+          <div class="co o"><div class="coi">▶️</div><div class="cob"><p>${p.trigger}</p></div></div>
+          <div style="margin-top:10px;"><div class="slb">Prerequisite</div>
+          <div class="co a"><div class="coi">🔒</div><div class="cob"><p>${p.prereq}</p></div></div></div>
+        </div>
+        <div>
+          <div class="slb">Output</div>
+          <div class="co g"><div class="coi">📤</div><div class="cob"><p>${p.output}</p></div></div>
+          <div style="margin-top:10px;"><div class="slb">Tools &amp; Skills</div>
+          <div class="chips">${p.tools.map(t => `<span class="chip b">${t}</span>`).join('')}</div></div>
+        </div>
+        <div>
+          <div class="slb">Monday Actions</div>
+          ${p.monday
+            ? `<div class="co b"><div class="coi">📋</div><div class="cob"><p style="font-size:12px;">${p.monday}</p></div></div>`
+            : `<div class="co" style="background:var(--s2);"><div class="coi">—</div><div class="cob"><p style="color:var(--muted);font-size:12px;">No Monday updates this phase.</p></div></div>`
+          }
+          ${p.kevin ? `
+          <div style="margin-top:10px;">
+            <div class="slb">Auto Kevin Subtask</div>
+            <div class="co a"><div class="coi">⚡</div><div class="cob"><p style="font-size:12px;">${p.kevin}<br><em style="color:var(--muted);">assigneeName: Kevin Hock (name only, never email) · Store returned ID as kevinSubtaskId</em></p></div></div>
+          </div>` : ''}
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <div class="slb">Step-by-Step Sequence</div>
+        <div class="steps">${p.steps.map((s, i) => `<div class="si"><div class="sn">${i+1}</div><div class="sb"><p>${s}</p></div></div>`).join('')}</div>
+      </div>
+    </div>`;
+}
+
+buildStrip(1);
+selPhase(1);
+</script>
+</body>
+</html>
