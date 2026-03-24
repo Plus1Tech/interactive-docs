@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hilberts — Current Process Map</title>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sand:    #f7f4f0;
+  --sand2:   #efe9e1;
+  --sand3:   #e0d8ce;
+  --ink:     #1c1a18;
+  --ink2:    #4a4540;
+  --ink3:    #7a736a;
+  --ink4:    #a09890;
+  --white:   #ffffff;
+  --border:  #e2dbd2;
+
+  --red:     #c0392b;
+  --red-bg:  #fdf0ee;
+  --red-bd:  #f5c5be;
+  --amber:   #b8640a;
+  --amber-bg:#fef6ea;
+  --amber-bd:#f5d8a8;
+  --green:   #1a6633;
+  --green-bg:#edf7f1;
+  --green-bd:#a8d8bb;
+
+  --sidebar: 236px;
+}
+
+body {
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  background: var(--sand);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+/* ══ SIDEBAR ══ */
+aside {
+  width: var(--sidebar);
+  min-width: var(--sidebar);
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 28px 0 24px;
+}
+.sb-top { padding: 0 18px 24px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.sb-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink4); margin-bottom: 6px;
+}
+.sb-title {
+  font-family: Arial, sans-serif; font-size: 15px; font-weight: 700;
+  color: var(--ink); line-height: 1.3;
+}
+.sb-meta { font-size: 11px; color: var(--ink4); margin-top: 4px; }
+
+.sb-section { padding: 10px 10px 4px; }
+.sb-section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink4); padding: 0 8px 6px;
+}
+
+nav a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 7px; margin-bottom: 2px;
+  cursor: pointer; text-decoration: none;
+  font-size: 12.5px; font-weight: 400; color: var(--ink2);
+  transition: background .12s, color .12s;
+  border: none; background: transparent; width: 100%; text-align: left;
+  font-family: Arial, sans-serif;
+}
+nav a:hover { background: var(--sand); color: var(--ink); }
+nav a.active { background: var(--ink); color: var(--white); font-weight: 500; }
+.nav-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+
+.sb-footer {
+  margin-top: auto; padding: 16px 18px 0; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--ink4); line-height: 1.6;
+}
+
+/* ══ MAIN ══ */
+main {
+  flex: 1; overflow-y: auto; padding: 44px 48px 60px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ══ PAGE HEADER ══ */
+.page-header { margin-bottom: 32px; }
+.page-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--ink4); margin-bottom: 8px;
+}
+.page-title {
+  font-family: Arial, sans-serif; font-size: 26px; font-weight: 700;
+  color: var(--ink); line-height: 1.2; margin-bottom: 10px;
+}
+.page-desc {
+  font-size: 14px; color: var(--ink3); line-height: 1.65; max-width: 620px;
+}
+
+/* ══ SENTIMENT BANNER ══ */
+.sentiment {
+  border-radius: 8px; padding: 14px 18px; margin-bottom: 28px;
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 13px; line-height: 1.55;
+}
+.sentiment.bad   { background: var(--red-bg);   border: 1px solid var(--red-bd); color: #7a2020; }
+.sentiment.warn  { background: var(--amber-bg); border: 1px solid var(--amber-bd); color: #6a3c08; }
+.sentiment-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.sentiment em { font-style: italic; font-weight: 500; }
+
+/* ══ FLOW DIAGRAM ══ */
+.flow-section { margin-bottom: 32px; }
+.flow-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink4); margin-bottom: 14px;
+}
+
+.flow {
+  display: flex; align-items: flex-start; flex-wrap: wrap; gap: 0;
+  position: relative;
+}
+
+/* Step node */
+.step {
+  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+}
+.step-box {
+  border-radius: 8px; padding: 12px 14px; min-width: 120px; max-width: 148px;
+  text-align: center; border: 1.5px solid; position: relative;
+  cursor: default;
+}
+.step-box:hover { filter: brightness(.97); }
+.step-num {
+  font-size: 10px; font-weight: 600; letter-spacing: .05em;
+  text-transform: uppercase; margin-bottom: 4px; opacity: .65;
+}
+.step-name {
+  font-size: 12.5px; font-weight: 500; line-height: 1.35; color: var(--ink);
+}
+.step-note {
+  font-size: 10.5px; color: var(--ink3); margin-top: 4px; line-height: 1.35;
+  font-style: italic;
+}
+.step-pain {
+  font-size: 10px; font-weight: 600; letter-spacing: .04em;
+  padding: 2px 7px; border-radius: 10px; margin-top: 6px;
+  display: inline-block;
+}
+
+/* Step colors */
+.step-neutral { background: var(--white); border-color: var(--border); }
+.step-pain-hi { background: var(--red-bg); border-color: var(--red-bd); }
+.step-pain-md { background: var(--amber-bg); border-color: var(--amber-bd); }
+.step-ok      { background: var(--green-bg); border-color: var(--green-bd); }
+.step-start   { background: #e8f4ea; border-color: #9fd4b2; }
+.step-end     { background: #e8f4ea; border-color: #9fd4b2; }
+.step-decision { background: var(--white); border-color: var(--border); transform: rotate(0); }
+
+/* Pain badges */
+.badge-hi   { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-bd); }
+.badge-md   { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+.badge-lo   { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bd); }
+
+/* Arrow between steps */
+.arrow {
+  display: flex; align-items: center; padding: 0 2px; margin-top: 22px; flex-shrink: 0;
+}
+.arrow svg { color: var(--ink3); }
+
+/* Branch wrapper for decision paths */
+.branch-wrap {
+  display: flex; flex-direction: column; gap: 16px; position: relative;
+}
+.branch { display: flex; align-items: flex-start; gap: 0; }
+.branch-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--ink4); margin-right: 6px;
+  margin-top: 24px; white-space: nowrap;
+}
+
+/* ══ DECISION DIAMOND ══ */
+.diamond-wrap {
+  display: flex; flex-direction: column; align-items: center; position: relative;
+}
+.diamond {
+  width: 90px; height: 54px; background: var(--white);
+  border: 1.5px solid var(--border); transform: rotate(45deg);
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  cursor: default; flex-shrink: 0;
+}
+.diamond-text {
+  transform: rotate(-45deg); font-size: 11px; font-weight: 600;
+  color: var(--ink2); text-align: center; line-height: 1.2; width: 72px;
+}
+
+/* ══ STATS ROW ══ */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 28px; }
+.stat {
+  background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px;
+}
+.stat-val {
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700;
+  color: var(--ink); margin-bottom: 2px;
+}
+.stat-val.red   { color: var(--red); }
+.stat-val.amber { color: var(--amber); }
+.stat-label { font-size: 11px; color: var(--ink3); line-height: 1.4; }
+
+/* ══ STEP TABLE ══ */
+.step-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 28px; }
+.step-table th {
+  font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink4); padding: 8px 12px; border-bottom: 1px solid var(--border);
+  text-align: left; background: var(--white);
+}
+.step-table td {
+  padding: 10px 12px; border-bottom: 1px solid var(--sand2);
+  vertical-align: top; line-height: 1.5;
+}
+.step-table tr:last-child td { border-bottom: none; }
+.step-table tr:hover td { background: var(--sand); }
+.step-table td:first-child { font-weight: 500; color: var(--ink); white-space: nowrap; }
+.step-table td:nth-child(2) { color: var(--ink2); }
+.step-table td:last-child  { color: var(--ink3); font-size: 12px; }
+.chip {
+  display: inline-block; font-size: 10.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 10px;
+}
+.chip-hi   { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-bd); }
+.chip-md   { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+.chip-lo   { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bd); }
+
+/* ══ OVERVIEW PAGE ══ */
+.process-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px;
+}
+.process-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; cursor: pointer; transition: border-color .15s, box-shadow .15s;
+  border-left: 4px solid transparent;
+}
+.process-card:hover { border-color: var(--sand3); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.process-card.severity-high  { border-left-color: var(--red); }
+.process-card.severity-med   { border-left-color: var(--amber); }
+.pc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.pc-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.pc-owner { font-size: 11px; color: var(--ink4); margin-bottom: 8px; }
+.pc-desc { font-size: 12.5px; color: var(--ink3); line-height: 1.5; }
+.pc-stats { display: flex; gap: 12px; margin-top: 10px; }
+.pc-stat { font-size: 11px; color: var(--ink3); }
+.pc-stat strong { font-size: 13px; font-weight: 600; font-family: 'Fraunces', serif; color: var(--ink); }
+
+.summary-banner {
+  background: var(--ink); color: var(--white); border-radius: 10px;
+  padding: 20px 24px; margin-bottom: 12px; font-size: 14px; line-height: 1.6;
+}
+.summary-banner strong { font-family: 'Fraunces', serif; font-size: 18px; display: block; margin-bottom: 4px; }
+
+/* ══ FLOW DIAGRAM V2 (horizontal scrollable) ══ */
+.flow-scroll { overflow-x: auto; padding-bottom: 12px; }
+.flow-h {
+  display: inline-flex; align-items: flex-start; gap: 0; min-width: max-content; padding: 4px 0;
+}
+.fnode {
+  display: flex; flex-direction: column; align-items: center; min-width: 128px; max-width: 148px;
+}
+.fnode-box {
+  width: 128px; border-radius: 8px; padding: 11px 12px;
+  text-align: center; border: 1.5px solid; position: relative;
+}
+.fnode-title { font-size: 12px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+.fnode-sub   { font-size: 10.5px; color: var(--ink3); margin-top: 3px; line-height: 1.3; font-style: italic; }
+.farr {
+  display: flex; align-items: center; align-self: flex-start; margin-top: 20px; flex-shrink: 0; padding: 0 1px;
+}
+.farr svg { color: var(--ink3); }
+.farr-label {
+  font-size: 9.5px; color: var(--ink4); text-align: center;
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  white-space: nowrap; margin-top: 2px;
+}
+.fdecision {
+  width: 80px; height: 80px; border: 1.5px solid var(--border);
+  background: var(--white); transform: rotate(45deg);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border-radius: 4px; margin: 0 14px;
+}
+.fdecision-text {
+  transform: rotate(-45deg); font-size: 10px; font-weight: 600;
+  color: var(--ink2); text-align: center; line-height: 1.2; width: 62px;
+}
+
+/* branch container */
+.branch-col {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.branch-row {
+  display: flex; align-items: flex-start; gap: 0;
+}
+.branch-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink4); margin-right: 8px; margin-top: 22px; white-space: nowrap;
+}
+
+/* loop indicator */
+.loop-badge {
+  font-size: 10px; font-weight: 600; color: var(--amber);
+  background: var(--amber-bg); border: 1px solid var(--amber-bd);
+  border-radius: 10px; padding: 2px 8px; margin-top: 6px; display: inline-block;
+}
+
+/* ══ QUOTE CALLOUT ══ */
+.quote {
+  border-left: 3px solid var(--sand3); padding: 12px 16px;
+  margin: 0 0 24px; border-radius: 0 8px 8px 0; background: var(--white);
+  font-size: 13px; font-style: italic; color: var(--ink2); line-height: 1.6;
+}
+.quote cite { font-size: 11px; color: var(--ink4); font-style: normal; display: block; margin-top: 4px; }
+
+/* helpers */
+.mb8 { margin-bottom: 8px; }
+.mb16 { margin-bottom: 16px; }
+.mb24 { margin-bottom: 24px; }
+.section-divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+/* ══ CALL WORKSHEET STYLES ══ */
+.cw-section { margin-bottom: 28px; }
+.cw-section-title {
+  font-size: 13px; font-weight: 700; color: var(--ink);
+  padding: 10px 14px; background: var(--ink); color: #fff;
+  border-radius: 7px 7px 0 0; letter-spacing: .02em;
+}
+.cw-section-title.blue  { background: #1a3a5c; }
+.cw-section-title.green { background: #1a5c3a; }
+.cw-section-title.amber { background: #7a4a00; }
+.cw-section-title.red   { background: #7a1a1a; }
+
+.cw-body { border: 1px solid var(--border); border-top: none; border-radius: 0 0 7px 7px; overflow: hidden; }
+
+.cw-belief {
+  background: #f0f4fa; padding: 12px 16px; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--ink2); line-height: 1.6;
+}
+.cw-belief-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: #2a4db0; margin-bottom: 6px;
+}
+.cw-belief ul { padding-left: 18px; margin: 0; }
+.cw-belief ul li { margin-bottom: 3px; font-size: 12.5px; }
+
+.cw-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.cw-col { padding: 14px 16px; }
+.cw-col:first-child { border-right: 1px solid var(--border); }
+.cw-col-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink4); margin-bottom: 10px;
+}
+.cw-field {
+  margin-bottom: 10px;
+}
+.cw-field label {
+  font-size: 11px; font-weight: 600; color: var(--ink3); display: block; margin-bottom: 4px;
+}
+.cw-field textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: 6px;
+  padding: 8px 10px; font-size: 12.5px; font-family: Arial, sans-serif;
+  color: var(--ink); background: var(--white); resize: vertical;
+  min-height: 56px; line-height: 1.5;
+  transition: border-color .12s;
+}
+.cw-field textarea:focus { outline: none; border-color: #2a4db0; }
+.cw-field textarea::placeholder { color: var(--ink4); font-style: italic; }
+
+.sticky-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
+.sticky { padding: 12px 14px; }
+.sticky:first-child { border-right: 1px solid var(--border); }
+.sticky-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.sticky-label.insight { color: #1a5c3a; }
+.sticky-label.risk    { color: #c0392b; }
+.sticky-label.pain    { color: #b8640a; }
+.sticky-label.followup{ color: #2a4db0; }
+.sticky textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: 5px;
+  padding: 6px 9px; font-size: 12px; font-family: Arial, sans-serif;
+  color: var(--ink); background: #fffef8; resize: vertical; min-height: 48px;
+  line-height: 1.5;
+}
+.sticky textarea:focus { outline: none; border-color: #888; }
+
+/* question cards */
+.q-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.q-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 16px; display: flex; align-items: flex-start; gap: 12px;
+}
+.q-num {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--ink);
+  color: #fff; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+.q-num.blue  { background: #1a3a5c; }
+.q-num.green { background: #1a5c3a; }
+.q-num.amber { background: #7a4a00; }
+.q-body { flex: 1; }
+.q-text { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 6px; line-height: 1.4; }
+.q-note { font-size: 11.5px; color: var(--ink3); font-style: italic; line-height: 1.4; }
+.q-answer textarea {
+  width: 100%; margin-top: 6px; border: 1px solid var(--border); border-radius: 5px;
+  padding: 6px 9px; font-size: 12px; font-family: Arial, sans-serif;
+  color: var(--ink); background: #fafaf8; resize: vertical; min-height: 40px;
+  line-height: 1.5;
+}
+.q-answer textarea:focus { outline: none; border-color: #2a4db0; }
+.q-answer textarea::placeholder { color: var(--ink4); font-style: italic; }
+
+/* checklist */
+.checklist { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.check-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: var(--white); border: 1px solid var(--border);
+  border-radius: 7px; cursor: pointer; transition: background .1s;
+}
+.check-item:hover { background: var(--sand); }
+.check-item input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--ink); cursor: pointer; flex-shrink: 0; }
+.check-item label { font-size: 13px; color: var(--ink2); cursor: pointer; line-height: 1.4; }
+.check-item input:checked + label { text-decoration: line-through; color: var(--ink4); }
+
+/* synthesis */
+.synthesis-card {
+  background: #1a3a5c; color: #fff; border-radius: 10px;
+  padding: 20px 24px; margin-bottom: 16px;
+}
+.synthesis-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; opacity: .7; letter-spacing: .06em; text-transform: uppercase; }
+.synthesis-card textarea {
+  width: 100%; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  border-radius: 6px; padding: 10px 12px; font-size: 13px; font-family: Arial, sans-serif;
+  color: #fff; resize: vertical; min-height: 64px; line-height: 1.5;
+}
+.synthesis-card textarea:focus { outline: none; border-color: rgba(255,255,255,.5); }
+.synthesis-card textarea::placeholder { color: rgba(255,255,255,.4); font-style: italic; }
+
+/* two col layout for worksheet pages */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+.tip-banner {
+  background: #e8f0fb; border: 1px solid #b8cef0; border-radius: 8px;
+  padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #1a3a5c;
+  line-height: 1.55;
+}
+.tip-banner strong { font-weight: 700; }
+
+.ai-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ai-tag {
+  font-size: 10.5px; font-weight: 500; padding: 3px 10px; border-radius: 10px;
+  background: #e8edf8; color: #2a4db0; border: 1px solid #c3cef0;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside>
+  <div class="sb-top">
+    <div class="sb-eyebrow">Hilberts · Process Map</div>
+    <div class="sb-title">Current State Processes</div>
+    <div class="sb-meta">7 processes · As of Feb 2026</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">Overview</div>
+    <nav>
+      <a class="active" onclick="show('overview', this)">
+        <span class="nav-dot" style="background:#1c1a18;"></span>All processes
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">Bid &amp; Estimation</div>
+    <nav>
+      <a onclick="show('p1', this)">
+        <span class="nav-dot" style="background:var(--red);"></span>Bid invitation intake
+      </a>
+      <a onclick="show('p2', this)">
+        <span class="nav-dot" style="background:var(--red);"></span>Dropbox bid retrieval
+      </a>
+      <a onclick="show('p3', this)">
+        <span class="nav-dot" style="background:var(--red);"></span>Blueprint takeoff
+      </a>
+      <a onclick="show('p4', this)">
+        <span class="nav-dot" style="background:var(--amber);"></span>Proposal generation
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">Post-Quote</div>
+    <nav>
+      <a onclick="show('p5', this)">
+        <span class="nav-dot" style="background:var(--red);"></span>Quote follow-up
+      </a>
+      <a onclick="show('p6', this)">
+        <span class="nav-dot" style="background:var(--amber);"></span>Room schedule creation
+      </a>
+      <a onclick="show('p7', this)">
+        <span class="nav-dot" style="background:var(--amber);"></span>Floor-by-floor order release
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">Call Worksheet</div>
+    <nav>
+      <a onclick="show('cw-validate', this)">
+        <span class="nav-dot" style="background:#1a3a5c;"></span>Validate current state
+      </a>
+      <a onclick="show('cw-future', this)">
+        <span class="nav-dot" style="background:#1a5c3a;"></span>Optimized solution questions
+      </a>
+      <a onclick="show('cw-scope', this)">
+        <span class="nav-dot" style="background:#7a4a00;"></span>PhaseAlpha scope
+      </a>
+      <a onclick="show('cw-synthesis', this)">
+        <span class="nav-dot" style="background:#1c1a18;"></span>Call synthesis
+      </a>
+      <a onclick="show('cw-tech', this)">
+        <span class="nav-dot" style="background:#5c1a5c;"></span>Tech architecture
+      </a>
+    </nav>
+  </div>
+
+
+    Prepared by<br>Jessica Peaden &amp; Marc Umstead<br>March 2026
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main>
+
+  <!-- ══ OVERVIEW ══ -->
+  <div id="overview" class="page active">
+    <div class="page-header">
+      <div class="page-eyebrow">Current State · Feb 2026</div>
+      <div class="page-title">Where the time goes</div>
+      <div class="page-desc">Seven core processes documented across the Hilberts team. Each involves significant manual effort, repeated data entry, and no systematic automation. Combined, they account for an estimated 10–15 hours of recoverable time per week.</div>
+    </div>
+
+    <div class="summary-banner">
+      <strong>~10–15 hrs/week lost to manual process</strong>
+      Across bid intake, blueprint takeoff, proposal QA, follow-up, room schedules, and order segmentation — before a single automation is in place.
+    </div>
+
+    <div class="process-grid">
+      <div class="process-card severity-high" onclick="show('p1', document.querySelector('[onclick=\"show(\'p1\', this)\"]'))">
+        <div class="pc-top">
+          <div class="pc-name">Bid invitation intake</div>
+          <span class="chip chip-hi">High pain</span>
+        </div>
+        <div class="pc-owner">Who: Tom + office · Trigger: Daily incoming email</div>
+        <div class="pc-desc">10–40 emails per day. Each requires manually opening, locating HVAC drawings (sometimes buried in Dropbox), and deciding whether to bid.</div>
+        <div class="pc-stats">
+          <div class="pc-stat"><strong>20 min</strong><br>per job to find drawings</div>
+          <div class="pc-stat"><strong>10–40</strong><br>emails per day</div>
+        </div>
+      </div>
+
+      <div class="process-card severity-high" onclick="show('p2', document.querySelector('[onclick=\"show(\'p2\', this)\"]'))">
+        <div class="pc-top">
+          <div class="pc-name">Dropbox bid retrieval</div>
+          <span class="chip chip-hi">High pain</span>
+        </div>
+        <div class="pc-owner">Who: Tom + office staff · Trigger: Contractor sends bulk bid list</div>
+        <div class="pc-desc">Contractor sends a list using their own naming conventions. Dropbox folders use different names. Manual cross-referencing required to find each job's drawings.</div>
+        <div class="pc-stats">
+          <div class="pc-stat"><strong>20 min</strong><br>per job, unorganized folders</div>
+          <div class="pc-stat"><strong>0</strong><br>naming convention standards</div>
+        </div>
+      </div>
+
+      <div class="process-card severity-high" onclick="show('p3', document.querySelector('[onclick=\"show(\'p3\', this)\"]'))">
+        <div class="pc-top">
+          <div class="pc-name">Blueprint takeoff</div>
+          <span class="chip chip-hi">Very high pain</span>
+        </div>
+        <div class="pc-owner">Who: Tom + office staff · Trigger: Decision to bid a job</div>
+        <div class="pc-desc">Manually go through architectural drawings, find room schedule, identify every room, note equipment designations, sizes, CFMs, and static pressures — then create the room schedule document.</div>
+        <div class="pc-stats">
+          <div class="pc-stat"><strong>4–6 hrs</strong><br>per high school job</div>
+          <div class="pc-stat"><strong>100%</strong><br>manual data entry</div>
+        </div>
+      </div>
+
+      <div class="process-card severity-med" onclick="show('p4', document.querySelector('[onclick=\"show(\'p4\', this)\"]'))">
+        <div class="pc-top">
+          <div class="pc-name">Proposal generation</div>
+          <span class="chip chip-md">Risky</span>
+        </div>
+        <div class="pc-owner">Who: ABK (outsourced) + some internal · Trigger: Bid decision made</div>
+        <div class="pc-desc">Proposals generated by ABK with no internal QA review before they reach customers. Errors only discovered when a customer comes back to buy.</div>
+        <div class="pc-stats">
+          <div class="pc-stat"><strong>0</strong><br>internal review steps</div>
+          <div class="pc-stat"><strong>Risky</strong><br>errors at buy-time</div>
+        </div>
+      </div>
+
+      <div class="process-card severity-high" onclick="show('p5', document.querySelector('[onclick=\"show(\'p5\', this)\"]'))">
+        <div class="pc-top">
+          <div class="pc-name">Quote follow-up</div>
+          <span class="chip chip-hi">High pain</span>
+        </div>
+        <div class="pc-owner">Who: Tom, Dave, others · Trigger: Ad hoc, no structure</div>
+        <div class="pc-desc">No CRM. Follow-up tracked in memory and personal spreadsheets. Important relationships get manual outreach; smaller quotes sit untracked. Opportunities lost silently.</div>
+        <div class="pc-stats">
+          <div class="pc-stat"><strong>0</strong><br>structured follow-up system</div>
+          <div class="pc-stat"><strong>Slipping</strong><br>quotes go untracked</div>
+        </div>
+      </div>
+
+      <div class="process-card severity-med" onclick="show('p6', document.querySelector('[onclick=\"show(\'p6\', this)\"]'))">
+        <div class="pc-top">
+          <div class="pc-name">Room schedule creation</div>
+          <span class="chip chip-md">Slow &amp; manual</span>
+        </div>
+        <div class="pc-owner">Who: Office staff · Trigger: PO received post-award</div>
+        <div class="pc-desc">Re-enter job details room by room with product designations. Build a 10–20 page document for engineer review. Critical path to getting the order placed.</div>
+        <div class="pc-stats">
+          <div class="pc-stat"><strong>10–20 pg</strong><br>manual document</div>
+          <div class="pc-stat"><strong>Critical path</strong><br>to order placement</div>
+        </div>
+      </div>
+
+      <div class="process-card severity-med" onclick="show('p7', document.querySelector('[onclick=\"show(\'p7\', this)\"]'))">
+        <div class="pc-top">
+          <div class="pc-name">Floor-by-floor order release</div>
+          <span class="chip chip-md">Tedious rework</span>
+        </div>
+        <div class="pc-owner">Who: Office staff · Trigger: Contractor releases a floor</div>
+        <div class="pc-desc">Must go back into the full quoted job and manually re-segment and re-enter a partial order just for the released floor. No automation exists to split by floor.</div>
+        <div class="pc-stats">
+          <div class="pc-stat"><strong>Re-entry</strong><br>every floor release</div>
+          <div class="pc-stat"><strong>0</strong><br>automation in place</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ P1: BID INVITATION INTAKE ══ -->
+  <div id="p1" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Process 1 of 7 · Bid &amp; Estimation</div>
+      <div class="page-title">Bid Invitation Intake</div>
+      <div class="page-desc">The daily firehose. Tom and the team receive 10–40 invitation-to-bid emails every day from general contractors and engineers. Each one must be manually opened, evaluated, and the relevant HVAC drawings located before a bid decision can be made.</div>
+    </div>
+
+    <div class="sentiment bad">
+      <span class="sentiment-icon">⚠</span>
+      <div><strong>Painful, manual, time-consuming</strong> — <em>"It could take you 20 minutes just to find the damn drawing you're looking for for one job."</em> — Tom Hilberts</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val red">10–40</div><div class="stat-label">Bid emails received per day</div></div>
+      <div class="stat"><div class="stat-val red">20 min</div><div class="stat-label">Average time to locate HVAC drawings per job</div></div>
+      <div class="stat"><div class="stat-val amber">3 types</div><div class="stat-label">Of bid invitation format (PDF, Dropbox link, bulk list)</div></div>
+      <div class="stat"><div class="stat-val amber">Manual</div><div class="stat-label">100% manual review — no automation or filtering</div></div>
+    </div>
+
+    <div class="flow-label">Process flow</div>
+    <div class="flow-scroll mb24">
+      <div class="flow-h">
+        <div class="fnode">
+          <div class="fnode-box step-start">
+            <div class="fnode-title">Incoming email</div>
+            <div class="fnode-sub">High volume, daily</div>
+          </div>
+        </div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode">
+          <div class="fnode-box step-pain-md">
+            <div class="fnode-title">Open email</div>
+            <div class="fnode-sub">Manual process</div>
+          </div>
+        </div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode">
+          <div class="fnode-box step-pain-hi">
+            <div class="fnode-title">Locate HVAC drawings</div>
+            <div class="fnode-sub">Inconsistent locations</div>
+          </div>
+        </div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode">
+          <div class="fnode-box step-pain-hi">
+            <div class="fnode-title">Review drawings</div>
+            <div class="fnode-sub">Time-consuming search</div>
+          </div>
+        </div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode">
+          <div class="fdecision"><div class="fdecision-text">Worth bidding?</div></div>
+        </div>
+        <div class="farr" style="flex-direction:column; gap:4px; margin-top:0; align-self:center;">
+          <div style="display:flex;align-items:center;gap:0;margin-bottom:8px;">
+            <svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:9px;font-weight:700;color:var(--green);margin-left:2px;">YES</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0;">
+            <svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:9px;font-weight:700;color:var(--red);margin-left:2px;">NO</span>
+          </div>
+        </div>
+        <div class="branch-col">
+          <div class="branch-row">
+            <div class="fnode">
+              <div class="fnode-box step-ok">
+                <div class="fnode-title">Prepare bid</div>
+                <div class="fnode-sub">Add to schedule</div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-row">
+            <div class="fnode">
+              <div class="fnode-box step-neutral">
+                <div class="fnode-title">Decline / ignore</div>
+                <div class="fnode-sub">No record kept</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-label">Step-by-step detail</div>
+    <table class="step-table mb24">
+      <thead><tr><th>Step</th><th>What happens</th><th>Pain point</th></tr></thead>
+      <tbody>
+        <tr><td>1. Email arrives</td><td>ITB email from GC or engineer lands in shared inbox. No filtering or tagging applied.</td><td><span class="chip chip-md">Volume</span></td></tr>
+        <tr><td>2. Open manually</td><td>Tom or office staff opens each email individually to assess content.</td><td><span class="chip chip-md">Manual</span></td></tr>
+        <tr><td>3. Locate drawings</td><td>Drawings may be attached as PDF, linked via PipelineSuite/PreconSuite, or stored in a shared Dropbox folder with inconsistent naming.</td><td><span class="chip chip-hi">20 min/job</span></td></tr>
+        <tr><td>4. Review drawings</td><td>Open drawings, navigate to HVAC sheets, assess scope and complexity.</td><td><span class="chip chip-md">Manual</span></td></tr>
+        <tr><td>5. Bid decision</td><td>Tom decides yes/no based on size, relationship, margin potential. Decision kept in memory or noted informally.</td><td><span class="chip chip-md">No system</span></td></tr>
+        <tr><td>6. Yes → schedule</td><td>Bid added to mental or spreadsheet calendar. Drawings saved manually to local drive or Dropbox.</td><td><span class="chip chip-md">Manual</span></td></tr>
+        <tr><td>7. No → no record</td><td>Declined bids leave no trace. No analytics on what was passed and why.</td><td><span class="chip chip-hi">Lost data</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="flow-label">AI opportunity</div>
+    <div class="ai-tags">
+      <span class="ai-tag">Auto-classify ITB emails</span>
+      <span class="ai-tag">Extract bid date, GC contact, scope keywords</span>
+      <span class="ai-tag">Locate &amp; retrieve HVAC drawings automatically</span>
+      <span class="ai-tag">Morning review queue — Tom decides in 15 min total</span>
+      <span class="ai-tag">Log all decisions (yes/no/pass) to Dragonfly</span>
+    </div>
+  </div>
+
+  <!-- ══ P2: DROPBOX BID RETRIEVAL ══ -->
+  <div id="p2" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Process 2 of 7 · Bid &amp; Estimation</div>
+      <div class="page-title">Dropbox-Based Bid Package Retrieval</div>
+      <div class="page-desc">When a contractor sends a bulk bid list and says "drawings are in my Dropbox," the real work begins. Folder names in Dropbox rarely match the project names on the contractor's list — requiring manual cross-referencing to find each job's HVAC drawings.</div>
+    </div>
+
+    <div class="sentiment bad">
+      <span class="sentiment-icon">⚠</span>
+      <div><strong>Frustrating, error-prone</strong> — <em>"He calls it Dupont on his bid list. In the Dropbox it's called Nemours. You're wasting time trying to figure out which one it is."</em> — Tom Hilberts</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val red">20 min</div><div class="stat-label">Per job in unorganized Dropbox folders</div></div>
+      <div class="stat"><div class="stat-val red">0</div><div class="stat-label">Naming conventions enforced across contractors</div></div>
+      <div class="stat"><div class="stat-val amber">Manual</div><div class="stat-label">Cross-referencing required every time</div></div>
+      <div class="stat"><div class="stat-val amber">Missed</div><div class="stat-label">Jobs sometimes skipped when folder can't be found</div></div>
+    </div>
+
+    <div class="flow-label">Process flow</div>
+    <div class="flow-scroll mb24">
+      <div class="flow-h">
+        <div class="fnode"><div class="fnode-box step-start"><div class="fnode-title">Contractor sends bid list</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Open Dropbox folder</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Cross-reference list</div><div class="fnode-sub">vs. folder names</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fdecision"><div class="fdecision-text">Names match?</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:12px;align-self:flex-start;margin-top:18px;">
+          <div class="branch-row">
+            <span class="branch-tag">YES</span>
+            <div class="fnode"><div class="fnode-box step-ok"><div class="fnode-title">Navigate to job folder</div><div class="fnode-sub">Time-consuming</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Locate HVAC drawings</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-ok"><div class="fnode-title">Download &amp; review</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-end"><div class="fnode-title">Move to bid evaluation</div></div></div>
+          </div>
+          <div class="branch-row">
+            <span class="branch-tag">NO</span>
+            <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Manual search</div><div class="fnode-sub">Unorganized folders, up to 20 min/job</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fdecision"><div class="fdecision-text">Found correct drawings?</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-label">Step-by-step detail</div>
+    <table class="step-table mb24">
+      <thead><tr><th>Step</th><th>What happens</th><th>Pain point</th></tr></thead>
+      <tbody>
+        <tr><td>1. Bid list received</td><td>Contractor sends a spreadsheet or email with 10–20 jobs to bid. Each listed under their own internal project name.</td><td><span class="chip chip-md">Volume</span></td></tr>
+        <tr><td>2. Open Dropbox</td><td>Navigate to contractor's shared Dropbox folder. Folders named by contractor's internal conventions.</td><td><span class="chip chip-md">Manual</span></td></tr>
+        <tr><td>3. Cross-reference</td><td>Compare bid list names to Dropbox folder names. Names often don't match (e.g. "Dupont" vs. "Nemours").</td><td><span class="chip chip-hi">Name mismatch</span></td></tr>
+        <tr><td>4. If match found</td><td>Navigate into folder, find HVAC sheets, download, begin review.</td><td><span class="chip chip-lo">OK when found</span></td></tr>
+        <tr><td>5. If no match</td><td>Manual keyword search in Dropbox. May try multiple folder names. Can take 20 minutes for a single job.</td><td><span class="chip chip-hi">20 min/job</span></td></tr>
+        <tr><td>6. Drawings reviewed</td><td>Once found, downloaded locally. Review HVAC sheets for scope assessment.</td><td><span class="chip chip-md">Manual</span></td></tr>
+        <tr><td>7. Bid evaluation</td><td>Move to bid decision step. Some jobs abandoned mid-search if folder cannot be located.</td><td><span class="chip chip-hi">Missed bids</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="flow-label">AI opportunity</div>
+    <div class="ai-tags">
+      <span class="ai-tag">AI cross-references contractor name to Dropbox folder via fuzzy matching</span>
+      <span class="ai-tag">Auto-identifies and downloads HVAC sheets only</span>
+      <span class="ai-tag">Attaches drawings directly to Dragonfly opportunity record</span>
+    </div>
+  </div>
+
+  <!-- ══ P3: BLUEPRINT TAKEOFF ══ -->
+  <div id="p3" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Process 3 of 7 · Bid &amp; Estimation</div>
+      <div class="page-title">Blueprint Takeoff / Room Count</div>
+      <div class="page-desc">After deciding to bid a job, someone must manually go through the architectural drawings, find the room schedule, identify every room, note the equipment designations (CG, RG, etc.), sizes, CFM ratings, and static pressures — then create a room schedule document from scratch.</div>
+    </div>
+
+    <div class="sentiment bad">
+      <span class="sentiment-icon">⚠</span>
+      <div><strong>Very painful, highly labor-intensive</strong> — <em>"A decent-size high school job — 4 to 6 hours manually. It's a really labor-intensive system."</em> — Tom Hilberts</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val red">4–6 hrs</div><div class="stat-label">Manual room count for a high school job</div></div>
+      <div class="stat"><div class="stat-val red">100%</div><div class="stat-label">Manual data identification and transcription</div></div>
+      <div class="stat"><div class="stat-val amber">Hundreds</div><div class="stat-label">Of equipment items on a single drawing page</div></div>
+      <div class="stat"><div class="stat-val amber">Repeated</div><div class="stat-label">Data entry — same info re-entered multiple times</div></div>
+    </div>
+
+    <div class="flow-label">Process flow</div>
+    <div class="flow-scroll mb24">
+      <div class="flow-h">
+        <div class="fnode"><div class="fnode-box step-start"><div class="fnode-title">Bid approved</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Locate drawings</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Find room schedule sheet</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Identify each room</div><div class="fnode-sub">Manual, one by one</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Note equipment</div><div class="fnode-sub">CG, RG, designation</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Record room size, CFM, static pressure</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fdecision"><div class="fdecision-text">More rooms?</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:12px;align-self:flex-start;margin-top:18px;">
+          <div class="branch-row">
+            <span class="branch-tag">YES</span>
+            <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Loop back</div><div class="fnode-sub">Repeat for every room</div><div class="loop-badge">↻ repeating</div></div></div>
+          </div>
+          <div class="branch-row">
+            <span class="branch-tag">NO</span>
+            <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Compile room schedule</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Manual transcription</div><div class="fnode-sub">Enter/manual transcription into document</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-end"><div class="fnode-title">Room schedule complete</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-label">What's being read from drawings</div>
+    <table class="step-table mb24">
+      <thead><tr><th>Data point</th><th>Where found on drawing</th><th>Entry method</th></tr></thead>
+      <tbody>
+        <tr><td>Room number</td><td>Room schedule table on architectural sheet</td><td><span class="chip chip-hi">Manual</span></td></tr>
+        <tr><td>Equipment designation</td><td>CG, RG, EF1, VAV, FCU etc. — schedule + floor plan</td><td><span class="chip chip-hi">Manual</span></td></tr>
+        <tr><td>Room size</td><td>Floor plan dimensions</td><td><span class="chip chip-hi">Manual</span></td></tr>
+        <tr><td>CFM (airflow)</td><td>Ventilation rate schedule on drawing</td><td><span class="chip chip-hi">Manual</span></td></tr>
+        <tr><td>Static pressure</td><td>Equipment schedule</td><td><span class="chip chip-hi">Manual</span></td></tr>
+        <tr><td>Product to quote</td><td>Cross-referenced from spec and schedule</td><td><span class="chip chip-hi">Manual</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="flow-label">AI opportunity</div>
+    <div class="ai-tags">
+      <span class="ai-tag">AlphaTakeoff reads HVAC PDFs automatically</span>
+      <span class="ai-tag">Counts GRDs, VAVs, FCUs, dampers, louvers in minutes</span>
+      <span class="ai-tag">Auto-generates editable room schedule spreadsheet</span>
+      <span class="ai-tag">80% faster than manual (per PhaseAlpha)</span>
+      <span class="ai-tag">Output attaches directly to Dragonfly project record</span>
+    </div>
+  </div>
+
+  <!-- ══ P4: PROPOSAL GENERATION ══ -->
+  <div id="p4" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Process 4 of 7 · Bid &amp; Estimation</div>
+      <div class="page-title">Proposal / Quote Generation</div>
+      <div class="page-desc">After the bid decision is made, a proposal must be generated. Most go to ABK (outsourced), where they are produced without any internal review before reaching the customer. Some are generated internally — also with minimal QA. Errors surface only when a customer comes back to buy.</div>
+    </div>
+
+    <div class="sentiment warn">
+      <span class="sentiment-icon">⚡</span>
+      <div><strong>Risky</strong> — <em>"Short answer is we're just sending it out. Every once in a while you look and see something wrong… we've had a customer say 'here's your quote from a month ago, I'm ready to buy' and then you dig in and realize these guys didn't understand a tiny little quirk."</em> — Tom Hilberts</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val red">0</div><div class="stat-label">Internal review steps before proposals go out</div></div>
+      <div class="stat"><div class="stat-val amber">ABK</div><div class="stat-label">Primary outsourced proposal vendor — no QA gate</div></div>
+      <div class="stat"><div class="stat-val amber">Buy-time</div><div class="stat-label">When errors are typically discovered</div></div>
+      <div class="stat"><div class="stat-val amber">Manual</div><div class="stat-label">Data entry prone to mistakes on internal proposals</div></div>
+    </div>
+
+    <div class="flow-label">Process flow</div>
+    <div class="flow-scroll mb24">
+      <div class="flow-h">
+        <div class="fnode"><div class="fnode-box step-start"><div class="fnode-title">Bid decision made</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fdecision"><div class="fdecision-text">Internal or outsourced?</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:12px;align-self:flex-start;margin-top:18px;">
+          <div class="branch-row">
+            <span class="branch-tag">ABK</span>
+            <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Send info to ABK</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">ABK generates proposal</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-end"><div class="fnode-title">Sent to customer</div><div class="fnode-sub">No internal review</div></div></div>
+          </div>
+          <div class="branch-row">
+            <span class="branch-tag">Internal</span>
+            <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Manually enter data</div><div class="fnode-sub">Into pricing program</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Generate proposal</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-end"><div class="fnode-title">Sent to customer</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">No internal review</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Errors discovered at buy-time</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-label">AI opportunity</div>
+    <div class="ai-tags">
+      <span class="ai-tag">Claude reviews ABK output before send — flags anomalies</span>
+      <span class="ai-tag">Human approves reviewed proposal</span>
+      <span class="ai-tag">Claude drafts &amp; sends outbound email via Outlook connector</span>
+      <span class="ai-tag">Dragonfly status auto-updates to "Quoted"</span>
+    </div>
+  </div>
+
+  <!-- ══ P5: QUOTE FOLLOW-UP ══ -->
+  <div id="p5" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Process 5 of 7 · Post-Quote</div>
+      <div class="page-title">Follow-Up on Sent Quotes</div>
+      <div class="page-desc">Once a quote leaves the building, tracking it is entirely manual — kept in memory and personal spreadsheets. Important customers get follow-up calls; smaller quotes sit untracked. As volume grows, the system collapses. Tom described giving a contractor 2,000 quotes in a year and getting one buy-request back.</div>
+    </div>
+
+    <div class="sentiment bad">
+      <span class="sentiment-icon">⚠</span>
+      <div><strong>Unsustainable, slipping</strong> — <em>"It's almost impossible for us to do that manually the way we used to. It just keeps piling up."</em> — Tom Hilberts</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val red">0</div><div class="stat-label">Structured follow-up system in place</div></div>
+      <div class="stat"><div class="stat-val red">2,000</div><div class="stat-label">Quotes sent to one contractor in a year — 1 buy-back</div></div>
+      <div class="stat"><div class="stat-val amber">Memory</div><div class="stat-label">Primary tracking method for most quotes</div></div>
+      <div class="stat"><div class="stat-val amber">Spreadsheet</div><div class="stat-label">Used for key customers only — manual entry</div></div>
+    </div>
+
+    <div class="flow-label">Process flow</div>
+    <div class="flow-scroll mb24">
+      <div class="flow-h">
+        <div class="fnode"><div class="fnode-box step-start"><div class="fnode-title">Quote sent to customer</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fdecision"><div class="fdecision-text">Important relationship?</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:16px;align-self:flex-start;margin-top:18px;">
+          <div class="branch-row">
+            <span class="branch-tag">YES</span>
+            <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Manual tracking begins</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Add to personal spreadsheet</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Set mental reminder</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fdecision"><div class="fdecision-text">Remember to follow up?</div></div></div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-self:flex-start;margin-top:18px;">
+              <div class="branch-row">
+                <span class="branch-tag">YES</span>
+                <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Manual phone / email outreach</div></div></div>
+                <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="fnode"><div class="fnode-box step-ok"><div class="fnode-title">Customer responds</div></div></div>
+              </div>
+              <div class="branch-row">
+                <span class="branch-tag">NO</span>
+                <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Quote slips through the cracks</div></div></div>
+                <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">No response — opportunity lost</div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="branch-row">
+            <span class="branch-tag">NO</span>
+            <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">No tracking</div></div></div>
+            <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Quote sits without follow-up</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-label">AI opportunity</div>
+    <div class="ai-tags">
+      <span class="ai-tag">Day 3 follow-up email auto-triggered on quote send</span>
+      <span class="ai-tag">Day 10 second touch via Make + Dragonfly/GHL</span>
+      <span class="ai-tag">High-value threshold → personal alert to Dave or Tom</span>
+      <span class="ai-tag">Weekly digest: open quotes by customer and rep</span>
+      <span class="ai-tag">Close rate analytics — who's buying, who's not</span>
+    </div>
+  </div>
+
+  <!-- ══ P6: ROOM SCHEDULE CREATION ══ -->
+  <div id="p6" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Process 6 of 7 · Post-Quote</div>
+      <div class="page-title">Room Schedule Creation (Post-Award)</div>
+      <div class="page-desc">After receiving a purchase order, office staff must re-enter job details room by room — adding product designations, sizes, CFMs, and static pressures — to build a 10–20 page room schedule document that the engineer reviews before the order is placed.</div>
+    </div>
+
+    <div class="sentiment warn">
+      <span class="sentiment-icon">⚡</span>
+      <div><strong>Slow and manual — critical path to order placement.</strong> The room schedule must be complete and engineer-approved before the contractor can place the order. Every hour spent here delays revenue.</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val red">10–20 pg</div><div class="stat-label">Length of a typical room schedule document</div></div>
+      <div class="stat"><div class="stat-val red">Re-entry</div><div class="stat-label">All data already exists in drawings — re-entered manually</div></div>
+      <div class="stat"><div class="stat-val amber">Critical path</div><div class="stat-label">Engineer approval gates the contractor's order</div></div>
+      <div class="stat"><div class="stat-val amber">100%</div><div class="stat-label">Manual — no automation in place</div></div>
+    </div>
+
+    <div class="flow-label">Process flow</div>
+    <div class="flow-scroll mb24">
+      <div class="flow-h">
+        <div class="fnode"><div class="fnode-box step-start"><div class="fnode-title">PO received</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Begin room schedule</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Re-enter job details</div><div class="fnode-sub">Room by room</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Add product designations</div><div class="fnode-sub">CG, RG, specs per room</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Build document</div><div class="fnode-sub">10–20 pages</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Engineer review</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-end"><div class="fnode-title">Room schedule complete</div></div></div>
+      </div>
+    </div>
+
+    <div class="flow-label">AI opportunity</div>
+    <div class="ai-tags">
+      <span class="ai-tag">AlphaTakeoff generates room schedule from drawings post-award</span>
+      <span class="ai-tag">Populated with product designations automatically</span>
+      <span class="ai-tag">Editable spreadsheet output ready for engineer review</span>
+      <span class="ai-tag">Attached to Dragonfly project record on generation</span>
+    </div>
+  </div>
+
+  <!-- ══ P7: FLOOR-BY-FLOOR ORDER RELEASE ══ -->
+  <div id="p7" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Process 7 of 7 · Post-Quote</div>
+      <div class="page-title">Floor-by-Floor Order Release</div>
+      <div class="page-desc">On multi-story jobs, contractors release floors for ordering one at a time. Because the original quote covers the entire building, office staff must go back into the full quoted job, manually re-identify the items for the specific floor, re-segment the data, and re-enter a partial order — every single time a floor is released.</div>
+    </div>
+
+    <div class="sentiment warn">
+      <span class="sentiment-icon">⚡</span>
+      <div><strong>Tedious re-work — no automation in place.</strong> The data exists in the room schedule and original quote. It must be re-entered from scratch for each floor release rather than simply selected and submitted.</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val red">Re-entry</div><div class="stat-label">Full manual re-entry required per floor</div></div>
+      <div class="stat"><div class="stat-val red">0</div><div class="stat-label">Automation for floor segmentation</div></div>
+      <div class="stat"><div class="stat-val amber">4+ times</div><div class="stat-label">On a 4-story building — repeated for every floor</div></div>
+      <div class="stat"><div class="stat-val amber">Data exists</div><div class="stat-label">But not accessible in usable form for partial orders</div></div>
+    </div>
+
+    <div class="flow-label">Process flow</div>
+    <div class="flow-scroll mb24">
+      <div class="flow-h">
+        <div class="fnode"><div class="fnode-box step-start"><div class="fnode-title">Contractor releases a floor</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-md"><div class="fnode-title">Retrieve quoted job</div><div class="fnode-sub">Full building quote</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Identify items for this floor</div><div class="fnode-sub">Manual reference to room schedule</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Re-segment job data</div><div class="fnode-sub">Extract floor from full job</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-pain-hi"><div class="fnode-title">Re-enter order details</div><div class="fnode-sub">Into pricing program</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-neutral"><div class="fnode-title">Submit partial order</div></div></div>
+        <div class="farr"><svg width="28" height="16" viewBox="0 0 28 16" fill="none"><line x1="0" y1="8" x2="22" y2="8" stroke="currentColor" stroke-width="1.5"/><polyline points="16,3 23,8 16,13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="fnode"><div class="fnode-box step-end"><div class="fnode-title">Floor order released</div></div></div>
+      </div>
+    </div>
+
+    <div class="flow-label">AI opportunity</div>
+    <div class="ai-tags">
+      <span class="ai-tag">Room schedule pre-segmented by floor at generation time</span>
+      <span class="ai-tag">Contractor releases floor → system filters to floor items automatically</span>
+      <span class="ai-tag">Partial order pre-populated from room schedule data</span>
+      <span class="ai-tag">Human reviews and submits — no manual re-entry</span>
+    </div>
+  </div>
+
+
+  <!-- ══ CW1: VALIDATE CURRENT STATE ══ -->
+  <div id="cw-validate" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Call Worksheet · Section 1</div>
+      <div class="page-title">Validate Current State</div>
+      <div class="page-desc">Use this during the call. Fill each field live as they describe what's actually happening. Our diagrams show what we believe — their words will confirm or correct it.</div>
+    </div>
+
+    <div class="tip-banner">
+      <strong>How to open:</strong> "Before we get into solutions, I want to make sure I've got your process right. Walk me through what actually happens when [topic] — start to finish."
+    </div>
+
+    <!-- Blueprint / Takeoff -->
+    <div class="cw-section">
+      <div class="cw-section-title blue">Blueprint Takeoff / Room Count</div>
+      <div class="cw-body">
+        <div class="cw-belief">
+          <div class="cw-belief-label">What we know is happening (confirmed in discovery call)</div>
+          <ul>
+            <li>Bid approved → locate drawings → find room schedule sheet on architectural drawings</li>
+            <li>Manually identify every room by number, note equipment designations (CG, RG, EF1, VAV, FCU, etc.), room size, CFM, static pressure</li>
+            <li>Loop per room → compile schedule manually → transcribe into document</li>
+            <li><strong>4–6 hours for a high school job</strong> — "It's a really labor-intensive system"</li>
+            <li>Fully manual extraction — no structured data model, everything becomes manual transcription</li>
+            <li>No reuse of prior jobs or templates — starts from scratch every time</li>
+            <li>AlphaTakeoff (PhaseAlpha) can already read HVAC PDFs and auto-generate room schedule spreadsheets — Tom saw the demo at AHR Expo</li>
+          </ul>
+        </div>
+        <div class="cw-grid">
+          <div class="cw-col">
+            <div class="cw-col-label">Confirm live on call</div>
+            <div class="cw-field"><label>What actually happens in their words</label><textarea placeholder="Open with: 'Walk me through what actually happens after you decide to bid a job...'"></textarea></div>
+            <div class="cw-field"><label>Where it breaks down most</label><textarea>Drawing → data translation is fully manual. No structured fields — everything goes from eyes to handwritten notes to typed transcription. High error risk at compilation.</textarea></div>
+            <div class="cw-field"><label>Time per job (confirm 4–6 hrs)</label><textarea placeholder="What makes it faster or slower? Simple office building vs. high school?"></textarea></div>
+            <div class="cw-field"><label>Who is involved</label><textarea placeholder="Tom only? Does Belinda do any of this? Office staff?"></textarea></div>
+            <div class="cw-field"><label>Tools currently used</label><textarea>No structured tool. Manual notes → spreadsheet or Word doc transcription. No dedicated software for takeoff at this stage.</textarea></div>
+          </div>
+          <div class="cw-col">
+            <div class="cw-col-label">Pre-loaded observations</div>
+            <div class="sticky-row">
+              <div class="sticky"><div class="sticky-label insight">💡 Key insight</div><textarea>AlphaTakeoff already exists in the PhaseAlpha suite and does exactly this — reads HVAC PDFs, counts GRDs/VAVs/FCUs, generates editable spreadsheets. Tom saw it live at AHR Expo and was impressed.</textarea></div>
+              <div class="sticky"><div class="sticky-label risk">⚠ Risk</div><textarea>If they're used to seeing every room individually, auto-generated output may feel "black box." Need to confirm they're OK with AI extraction vs. manual entry.</textarea></div>
+            </div>
+            <div class="sticky-row" style="border-top:1px solid var(--border);">
+              <div class="sticky"><div class="sticky-label pain">🔥 Their words</div><textarea>"Very painful, highly labor-intensive." "4–6 hours manually. It's a really labor-intensive system." — Tom Hilberts</textarea></div>
+              <div class="sticky"><div class="sticky-label followup">❓ Confirm</div><textarea placeholder="Ask: Is the room schedule data used again anywhere after takeoff, or does it get re-entered later too?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floor Order Release -->
+    <div class="cw-section">
+      <div class="cw-section-title blue">Floor-by-Floor Order Release</div>
+      <div class="cw-body">
+        <div class="cw-belief">
+          <div class="cw-belief-label">What we know is happening (confirmed in discovery call)</div>
+          <ul>
+            <li>Contractor releases a floor → retrieve the full quoted job (which covers entire building)</li>
+            <li>Manually identify which items belong to that floor → re-segment job data → re-enter order details → submit partial order</li>
+            <li><strong>Repeated every single time a floor is released</strong> — 4-story building = 4 full re-entries</li>
+            <li>No system awareness of "floors" as objects — no relationship between Quote → Floor → Order</li>
+            <li>Root problem: data exists in the room schedule, but can't be filtered/reused — must be re-entered from scratch</li>
+            <li>"Tedious re-work — no automation in place" — confirmed in process diagram</li>
+          </ul>
+        </div>
+        <div class="cw-grid">
+          <div class="cw-col">
+            <div class="cw-col-label">Confirm live on call</div>
+            <div class="cw-field"><label>What actually triggers a floor release</label><textarea placeholder="Email from contractor? Phone call? System notification? Is it always clear?"></textarea></div>
+            <div class="cw-field"><label>Where the rework is worst</label><textarea>Re-segmenting and re-entering order details. The data exists in the room schedule but isn't in a form they can just filter and submit — it has to be manually pulled apart.</textarea></div>
+            <div class="cw-field"><label>How often per job</label><textarea placeholder="Typical number of floors on their jobs? Always sequential or random order?"></textarea></div>
+            <div class="cw-field"><label>How long does one floor release take</label><textarea placeholder="What's the time cost per floor release today?"></textarea></div>
+            <div class="cw-field"><label>Error points</label><textarea>Re-entry errors. Wrong items assigned to wrong floor. Missed items. Pricing program requires re-entry from scratch rather than selection from existing data.</textarea></div>
+          </div>
+          <div class="cw-col">
+            <div class="cw-col-label">Pre-loaded observations</div>
+            <div class="sticky-row">
+              <div class="sticky"><div class="sticky-label insight">💡 Key insight</div><textarea>The fix here is architectural: if floors are defined as objects inside a job (Job → Floor → Room), then a floor release becomes a filter + auto-generate, not a re-entry. This is the Phase Alpha data model we need to build.</textarea></div>
+              <div class="sticky"><div class="sticky-label risk">⚠ Risk</div><textarea>If floors aren't consistent (rooms span floors, partial releases, last-minute spec changes), the auto-generation breaks. Need to surface edge cases on this call.</textarea></div>
+            </div>
+            <div class="sticky-row" style="border-top:1px solid var(--border);">
+              <div class="sticky"><div class="sticky-label pain">🔥 Their words</div><textarea>"Now you have to go back and rewrite an order in your pricing program just for the first floor." — Tom Hilberts</textarea></div>
+              <div class="sticky"><div class="sticky-label followup">❓ Confirm</div><textarea placeholder="Ask: What system does the final order get submitted into — pricing program, direct to factory, or somewhere else?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post-Award Room Schedule -->
+    <div class="cw-section">
+      <div class="cw-section-title blue">Post-Award Room Schedule (Critical Path)</div>
+      <div class="cw-body">
+        <div class="cw-belief">
+          <div class="cw-belief-label">What we know is happening (confirmed in discovery call)</div>
+          <ul>
+            <li>PO received → begin room schedule → re-enter job details room by room with product designations</li>
+            <li>Build 10–20 page document → engineer reviews → engineer approval gates the contractor's order</li>
+            <li>"Slow and manual — critical path to getting the order placed" — confirmed in process diagram</li>
+            <li>Data being re-entered already exists in the drawings — this is pure duplication</li>
+            <li>Products: grills, registers, diffusers (for GRD jobs) — each room gets designation + size + CFM + static pressure + product spec</li>
+            <li>For non-GRD products: submittal with product list (e.g., 10 fans, specs) backed by product literature</li>
+          </ul>
+        </div>
+        <div class="cw-grid">
+          <div class="cw-col">
+            <div class="cw-col-label">Confirm live on call</div>
+            <div class="cw-field"><label>What fields are re-entered exactly</label><textarea>Room number, product designation (CG/RG/etc.), room size, CFM, static pressure, product spec. Confirm if there are additional fields we're missing.</textarea></div>
+            <div class="cw-field"><label>Where does the data originally live</label><textarea>In the architectural drawings — room schedule sheet + floor plan. It was also partially captured during takeoff but not stored in any reusable structured form.</textarea></div>
+            <div class="cw-field"><label>What does engineer review actually check</label><textarea placeholder="What gets flagged? What causes a revision round? How long does the review take?"></textarea></div>
+            <div class="cw-field"><label>What causes delays</label><textarea placeholder="Is it the document creation time? Back-and-forth with engineer? Data gaps?"></textarea></div>
+          </div>
+          <div class="cw-col">
+            <div class="cw-col-label">Pre-loaded observations</div>
+            <div class="sticky-row">
+              <div class="sticky"><div class="sticky-label insight">💡 Key insight</div><textarea>If takeoff data is captured in a structured model (Room object with all fields), the room schedule literally generates itself. AlphaTakeoff already outputs editable spreadsheets — this is the direct fix.</textarea></div>
+              <div class="sticky"><div class="sticky-label risk">⚠ Risk</div><textarea>Format requirement: engineer may need a specific layout or template. Auto-generation is useless if the output format doesn't match what the engineer expects. Confirm format on this call.</textarea></div>
+            </div>
+            <div class="sticky-row" style="border-top:1px solid var(--border);">
+              <div class="sticky"><div class="sticky-label pain">🔥 Their words</div><textarea>"Once we get the job, we go through the drawing and make a list by number of every room... then we plug in the product... it creates a room schedule... it's pretty, it's a really labor intensive system." — Tom Hilberts</textarea></div>
+              <div class="sticky"><div class="sticky-label followup">❓ Confirm</div><textarea placeholder="Ask: Is the room schedule always the same format, or does it vary by engineer/customer? What do you send it in — Word, Excel, PDF?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote Follow-Up -->
+    <div class="cw-section">
+      <div class="cw-section-title blue">Quote Follow-Up (CRM Gap)</div>
+      <div class="cw-body">
+        <div class="cw-belief">
+          <div class="cw-belief-label">What we know is happening (confirmed in discovery call)</div>
+          <ul>
+            <li>No CRM. Tracking kept in memory and personal spreadsheets — no system</li>
+            <li>Important relationships: manual phone/email outreach, mental reminders set</li>
+            <li>Smaller/lower-priority quotes: no tracking, no follow-up, opportunity lost silently</li>
+            <li>Dave gave one contractor 2,000 quotes in a year — got one buy request back</li>
+            <li>Tom: "It's almost impossible for us to do that manually the way we used to. The more quotes that pile up, the more unsustainable it gets."</li>
+            <li>ABK outsourcing increased quote volume dramatically — but without CRM, the follow-up problem got worse, not better</li>
+          </ul>
+        </div>
+        <div class="cw-grid">
+          <div class="cw-col">
+            <div class="cw-col-label">Confirm live on call</div>
+            <div class="cw-field"><label>How they track quotes today</label><textarea>Personal spreadsheets for key customers. Memory for everything else. No shared system. Nothing in Dragonfly currently.</textarea></div>
+            <div class="cw-field"><label>What "important relationship" means to them</label><textarea placeholder="Is it a dollar threshold? A specific person? A long-term customer? Ask Tom to give an example of who gets manual follow-up and who doesn't."></textarea></div>
+            <div class="cw-field"><label>Typical follow-up timeline</label><textarea placeholder="When do they typically follow up — 3 days? 1 week? Whenever they remember?"></textarea></div>
+            <div class="cw-field"><label>Where deals get lost</label><textarea>Quotes sent and forgotten. No reminder triggers. Competitors follow up, Hilberts doesn't. Tom noted: "There's a benefit to following up — they'll say 'you weren't low but you weren't far off, give me best and final.'"</textarea></div>
+          </div>
+          <div class="cw-col">
+            <div class="cw-col-label">Pre-loaded observations</div>
+            <div class="sticky-row">
+              <div class="sticky"><div class="sticky-label insight">💡 Key insight</div><textarea>The opportunity isn't just follow-up automation — it's analytics. Tom wants to know his close rate by customer, who's actually buying, and which quotes are worth following up on vs. writing off. Dashboard = high value here.</textarea></div>
+              <div class="sticky"><div class="sticky-label risk">⚠ Risk</div><textarea>If automated follow-up emails feel generic, they could damage relationships with key customers Tom personally manages. Need a human-approval layer for high-value outreach.</textarea></div>
+            </div>
+            <div class="sticky-row" style="border-top:1px solid var(--border);">
+              <div class="sticky"><div class="sticky-label pain">🔥 Their words</div><textarea>"We gave you 2,000 quotes last year and you only asked me for a buy number one time." — Dave to a contractor. Tom: "It's almost impossible for us to do that manually the way we used to."</textarea></div>
+              <div class="sticky"><div class="sticky-label followup">❓ Confirm</div><textarea placeholder="Ask: What's the dollar threshold where you'd personally pick up the phone vs. let an automated email handle it?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bid Intake / Drawing Retrieval -->
+    <div class="cw-section">
+      <div class="cw-section-title blue">Bid Intake / Drawing Retrieval</div>
+      <div class="cw-body">
+        <div class="cw-belief">
+          <div class="cw-belief-label">What we know is happening (confirmed in discovery call + emails)</div>
+          <ul>
+            <li>10–40 ITB emails per day from GCs and engineers — 3 formats: PDF attachment, PipelineSuite/PreconSuite portal link, or bulk Dropbox list</li>
+            <li>Tom's quote: "It could take you 20 minutes just to find the damn drawing you're looking for for one job"</li>
+            <li>Dropbox folders use contractor's internal naming — doesn't match their bid list names (e.g. "Dupont" on list → "Nemours" in Dropbox)</li>
+            <li>Two real examples already seen: Northeastern HS (due Feb 26, via Dropbox link) and Bell &amp; Evans Freezer Warehouse (March 4, via PipelineSuite)</li>
+            <li>Some jobs skipped entirely because finding the drawings takes too long relative to potential value</li>
+          </ul>
+        </div>
+        <div class="cw-grid">
+          <div class="cw-col">
+            <div class="cw-col-label">Confirm live on call</div>
+            <div class="cw-field"><label>Where drawings are stored most often</label><textarea>Mix: PDF attachments, PipelineSuite links, and Dropbox folders. Dropbox is the worst offender for naming mismatches. Confirm which format is most common.</textarea></div>
+            <div class="cw-field"><label>Naming mismatch — how bad is it</label><textarea>Confirmed bad. "Dupont on the bid list, Nemours in the Dropbox." Contractors use their own internal project names — Hilberts has to cross-reference manually every time.</textarea></div>
+            <div class="cw-field"><label>Who organizes files today</label><textarea placeholder="Is there any attempt to organize incoming drawings? Or does everything stay in the contractor's folder structure?"></textarea></div>
+            <div class="cw-field"><label>Biggest frustration in their words</label><textarea placeholder="Let them vent — capture exact words. This is the quote that goes in the proposal."></textarea></div>
+          </div>
+          <div class="cw-col">
+            <div class="cw-col-label">Pre-loaded observations</div>
+            <div class="sticky-row">
+              <div class="sticky"><div class="sticky-label insight">💡 Key insight</div><textarea>The bid intake problem is actually two problems: (1) finding which emails are ITBs in the firehose, and (2) then finding the right drawing once you know it's an ITB. AI solves both — classify the email, then fetch the drawing.</textarea></div>
+              <div class="sticky"><div class="sticky-label risk">⚠ Risk</div><textarea>PipelineSuite and PreconSuite require login credentials to access drawings programmatically. Confirm if API access or credential sharing is feasible for automated retrieval.</textarea></div>
+            </div>
+            <div class="sticky-row" style="border-top:1px solid var(--border);">
+              <div class="sticky"><div class="sticky-label pain">🔥 Their words</div><textarea>"It could take you 20 minutes just to find the damn drawing you're looking for for one job." "If I could do that every morning for 15 minutes, I could eliminate 10 to 15 hours of work in a week." — Tom Hilberts</textarea></div>
+              <div class="sticky"><div class="sticky-label followup">❓ Confirm</div><textarea placeholder="Ask: When you decide NOT to bid a job, is it documented anywhere? Or does it just disappear? (This matters for analytics.)"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CW2: OPTIMIZED SOLUTION QUESTIONS ══ -->
+  <div id="cw-future" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Call Worksheet · Section 2</div>
+      <div class="page-title">Optimized Solution Questions</div>
+      <div class="page-desc">Don't present these as a pitch — build the future state with them. Ask each question, let them talk, capture their reaction. Their answers define what we build.</div>
+    </div>
+
+    <div class="tip-banner">
+      <strong>Rule:</strong> Ask one question, then go quiet. Let them fill the silence. You're validating, not pitching. If they react negatively, write it down — that's the most important data.
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title green">Step 1 — Structured Job Setup</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num green">1</div>
+            <div class="q-body">
+              <div class="q-text">"What if every job had a structured setup — floors, rooms, equipment — instead of rebuilding that structure each time a floor gets released?"</div>
+              <div class="q-note">We know they'd want this. Listen for: relief, skepticism about upfront data entry, questions about who enters it. Tom will want to know if it's more work at the start. Context: Dragonfly was partially set up but Tom dropped out — this has to feel lighter than last time.</div>
+              <div class="q-answer"><textarea placeholder="Their reaction — capture the emotion. 'That would be amazing' is different from 'who's going to enter all that.' Both are useful."></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">2</div>
+            <div class="q-body">
+              <div class="q-text">"When you get a job, is the floor and room structure pretty well defined in the drawings — or does it change a lot between bid time and post-award?"</div>
+              <div class="q-note">Critical for data model. If room counts are stable at bid time, we can build a single structured record. If they change significantly, we need versioning. AlphaTakeoff reads this from drawings — confirm they'd trust the extracted output.</div>
+              <div class="q-answer"><textarea placeholder="Their answer — stable or variable? Any job types that are always different (e.g. hospitals vs. schools)?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">3</div>
+            <div class="q-body">
+              <div class="q-text">"Who would actually set up the job structure in the system — Tom, Belinda, or someone else?"</div>
+              <div class="q-note">Adoption risk: Tom started Dragonfly as a test and dropped out because he didn't finish the guinea pig phase. If job setup requires Tom, it may stall again. Belinda put a lot of work into the first Dragonfly setup — she may be the right person to own this.</div>
+              <div class="q-answer"><textarea placeholder="Their answer — who actually has time for this? Is Belinda available? Would Dave be involved?"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="cw-field"><label>Gaps / concerns they raised</label><textarea placeholder="What did they push back on? What surprised them?"></textarea></div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title green">Step 2 — Room Data Once, Reused Everywhere</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num green">4</div>
+            <div class="q-body">
+              <div class="q-text">"If you entered room data once — room number, equipment designation, CFM, size — could that same data power both the room schedule and the floor orders automatically?"</div>
+              <div class="q-note">This is the core architectural argument. We know the data is re-entered at least twice (takeoff → room schedule → floor orders). If they confirm all three use the same fields, the case for a single structured record is ironclad. Listen for edge cases: products that don't follow the same pattern.</div>
+              <div class="q-answer"><textarea placeholder="Do they see it working? Or are there jobs where the data for the schedule differs from the order?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">5</div>
+            <div class="q-body">
+              <div class="q-text">"What fields absolutely have to be in that room record to make it useful for ordering?"</div>
+              <div class="q-note">This defines the data model — write down every field they name. We know from the call: room number, equipment designation (CG/RG/EF1/VAV/FCU), room size, CFM, static pressure. Ask what else. Products to quote may vary by manufacturer rep relationship.</div>
+              <div class="q-answer"><textarea>Known fields: room number, equipment designation, room size, CFM, static pressure, product to quote. 
+
+Additional fields from call:&#10;</textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">6</div>
+            <div class="q-body">
+              <div class="q-text">"Does that data ever change between bid time and post-award — or is it usually the same fields, just populated more completely?"</div>
+              <div class="q-note">Tom mentioned that room schedules can be 10–20 pages for large jobs. If the structure is stable but just gets more complete after award, we design one model with progressive population. If the structure changes, we need bid-version and award-version as separate records.</div>
+              <div class="q-answer"><textarea placeholder="Stable structure that gets more complete? Or genuinely changes (rooms added/removed)?"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="cw-field"><label>Fields or data points they mentioned that we hadn't anticipated</label><textarea placeholder="Write down anything they name that isn't on our list..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title green">Step 3 — Auto Schedule Generation</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num green">7</div>
+            <div class="q-body">
+              <div class="q-text">"What would it change for your team if the room schedule built itself the moment you got the PO — instead of someone starting from scratch?"</div>
+              <div class="q-note">This is their biggest post-award time sink — 10–20 pages of manual document creation. AlphaTakeoff already does this. Listen for: how much time they think it would save, any concern about accuracy of auto-generated output, whether they've ever tried anything like this before (they haven't).</div>
+              <div class="q-answer"><textarea placeholder="Their reaction — 'that would be amazing' tells us one thing, 'but would it be accurate enough?' tells us something different. Capture both."></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">8</div>
+            <div class="q-body">
+              <div class="q-text">"What format does the engineer need the room schedule in — Word doc, Excel spreadsheet, PDF, or something specific to the project?"</div>
+              <div class="q-note">AlphaTakeoff outputs editable spreadsheets. If engineers need a specific Word template or a particular column layout, we need to know before we design the output. This is a blocker if they haven't confirmed it.</div>
+              <div class="q-answer"><textarea placeholder="Format required — and does it vary by engineer or is it always the same?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">9</div>
+            <div class="q-body">
+              <div class="q-text">"Once the room schedule goes to the engineer, does it come back with changes — or does it usually go through clean?"</div>
+              <div class="q-note">Determines if we need an editable output (Excel) vs. a locked PDF. Also tells us how often there's a revision loop and whether that's a separate pain point worth addressing.</div>
+              <div class="q-answer"><textarea placeholder="Clean output or revision loops? How many rounds typically?"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="cw-field"><label>Must-have output requirements from engineer</label><textarea placeholder="Specific layout, sections, column headers the engineer requires — write them down exactly as described."></textarea></div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title green">Step 4 — Floor-Based Order Automation</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num green">10</div>
+            <div class="q-body">
+              <div class="q-text">"If a contractor emails that Floor 2 is released, should the system generate that floor's order pre-populated and show it to you to review before it goes anywhere?"</div>
+              <div class="q-note">Tom explicitly said: "In the middle of this process, there is human interaction — it's punctuated by human interaction." This isn't fully automated — it's human-reviewed. Frame it as: system does the segmentation and pre-population, human approves.</div>
+              <div class="q-answer"><textarea placeholder="Do they want to review every order, or just high-value ones? Does Belinda do this or Tom?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">11</div>
+            <div class="q-body">
+              <div class="q-text">"What system does the final order actually get submitted into — your pricing program, directly to the factory, or somewhere else?"</div>
+              <div class="q-note">This defines the integration endpoint and determines whether we need an API, a file export, or manual copy-paste from a pre-filled screen. Tom mentioned a "pricing program" — find out what it is specifically.</div>
+              <div class="q-answer"><textarea placeholder="Name of the pricing program? Does it have an API or import function? Or is it always manual entry?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">12</div>
+            <div class="q-body">
+              <div class="q-text">"Are there cases where a room spans two floors, or where a floor release is only partial — not the whole floor at once?"</div>
+              <div class="q-note">Edge cases from the Phase Alpha analysis: rooms spanning floors, partial releases, last-minute spec changes. Find these now so the data model handles them. A rigid floor-based model breaks if rooms don't map cleanly to floors.</div>
+              <div class="q-answer"><textarea placeholder="Edge cases — how common are they? Do they have a workaround today?"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="cw-field"><label>Edge cases / complications they described</label><textarea placeholder="Anything that doesn't fit the clean Job → Floor → Room → Order model..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title green">Step 5 — Follow-Up / CRM Layer</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num green">13</div>
+            <div class="q-body">
+              <div class="q-text">"What would a system need to do to make sure no quote slips through — not just the important ones, but all of them?"</div>
+              <div class="q-note">Context: Dave gave one contractor 2,000 quotes in a year and got one buy-request back. Tom said the company that called them back on "you weren't low, give me best and final" won the job. The system needs to create that call to action automatically.</div>
+              <div class="q-answer"><textarea placeholder="Do they want automated emails? Reminders to call personally? A dashboard view? All of the above?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">14</div>
+            <div class="q-body">
+              <div class="q-text">"If you had one view that showed all open quotes, their dollar value, and which ones need a call this week — would Tom and Dave actually look at it every morning?"</div>
+              <div class="q-note">Tests real adoption vs. theoretical interest. Tom said he wants a dashboard for high-value jobs — Marc suggested it on the call and Tom agreed. But Dragonfly was also supposed to be used and wasn't. Probe the adoption question directly.</div>
+              <div class="q-answer"><textarea placeholder="Honest reaction — yes, daily / yes, weekly / probably not. Who would be the one to actually use it?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num green">15</div>
+            <div class="q-body">
+              <div class="q-text">"What's the dollar value on a quote where you'd say — someone absolutely needs to personally call this customer, not just send an email?"</div>
+              <div class="q-note">This sets the "high value threshold" for alert triggers. Tom mentioned hospital OR systems and destratification fans as high-value categories — but we need a number. This drives how we configure the follow-up automation.</div>
+              <div class="q-answer"><textarea placeholder="Their number — $X,000? Or is it more about the relationship than the dollar amount?"></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div class="cw-field"><label>What they actually want from follow-up — their vision vs. what we assumed</label><textarea placeholder="Did they want automation or just visibility? Are they worried about seeming pushy with key customers?"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CW3: PHASEALPHA SCOPE ══ -->
+  <div id="cw-scope" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Call Worksheet · Section 3</div>
+      <div class="page-title">PhaseAlpha Scope Definition</div>
+      <div class="page-desc">Define what's in scope live on the call. Don't finalize everything — get their priorities. Use the checkboxes to capture what they confirm, what they want, and what can wait.</div>
+    </div>
+
+    <div class="tip-banner">
+      <strong>How to use:</strong> Read through the must-haves and nice-to-haves with them. Let them react. Check off what they confirm. Add notes on anything they push back on or reframe.
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="cw-section">
+          <div class="cw-section-title amber">Must-Have (Confirm with them)</div>
+          <div class="cw-body" style="padding:14px;">
+            <div class="checklist">
+              <div class="check-item"><input type="checkbox" id="mh1"><label for="mh1">Job → Floor → Room structured data model in Dragonfly</label></div>
+              <div class="check-item"><input type="checkbox" id="mh2"><label for="mh2">Room data capture: equipment designation, CFM, size, static pressure</label></div>
+              <div class="check-item"><input type="checkbox" id="mh3"><label for="mh3">Auto room schedule generation post-award (AlphaTakeoff)</label></div>
+              <div class="check-item"><input type="checkbox" id="mh4"><label for="mh4">Floor-based order generation from room data</label></div>
+              <div class="check-item"><input type="checkbox" id="mh5"><label for="mh5">Human review/approval gate before order submits</label></div>
+              <div class="check-item"><input type="checkbox" id="mh6"><label for="mh6">Engineer-ready output format (confirm format with them)</label></div>
+              <div class="check-item"><input type="checkbox" id="mh7"><label for="mh7">Dragonfly opportunity records for all active bids</label></div>
+            </div>
+            <div class="cw-field" style="margin-top:10px;"><label>Notes on must-haves</label><textarea placeholder="Anything they push back on? Reframe?"></textarea></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="cw-section">
+          <div class="cw-section-title" style="background:#4a4540;">Nice-to-Have (Let them prioritize)</div>
+          <div class="cw-body" style="padding:14px;">
+            <div class="checklist">
+              <div class="check-item"><input type="checkbox" id="nh1"><label for="nh1">Drawing upload + AlphaTakeoff parsing at bid time</label></div>
+              <div class="check-item"><input type="checkbox" id="nh2"><label for="nh2">CRM follow-up tracking (Day 3/10 sequences)</label></div>
+[1749 lines total]
+              <div class="check-item"><input type="checkbox" id="nh3"><label for="nh3">Automated bid intake email parsing (Outlook → Dragonfly)</label></div>
+              <div class="check-item"><input type="checkbox" id="nh4"><label for="nh4">Dropbox drawing retrieval automation</label></div>
+              <div class="check-item"><input type="checkbox" id="nh5"><label for="nh5">Proposal QA review gate (Claude reviews ABK output)</label></div>
+              <div class="check-item"><input type="checkbox" id="nh6"><label for="nh6">Win/loss analytics dashboard</label></div>
+              <div class="check-item"><input type="checkbox" id="nh7"><label for="nh7">Marketing outreach automation (hospital OR, fans)</label></div>
+              <div class="check-item"><input type="checkbox" id="nh8"><label for="nh8">Weekly analytics digest email</label></div>
+            </div>
+            <div class="cw-field" style="margin-top:10px;"><label>Notes on nice-to-haves</label><textarea placeholder="What did they get excited about? What's later?"></textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title amber">Key Data / Volume Questions</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num amber">D1</div>
+            <div class="q-body">
+              <div class="q-text">Do all jobs follow the same floor/room structure, or does it vary significantly by job type?</div>
+              <div class="q-note">GRD jobs (schools, hospitals) have well-defined room schedule sheets. Confirm whether all jobs they bid have this, or whether some job types (small offices?) don't have a structured room schedule on the drawings.</div>
+              <div class="q-answer"><textarea placeholder="Consistent across job types? Or only certain project types have a room schedule sheet?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num amber">D2</div>
+            <div class="q-body">
+              <div class="q-text">Average number of rooms per job? Range from smallest to largest?</div>
+              <div class="q-note">Tom said a high school takes 4–6 hours manually. A high school might be 80–150+ rooms. Knowing the range quantifies the time savings from automation per job type.</div>
+              <div class="q-answer"><textarea placeholder="Small office: ___ rooms / School: ___ rooms / Hospital: ___ rooms"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num amber">D3</div>
+            <div class="q-body">
+              <div class="q-text">How many active jobs are in flight at any given time — across all stages?</div>
+              <div class="q-note">Tells us the scale of the Dragonfly pipeline. Dragonfly was tested with Tom as guinea pig but not rolled out to the team. This number tells us how many records we're building a system to manage.</div>
+              <div class="q-answer"><textarea placeholder="Total active (bidding + quoted + awarded + in production)?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num amber">D4</div>
+            <div class="q-body">
+              <div class="q-text">What fields are always in a room record vs. optional or job-specific?</div>
+              <div class="q-note">Known fields: room number, equipment designation (CG/RG/VAV/FCU/EF), room size, CFM, static pressure. Ask what else — and which ones are sometimes missing from drawings.</div>
+              <div class="q-answer"><textarea>Known required: room number, equipment designation, size, CFM, static pressure.&#10;&#10;Additional fields confirmed on call:&#10;&#10;Sometimes missing:</textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num amber">D5</div>
+            <div class="q-body">
+              <div class="q-text">What system receives the final order — and what does a valid order need to contain?</div>
+              <div class="q-note">Tom referenced a "pricing program" multiple times without naming it. This is the critical integration endpoint — if it has an API or import, we can automate submission. If it's manual-only, we pre-populate for human review and one-click submit.</div>
+              <div class="q-answer"><textarea placeholder="Pricing program name? Has API / import? Mandatory order fields?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num amber">D6</div>
+            <div class="q-body">
+              <div class="q-text">Where do mistakes actually happen — and what has a concrete mistake cost them?</div>
+              <div class="q-note">Known: ABK proposals go out without internal QA. Tom said they've had customers come back a month later ready to buy, then found an error in the proposal. Probe: has a mistake ever cost them a job? A relationship?</div>
+              <div class="q-answer"><textarea placeholder="Has a proposal error ever cost them a job or a key relationship? Dollar cost? How often does it happen?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#2a4db0;">Dragonfly CRM — What's Already Built</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="tip-banner" style="margin-bottom:16px;">
+          <strong>Goal:</strong> Understand exactly how far Dragonfly already goes as a CRM so we know what we're extending vs. what we're building from scratch. Hilberts has had it for ~a year — Tom used it briefly, Belinda did setup work. Don't assume it's empty.
+        </div>
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C1</div>
+            <div class="q-body">
+              <div class="q-text">What CRM-like objects does Dragonfly already support out of the box — contacts, companies, opportunities, quotes, orders?</div>
+              <div class="q-note">We know Dragonfly has "projects, tickets, service, contacts, sales" as database types. Confirm which of these are already configured for Hilberts vs. which would need to be built. Don't rebuild what's already there.</div>
+              <div class="q-answer"><textarea placeholder="Which record types are live for Hilberts today? Which are blank/unused?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C2</div>
+            <div class="q-body">
+              <div class="q-text">Can Dragonfly track a deal through stages — e.g. Invited → Reviewed → Quoted → Follow-Up Needed → Won/Lost — and can those stages trigger automated actions?</div>
+              <div class="q-note">This is the core CRM pipeline question. If Dragonfly has status fields that can fire webhooks or tasks on change, we can build follow-up automation directly inside it without GHL. If statuses are display-only, we need Make/Zapier as the trigger layer.</div>
+              <div class="q-answer"><textarea placeholder="Status fields exist? Do they fire triggers/webhooks? Or is it just a visual status?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C3</div>
+            <div class="q-body">
+              <div class="q-text">Does Dragonfly have a built-in task and reminder system — and can tasks be auto-created when a record status changes?</div>
+              <div class="q-note">Tom's quote follow-up problem is a task problem: when a quote goes out, no reminder fires. If Dragonfly can auto-create a "follow up on [project]" task 3 days after status changes to "Quoted," we solve a chunk of the CRM gap natively.</div>
+              <div class="q-answer"><textarea placeholder="Can tasks be auto-triggered by status changes? Or only created manually?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C4</div>
+            <div class="q-body">
+              <div class="q-text">Can Dragonfly store and display custom fields on a record — e.g. quote value, bid due date, GC contact, project type, win/loss reason?</div>
+              <div class="q-note">Custom fields are what turn Dragonfly from a file cabinet into a CRM. If we can add "Quote Value" and "Bid Due Date" as fields on an opportunity, we can build analytics and filtering without a separate CRM. Confirm field types supported: text, number, date, dropdown, formula?</div>
+              <div class="q-answer"><textarea placeholder="Custom field types available? Any limits on number of fields? Can fields be used in filters/reports?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C5</div>
+            <div class="q-body">
+              <div class="q-text">What reporting or dashboard capability exists today — can they see a list of all open quotes sorted by value, or all jobs awaiting follow-up?</div>
+              <div class="q-note">Tom explicitly asked for a dashboard showing high-value open jobs and close rates. Does Dragonfly have saved views, filters, or a reporting module? Or is everything a flat list that requires manual sorting?</div>
+              <div class="q-answer"><textarea placeholder="Saved views? Filters? Report builder? Or is it a flat searchable list?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C6</div>
+            <div class="q-body">
+              <div class="q-text">How does Dragonfly handle relationships between records — can a Contact link to multiple Opportunities, and an Opportunity link to multiple Quotes and Orders?</div>
+              <div class="q-note">This is the relational database question. The Job → Floor → Room → Order chain only works if records can be linked parent-to-child. If Dragonfly is flat (each record is standalone), we either need to add relationships or use a different data model.</div>
+              <div class="q-answer"><textarea placeholder="Can records be linked? Parent-child relationships? Many-to-many? Or flat/standalone records only?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C7</div>
+            <div class="q-body">
+              <div class="q-text">Is there a mobile app, and does it support the same record creation and status updates as the desktop — or is mobile read-only?</div>
+              <div class="q-note">Dave is a field sales rep. If he can update quote statuses and log customer interactions from his phone, adoption goes up dramatically. Dragonfly has iOS/Android apps — confirm the write capability so we can design workflows that work in the field.</div>
+              <div class="q-answer"><textarea placeholder="iOS/Android write capability confirmed? Can Dave update a quote status from his phone?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">C8</div>
+            <div class="q-body">
+              <div class="q-text">What does the current Hilberts Dragonfly setup actually contain — what's already in there from the year they've had it?</div>
+              <div class="q-note">Belinda put significant setup work in before Tom dropped out. There may be partially configured pipelines, contacts, or templates already in the system. Understanding what exists avoids rebuilding it and gives us a faster starting point.</div>
+              <div class="q-answer"><textarea placeholder="What records/config already exist? Contacts imported? Templates? Pipelines?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#1a5c3a;">Platform & API Integration</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="tip-banner" style="margin-bottom:16px;">
+          <strong>Goal:</strong> Map every connection point between Dragonfly and the outside world — Outlook, Make/Zapier, AlphaTakeoff, QuickBooks, the pricing program. These integrations are what turn Dragonfly from a database into an automation platform.
+        </div>
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A1</div>
+            <div class="q-body">
+              <div class="q-text">Does Dragonfly expose a REST API — and if so, what can it do? Create records, update status fields, attach files, trigger workflows?</div>
+              <div class="q-note">This is the most important technical question on the call. Everything we want to automate — bid intake creating an opportunity, AlphaTakeoff attaching a takeoff sheet, status changes firing follow-ups — requires API write access. Without it, we're limited to what PhaseAlpha builds natively.</div>
+              <div class="q-answer"><textarea placeholder="REST API confirmed? What endpoints exist? Read-only or read/write? Auth method (API key, OAuth)?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A2</div>
+            <div class="q-body">
+              <div class="q-text">Does Dragonfly support outbound webhooks — so that when a record changes (e.g. status → "Quoted"), it can push a notification to Make or Zapier automatically?</div>
+              <div class="q-note">Webhooks are what let us trigger external automations from inside Dragonfly without polling. If Dragonfly fires a webhook when a quote status changes, Make can catch it and immediately send a follow-up email — no manual step required.</div>
+              <div class="q-answer"><textarea placeholder="Outbound webhooks supported? Can we configure which events fire them? Or do we have to poll the API?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A3</div>
+            <div class="q-body">
+              <div class="q-text">Is there a native Outlook / O365 integration — and does it go both ways (emails create records, and records trigger emails)?</div>
+              <div class="q-note">Hilberts runs on Outlook. Tom described dragging documents from email into Dragonfly manually. A native O365 integration means ITB emails could auto-create Dragonfly opportunities without Make. Confirm: does this exist, and does it support inbound (email → record) AND outbound (record event → send email)?</div>
+              <div class="q-answer"><textarea placeholder="O365 integration exists? Inbound (email → Dragonfly record)? Outbound (Dragonfly status → send email)? Bidirectional?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A4</div>
+            <div class="q-body">
+              <div class="q-text">Is there a native Make or Zapier connector for Dragonfly — or do we need to use the raw API with custom HTTP actions?</div>
+              <div class="q-note">A native Make connector makes building automations dramatically faster — pre-built triggers and actions mean less custom code. If there's no connector, we build against the raw API which is doable but slower and more fragile.</div>
+              <div class="q-answer"><textarea placeholder="Native Make/Zapier connector? Or raw API only? Any published integrations in their marketplace?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A5</div>
+            <div class="q-body">
+              <div class="q-text">How does AlphaTakeoff output connect to Dragonfly — is it automatic, or does someone manually upload the takeoff spreadsheet to the Dragonfly project record?</div>
+              <div class="q-note">This is the AlphaTakeoff → Dragonfly handoff question. If they're both PhaseAlpha products, there may be a native sync. If AlphaTakeoff just outputs an Excel file, someone still has to upload it. Knowing the current handoff tells us whether we need to automate it or if it's already handled.</div>
+              <div class="q-answer"><textarea placeholder="Auto-sync between AlphaTakeoff and Dragonfly? Or manual upload? Is there an API between the two?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A6</div>
+            <div class="q-body">
+              <div class="q-text">Can files be attached to Dragonfly records via API — e.g. programmatically attach an AlphaTakeoff spreadsheet or a Claude-generated proposal to an opportunity record?</div>
+              <div class="q-note">File attachment via API is a specific capability separate from record creation. We need this to automate the flow: AlphaTakeoff generates takeoff → API uploads file → attaches to Dragonfly opportunity. Confirm it's supported and what the size/format limits are.</div>
+              <div class="q-answer"><textarea placeholder="File upload via API? Format limits? Size limits? Versioning (can you replace/update an attached file)?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A7</div>
+            <div class="q-body">
+              <div class="q-text">Does Dragonfly have a QuickBooks integration — and does it handle two-way sync (Dragonfly order → QB invoice, QB payment → Dragonfly update)?</div>
+              <div class="q-note">Tom uses QuickBooks (or similar). If Dragonfly already syncs to accounting, we don't need to build that bridge. If it doesn't, we flag it as a future integration requirement. Knowing this also tells us if Dragonfly is the system of record for financials or just for project data.</div>
+              <div class="q-answer"><textarea placeholder="QuickBooks integration exists? Sync direction? What data crosses over (invoices, payments, orders)?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A8</div>
+            <div class="q-body">
+              <div class="q-text">What does the API rate limit look like — how many calls per minute/hour, and is there a sandbox environment for testing integrations before going live?</div>
+              <div class="q-note">Rate limits matter when Make is polling or firing multiple automations per day. A sandbox environment means we can build and test without affecting live Hilberts data. Both are standard questions for any API integration project.</div>
+              <div class="q-answer"><textarea placeholder="Rate limits (calls/min or calls/hour)? Sandbox environment available? API versioning policy?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A9</div>
+            <div class="q-body">
+              <div class="q-text">What's the process for getting API credentials — is it self-serve from the Dragonfly admin panel, or does PhaseAlpha provision them manually?</div>
+              <div class="q-note">Practical question that affects our timeline. If API keys are self-serve, we can start building immediately after the call. If they require a request to PhaseAlpha and a setup fee or wait time, that adds lead time to the project start.</div>
+              <div class="q-answer"><textarea placeholder="Self-serve API keys? Or request-based? Any cost associated? How long does provisioning take?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a5c3a;">A10</div>
+            <div class="q-body">
+              <div class="q-text">Does PhaseAlpha offer custom development — and if so, what does that engagement model look like (hourly, retainer, fixed-scope)?</div>
+              <div class="q-note">Joe Lewis mentioned "Alpha on Demand" which provides dedicated managed developers. If we hit something Dragonfly can't do natively, can PhaseAlpha build it for Hilberts specifically? Understanding the cost model helps us scope Option 2 (Dragonfly as full CRM) vs. Option 3 (add GHL).</div>
+              <div class="q-answer"><textarea placeholder="Custom dev available? Model (hourly/retainer/fixed)? Typical turnaround? Has he done similar builds for other HVAC reps?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#5c1a5c;">AlphaTakeoff — Capabilities & Readiness</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="tip-banner" style="margin-bottom:16px;">
+          <strong>Goal:</strong> AlphaTakeoff is the highest-ROI automation in the entire engagement — 4–6 hrs of manual takeoff → minutes. But Tom said it's "in development" and he saw a demo, not a shipped product. We need to know exactly what's live, what's coming, and when.
+        </div>
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#5c1a5c;">AT1</div>
+            <div class="q-body">
+              <div class="q-text">Is AlphaTakeoff currently in production for paying clients — or is the version Tom saw at AHR Expo still in development/beta?</div>
+              <div class="q-note">Tom said at the call: "He has not released this yet — the thing that I witnessed at the show." This is a critical readiness question. If it's not production-ready, we can't commit it to Hilberts as a near-term deliverable. Get a straight answer on the release status.</div>
+              <div class="q-answer"><textarea placeholder="Live in production? Beta? In development? Expected release date if not live?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#5c1a5c;">AT2</div>
+            <div class="q-body">
+              <div class="q-text">Which HVAC equipment types can AlphaTakeoff currently identify from drawings — and which are still being added?</div>
+              <div class="q-note">The demo showed GRDs, VAVs, FCUs, dampers, louvers. Tom's primary product line is GRDs (grills, registers, diffusers). Confirm: does it reliably count GRDs today? What's the accuracy rate on a real Hilberts drawing vs. a demo drawing?</div>
+              <div class="q-answer"><textarea placeholder="Confirmed equipment types: GRD, VAV, FCU, dampers, louvers... what else? What's still being trained?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#5c1a5c;">AT3</div>
+            <div class="q-body">
+              <div class="q-text">What does AlphaTakeoff output — editable Excel spreadsheet, PDF, JSON data, or something else? And does the output include room numbers and floor assignments, or just equipment counts?</div>
+              <div class="q-note">We need room numbers and floor assignments to power the Job → Floor → Room model. If AlphaTakeoff only outputs a total count by equipment type (e.g. "47 GRDs total"), it doesn't solve the floor order problem. We need room-level data.</div>
+              <div class="q-answer"><textarea placeholder="Output format? Does it include room numbers, floor assignments, or just totals? Editable after generation?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#5c1a5c;">AT4</div>
+            <div class="q-body">
+              <div class="q-text">Can AlphaTakeoff handle the three drawing formats Hilberts receives — PDF attachments, Dropbox-hosted PDFs, and portal-hosted files (PipelineSuite)?</div>
+              <div class="q-note">If AlphaTakeoff requires a local file upload, we still have the drawing retrieval problem. If it can accept a URL (e.g. a Dropbox shared link), the workflow becomes: AI retrieves drawing link from ITB email → passes directly to AlphaTakeoff → takeoff runs automatically.</div>
+              <div class="q-answer"><textarea placeholder="Upload only? Or can it accept a URL/shared link? Any format restrictions (PDF only? Bluebeam files?)?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#5c1a5c;">AT5</div>
+            <div class="q-body">
+              <div class="q-text">What's the turnaround time once a drawing is submitted — minutes, hours? And does it require human review before the output is usable?</div>
+              <div class="q-note">Tom described the demo as near-instant. If the production version takes hours, it affects the workflow design. Also critical: is there a confidence score or flagging system that tells the user which rooms it's uncertain about vs. which it's confident on?</div>
+              <div class="q-answer"><textarea placeholder="Processing time? Confidence scoring or uncertainty flags? What does the review step look like?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#5c1a5c;">AT6</div>
+            <div class="q-body">
+              <div class="q-text">Can AlphaTakeoff be triggered via API — so a drawing URL comes in from Make and a takeoff is automatically initiated without someone manually uploading the file?</div>
+              <div class="q-note">This determines whether the full bid intake automation is possible end-to-end: email arrives → AI extracts drawing link → Make calls AlphaTakeoff API → takeoff runs → results attach to Dragonfly opportunity → Tom reviews. Without an API trigger, someone still manually uploads each drawing.</div>
+              <div class="q-answer"><textarea placeholder="AlphaTakeoff API available? Can it accept a URL and return results programmatically? Webhook for completion notification?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#5c1a5c;">AT7</div>
+            <div class="q-body">
+              <div class="q-text">Has AlphaTakeoff been used on Hilberts' specific drawing types — school, hospital, commercial? If not, can we run a test on one real Hilberts drawing today?</div>
+              <div class="q-note">The AHR Expo demo was a controlled environment. Real Hilberts drawings may have different conventions, naming, or symbol sets. Requesting a live test on one of the Northeastern HS or Bell & Evans drawings is the fastest way to validate accuracy before committing to it as a core workflow.</div>
+              <div class="q-answer"><textarea placeholder="Has it been tested on Hilberts drawings? Can we run a test today or this week? What's needed to set one up?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title amber">Priority Ranking (Ask at End of Scope Conversation)</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="cw-field"><label>What do they care about most — in their words</label><textarea placeholder="Let them rank unprompted first, then confirm"></textarea></div>
+        <div class="cw-field"><label>What they explicitly DON'T want right now</label><textarea placeholder="Important — don't build what they're not ready for"></textarea></div>
+        <div class="cw-field"><label>What feels urgent vs. what can wait</label><textarea placeholder="Urgent: ___   Can wait: ___"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CW4: CALL SYNTHESIS ══ -->
+  <div id="cw-synthesis" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Call Worksheet · Section 4</div>
+      <div class="page-title">Call Synthesis</div>
+      <div class="page-desc">Fill this at the end of the call or immediately after. This becomes the basis for the follow-up proposal and next steps.</div>
+    </div>
+
+    <div class="tip-banner">
+      <strong>Close the call with:</strong> "Before we wrap up — let me make sure I've got this right. The biggest thing you need solved first is [X]. Does that match what you're thinking?"
+    </div>
+
+    <div class="synthesis-card">
+      <h3>What PhaseAlpha actually is — based on this call</h3>
+      <textarea placeholder="In their words (what they said during this call)..."></textarea>
+      <div style="margin-top:10px;"><textarea>Our pre-call framing: PhaseAlpha is a structured job intelligence system — part CRM, part data model, part automation engine — purpose-built for HVAC reps. Dragonfly is the file/project hub. AlphaTakeoff reads drawings and generates room schedules. The combination eliminates the Job → Floor → Room reconstruction that's happening manually today.
+
+Update this after the call if their description differs.</textarea></div>
+    </div>
+
+    <div class="two-col">
+        <div class="cw-section">
+        <div class="cw-section-title">Biggest Opportunity</div>
+        <div class="cw-body" style="padding:14px;">
+          <div class="cw-field"><label>Where we see the highest leverage (pre-call hypothesis)</label><textarea>Blueprint takeoff → room schedule → floor order is one continuous data flow that currently requires three separate manual re-entries. If AlphaTakeoff extracts the room data once into a structured Dragonfly record, all three outputs generate automatically. This alone accounts for the majority of the 10–15 hrs/week Tom described.
+
+Update after call: did they confirm this is the biggest thing, or did something else surface?</textarea></div>
+          <div class="cw-field"><label>Their words that confirmed it (or changed it)</label><textarea placeholder="Exact quote if possible — what did they say when you described this?"></textarea></div>
+          <div class="cw-field"><label>Confidence level (1–10)</label><textarea rows="2" placeholder="How sure are you this is the right starting point after the call?"></textarea></div>
+        </div>
+      </div>
+      <div class="cw-section">
+        <div class="cw-section-title">Risks &amp; Blockers</div>
+        <div class="cw-body" style="padding:14px;">
+          <div class="cw-field"><label>Adoption risks (pre-loaded)</label><textarea>1. Tom started Dragonfly as a test and dropped out — "I didn't finish through getting myself as the guinea pig." If the new system requires Tom to set up jobs, it may stall again. Belinda needs to own data entry.
+2. The team currently has no CRM habit — transitioning to structured data entry is a behavior change, not just a software change.
+
+Additional risks from this call:</textarea></div>
+          <div class="cw-field"><label>Technical risks (pre-loaded)</label><textarea>1. AlphaTakeoff is described as "in development" — confirm production readiness and timeline before promising it as a deliverable.
+2. The pricing program that receives orders — unknown name, unknown API. This is a critical gap.
+3. PipelineSuite/PreconSuite drawing access may require credentials or portal login — automated retrieval may not be straightforward.
+
+Additional technical risks from this call:</textarea></div>
+          <div class="cw-field"><label>Scope risks from this call</label><textarea placeholder="Anything that grew larger or smaller than expected during the conversation?"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title">Surprises</div>
+      <div class="cw-body" style="padding:14px;">
+        <div class="cw-field"><label>Things that were different from what we expected</label><textarea placeholder="Where were our assumptions wrong?"></textarea></div>
+        <div class="cw-field"><label>Things they cared about that we didn't anticipate</label><textarea placeholder="New pain points, priorities, or constraints..."></textarea></div>
+        <div class="cw-field"><label>Contradictions (things they said that don't add up)</label><textarea placeholder="Dig into these in the next conversation..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title">Immediate Next Step</div>
+      <div class="cw-body" style="padding:14px;">
+        <div class="cw-field"><label>What you propose as the next action</label><textarea placeholder="e.g. 'We'll send a Dragonfly data model proposal by Friday'"></textarea></div>
+        <div class="cw-field"><label>Who owns it</label><textarea rows="2" placeholder="Jessica? Marc? PhaseAlpha?"></textarea></div>
+        <div class="cw-field"><label>Date / deadline</label><textarea rows="2" placeholder=""></textarea></div>
+        <div class="cw-field"><label>What they're doing on their end</label><textarea rows="2" placeholder="What did you ask them to prepare or provide?"></textarea></div>
+      </div>
+    </div>
+
+    <div class="cw-section">
+      <div class="cw-section-title">Option Recommendation (Post-Call)</div>
+      <div class="cw-body" style="padding:14px;">
+        <div class="cw-field"><label>Based on this call, which option do you recommend?</label>
+          <select style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:Arial,sans-serif;color:var(--ink);background:var(--white);margin-top:4px;">
+            <option value="">— select —</option>
+            <option>Option 1 — Dragonfly + AI Layer only</option>
+            <option>Option 2 — Dragonfly as full CRM (recommended start)</option>
+            <option>Option 3 — Dragonfly + GoHighLevel</option>
+            <option>Option 4 — GoHighLevel first (contingency)</option>
+            <option>Still unclear — need more information</option>
+          </select>
+        </div>
+        <div class="cw-field"><label>Why</label><textarea placeholder="What from this call pushed you toward that option?"></textarea></div>
+        <div class="cw-field"><label>What would change your recommendation</label><textarea placeholder="What information are you still missing?"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CW5: TECH ARCHITECTURE ══ -->
+  <div id="cw-tech" class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">Call Worksheet · Section 5</div>
+      <div class="page-title">Technical Architecture Questions</div>
+      <div class="page-desc">Use this when talking directly with the PhaseAlpha build team — not discovery selling, but system alignment. Start with architecture and data model, then integrations and constraints. End with Phase Alpha scope alignment.</div>
+    </div>
+
+    <div class="tip-banner">
+      <strong>How to use:</strong> Don't go top to bottom — start with Architecture → Data Model → Data Flow, then Integrations → APIs → Constraints, then end with Phase Alpha alignment. Listen for: "we re-enter data a lot" (no system of record), "it depends on the job" (no schema), "we export then upload" (no integration layer), "we can't change that system" (hard constraint).
+    </div>
+
+    <!-- SECTION 1: SYSTEM ARCHITECTURE -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#1a1a1a;">1 — System Architecture (Start Here)</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">S1</div>
+            <div class="q-body">
+              <div class="q-text">What does the current Dragonfly architecture look like — frontend, backend, database, hosting/infrastructure?</div>
+              <div class="q-note">Establishes what we're working with before we propose anything. Are we on AWS? Proprietary hosting? A SaaS multi-tenant system? This determines what's possible from an API and integration standpoint.</div>
+              <div class="q-answer"><textarea placeholder="Frontend: ___  Backend: ___  Database: ___  Hosting: ___"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">S2</div>
+            <div class="q-body">
+              <div class="q-text">Is there a single system of record for Hilberts today — or is truth spread across multiple systems (Dragonfly, spreadsheets, the pricing program, ABK)?</div>
+              <div class="q-note">If there's no single system of record, we need to decide which system becomes it — or build one. This is the foundational architecture decision for the entire engagement. Dragonfly is the candidate, but only if its data model is strong enough.</div>
+              <div class="q-answer"><textarea placeholder="Single system of record? Or distributed? What system would they trust as the source of truth if forced to pick?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">S3</div>
+            <div class="q-body">
+              <div class="q-text">Are we extending an existing Dragonfly instance or building a new configuration alongside it — and is there risk of breaking what's already there?</div>
+              <div class="q-note">Hilberts has had Dragonfly for ~a year. Belinda did setup work. There's likely some real data in there. We need to know whether adding new record types, custom fields, or pipelines can break existing configuration or data.</div>
+              <div class="q-answer"><textarea placeholder="Extend existing or clean build? Risk of breaking existing config? Is there a staging environment to test changes?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: DATA MODEL -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#1a1a1a;">2 — Data Model (Critical — Success Lives Here)</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="tip-banner" style="margin-bottom:16px; background:#fef0ee; border-color:#f5c5be;">
+          <strong>This is where the engagement succeeds or fails.</strong> Without a defined schema for Job → Floor → Room → Equipment → Order, every process stays manual. The data model question is the most important technical question on this call.
+        </div>
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">DM1</div>
+            <div class="q-body">
+              <div class="q-text">Does Dragonfly currently have defined schema objects for Job, Floor, Room, and Equipment — or are these implied and manually reconstructed each time?</div>
+              <div class="q-note">We know the answer is "manually reconstructed" on Hilberts' side. The question is whether Dragonfly's data model can support these as first-class objects. If not, we need to build them using custom record types and relationships.</div>
+              <div class="q-answer"><textarea placeholder="Native objects for Job/Floor/Room/Equipment? Or do we build these as custom record types?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">DM2</div>
+            <div class="q-body">
+              <div class="q-text">Can Dragonfly support a hierarchical data model — Job contains Floors, Floor contains Rooms, Room contains Equipment — with true parent-child record relationships?</div>
+              <div class="q-note">This is the relational question. The floor-by-floor order release problem is entirely caused by the absence of this hierarchy. If Dragonfly supports it natively, the fix is configuration. If it doesn't, we either extend it via custom dev or need a different data layer.</div>
+              <div class="q-answer"><textarea placeholder="True parent-child records? Many-to-many links? Or flat records with lookup fields only?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">DM3</div>
+            <div class="q-body">
+              <div class="q-text">Can new object types and relationships be introduced without breaking existing data or requiring a system migration?</div>
+              <div class="q-note">If adding "Floor" as a new record type breaks the existing project/quote structure, we have a problem. Most flexible platforms support schema evolution — confirm Dragonfly does, and what the process looks like.</div>
+              <div class="q-answer"><textarea placeholder="Schema evolution supported? Self-serve or requires PhaseAlpha to make schema changes?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">DM4</div>
+            <div class="q-body">
+              <div class="q-text">What field types does Dragonfly support on custom records — text, number, date, dropdown, formula/calculated, file attachment, relationship/lookup?</div>
+              <div class="q-note">For the room schedule to auto-generate, Room records need: number (CFM, size, static pressure), dropdown (equipment designation), relationship (link to Floor, link to Equipment). If formula fields exist, we can derive values. If not, calculations happen outside Dragonfly.</div>
+              <div class="q-answer"><textarea placeholder="Field types available: text / number / date / dropdown / formula / file / relationship / other?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: DATA FLOW -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#1a1a1a;">3 — Data Flow Lifecycle</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">DF1</div>
+            <div class="q-body">
+              <div class="q-text">Walk me through the data lifecycle: Bid Invitation → Quote → Job Award → Room Schedule → Floor Order → Fulfillment. At each stage, is data reused from the previous stage or recreated from scratch?</div>
+              <div class="q-note">We already know the answer for Hilberts: recreated at almost every stage. The question here is whether Dragonfly's architecture makes reuse possible, and where the natural handoff points are between stages.</div>
+              <div class="q-answer"><textarea placeholder="Stage by stage — reused or recreated? Where does structure get lost? Where is the biggest re-entry point?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">DF2</div>
+            <div class="q-body">
+              <div class="q-text">Where does data currently leave Dragonfly and go into another system — and does it come back, or is it a one-way export?</div>
+              <div class="q-note">The pricing program is one known exit point. ABK is another. If data leaves and never returns, Dragonfly can't be the system of record for the full lifecycle. We need to know every exit point and whether we can close the loop.</div>
+              <div class="q-answer"><textarea placeholder="Data exit points: pricing program, ABK, QuickBooks, email... Does any data flow back in?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">DF3</div>
+            <div class="q-body">
+              <div class="q-text">At what point in the lifecycle does data become unstructured — i.e. someone starts improvising rather than following a defined process or data entry path?</div>
+              <div class="q-note">This is the "where does the schema break" question. Tom said post-award room schedules are 100% manual and improvised. Knowing where structure breaks tells us where to focus schema design effort first.</div>
+              <div class="q-answer"><textarea placeholder="Where does it go off-script? Where does someone open Excel and start typing from scratch?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: OUTPUT GENERATION -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#1a1a1a;">4 — Output Generation</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">OG1</div>
+            <div class="q-body">
+              <div class="q-text">How are room schedules, orders, and submittals currently generated — manually assembled, filled from a template, or generated by software?</div>
+              <div class="q-note">We know room schedules are manually assembled. Submittals may use product literature templates. Orders go into the pricing program. Knowing the current method tells us whether we're replacing a process or inserting into one.</div>
+              <div class="q-answer"><textarea placeholder="Room schedule: ___  Order: ___  Submittal: ___  Each: manually assembled / template / generated?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">OG2</div>
+            <div class="q-body">
+              <div class="q-text">Does the engineer need a pixel-perfect, formatted document — or is a clean structured export (Excel/CSV) acceptable for their review?</div>
+              <div class="q-note">Pixel-perfect = Word/PDF template with specific layout, fonts, company header. Structured export = Excel spreadsheet with correct columns. AlphaTakeoff outputs editable spreadsheets. If the engineer needs a formatted PDF, we need a document generation layer on top.</div>
+              <div class="q-answer"><textarea placeholder="Formatted PDF/Word required? Or will a clean Excel work? Does the engineer have a required template?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">OG3</div>
+            <div class="q-body">
+              <div class="q-text">Can Dragonfly generate documents from record data natively — or does output generation need to happen outside via an integration (Make + a doc generator, Claude, etc.)?</div>
+              <div class="q-note">If Dragonfly can generate a formatted room schedule directly from a job record, the output pipeline is self-contained. If it can only export raw data, we need Make + a document generation tool (DocuPilot, Carbone, or Claude) to build the formatted output.</div>
+              <div class="q-answer"><textarea placeholder="Native doc generation in Dragonfly? Or raw data export + external generation needed?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: PERMISSIONS -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#1a1a1a;">5 — Permissions & Access Control</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">P1</div>
+            <div class="q-body">
+              <div class="q-text">Does Dragonfly support role-based access control — e.g. Tom sees everything, Dave sees only his quotes, Belinda manages ops records, and an engineer sees only room schedules sent to them?</div>
+              <div class="q-note">Hilberts has three internal roles (Tom/owner, Dave/sales, Belinda/ops) plus external stakeholders (engineers, contractors). If Dragonfly's permissions are all-or-nothing, sharing a room schedule with an engineer means giving them access to everything.</div>
+              <div class="q-answer"><textarea placeholder="Role-based permissions? Granular (per record type or field)? Or all-or-nothing user access?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">P2</div>
+            <div class="q-body">
+              <div class="q-text">Do we need approval workflows built in — e.g. a proposal must be reviewed and approved before it can be sent, or an order requires Tom's sign-off before submission?</div>
+              <div class="q-note">Tom said multiple times that human oversight needs to be in the loop. If Dragonfly supports approval states (e.g. "Pending Review" → approved by Tom → "Sent"), we can enforce the QA gate natively. If not, we build the approval step in Make.</div>
+              <div class="q-answer"><textarea placeholder="Native approval workflows in Dragonfly? Or we build approval logic in Make/externally?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">P3</div>
+            <div class="q-body">
+              <div class="q-text">Can external users (engineers, contractors) be given limited read-only access to specific Dragonfly records — e.g. a contractor sees only the room schedule for their job?</div>
+              <div class="q-note">If Dragonfly supports external share links or guest access, engineers could review room schedules directly in the system rather than via email attachment. This closes the feedback loop — engineer comments go back into Dragonfly, not into a separate email thread.</div>
+              <div class="q-answer"><textarea placeholder="External/guest access available? Read-only share links? Or is Dragonfly internal-users-only?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: ENVIRONMENTS + DEV PROCESS -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#1a1a1a;">6 — Dev Environments & Deployment</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">E1</div>
+            <div class="q-body">
+              <div class="q-text">What environments exist — dev, staging, production? Can we test new configurations and integrations in a sandbox before they touch live Hilberts data?</div>
+              <div class="q-note">Without a staging environment, every integration test risks corrupting live data. This is a basic but essential question. If there's no sandbox, we need to build carefully and stage rollouts manually.</div>
+              <div class="q-answer"><textarea placeholder="Environments: dev / staging / prod? Sandbox API available? Can we clone the Hilberts config for testing?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">E2</div>
+            <div class="q-body">
+              <div class="q-text">How are schema changes and configuration updates deployed — self-serve in the admin panel, or does PhaseAlpha need to push changes on Hilberts' behalf?</div>
+              <div class="q-note">If every schema change requires a PhaseAlpha engineering ticket, iteration is slow and expensive. Self-serve admin configuration means we can iterate rapidly during the build phase without waiting on PhaseAlpha's sprint cycle.</div>
+              <div class="q-answer"><textarea placeholder="Self-serve admin config? Or PhaseAlpha-gated changes? Turnaround time for a schema change if not self-serve?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#1a1a1a;">E3</div>
+            <div class="q-body">
+              <div class="q-text">Is there API versioning — and if PhaseAlpha updates the Dragonfly API, does it break existing integrations or are they backward compatible?</div>
+              <div class="q-note">Make automations built against a v1 API break if PhaseAlpha releases a v2 with different endpoint structures. Understanding their versioning policy determines how brittle our integrations are and how much maintenance overhead we're signing up for.</div>
+              <div class="q-answer"><textarea placeholder="API versioning policy? Backward compatible updates? How long does a deprecated version stay live?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 7: HARD CONSTRAINTS -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#7a1a1a;">7 — Hard Constraints (Saves You Later)</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="tip-banner" style="margin-bottom:16px; background:#fef0ee; border-color:#f5c5be;">
+          <strong>Ask these directly and write down every answer.</strong> Hard constraints define the outer boundary of what's buildable. The worst outcome is designing a system and then discovering a constraint that invalidates it halfway through the build.
+        </div>
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#7a1a1a;">HC1</div>
+            <div class="q-body">
+              <div class="q-text">What systems or tools can we absolutely not replace or modify — things Hilberts has committed to, is contractually tied to, or that other people in their ecosystem depend on?</div>
+              <div class="q-note">Known candidates: the pricing program (unknown — get the name), ABK (outsourced proposal vendor), QuickBooks (likely accounting). If any of these have no API and can't be replaced, they become manual handoff points by definition.</div>
+              <div class="q-answer"><textarea placeholder="Locked systems: pricing program name, ABK contract status, QuickBooks version, others?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#7a1a1a;">HC2</div>
+            <div class="q-body">
+              <div class="q-text">Are there any security or compliance requirements — e.g. data residency, HIPAA (hospital clients), SOC 2, or customer data privacy policies?</div>
+              <div class="q-note">Hilberts works with hospitals. Hospital projects may involve HIPAA-adjacent data (room layouts, equipment specs). If any customer data is regulated, it affects what we can store in Dragonfly, what we can send to Claude, and how we handle file storage.</div>
+              <div class="q-answer"><textarea placeholder="Any compliance requirements? Customer NDAs that restrict data handling? Regulated industries in their client list?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#7a1a1a;">HC3</div>
+            <div class="q-body">
+              <div class="q-text">Has anything been tried and failed before — either with Dragonfly specifically or with other automation attempts at Hilberts?</div>
+              <div class="q-note">Tom dropped out of the Dragonfly implementation. Knowing exactly why — too complex to set up, unclear value, no time, the guinea pig model didn't work — tells us what to avoid repeating. This is the most important constraint question.</div>
+              <div class="q-answer"><textarea placeholder="Why did Dragonfly stall? What specifically caused Tom to stop? Any other automation attempts that failed?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#7a1a1a;">HC4</div>
+            <div class="q-body">
+              <div class="q-text">What does "done" look like to PhaseAlpha — what's the definition of a successful Dragonfly implementation for an HVAC rep like Hilberts?</div>
+              <div class="q-note">This is the alignment question. If PhaseAlpha's definition of success is "users logging in daily" but Hilberts' is "I get a Friday email summary without touching the system," we need to reconcile that before the build starts.</div>
+              <div class="q-answer"><textarea placeholder="Their definition of success vs. what Tom described as his goal — do they match?"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 8: PHASE ALPHA ALIGNMENT -->
+    <div class="cw-section">
+      <div class="cw-section-title" style="background:#2a4db0;">8 — Phase Alpha Scope Alignment (End Here)</div>
+      <div class="cw-body" style="padding:16px;">
+        <div class="tip-banner" style="margin-bottom:16px;">
+          <strong>Goal:</strong> Lock in what Phase Alpha owns vs. what we build with Make/Claude/external tools. This is the handshake that prevents scope creep and sets clear build responsibilities.
+        </div>
+        <div class="q-list">
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">PA1</div>
+            <div class="q-body">
+              <div class="q-text">If Phase Alpha is successful for Hilberts, what should it own end-state — the data structure, the workflow automation, the output generation, or all three?</div>
+              <div class="q-note">We want Dragonfly to own the data layer (Job/Floor/Room records). We want to own the automation layer (Make/Claude for email parsing, follow-up, document generation). Confirm PhaseAlpha's appetite for the automation layer vs. expecting us to build it externally.</div>
+              <div class="q-answer"><textarea placeholder="PhaseAlpha owns: data structure / workflow automation / output generation? Or do they hand off the automation to us?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">PA2</div>
+            <div class="q-body">
+              <div class="q-text">What should remain outside Phase Alpha — i.e. what are they explicitly not responsible for?</div>
+              <div class="q-note">We'll own: AI bid parsing (Claude), Make automations, follow-up email sequences, Claude proposal review. PhaseAlpha owns: Dragonfly data model, AlphaTakeoff integration, native Dragonfly automation. Get them to agree on this boundary before the build starts.</div>
+              <div class="q-answer"><textarea placeholder="Their explicit out-of-scope list — what are they NOT building for this engagement?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">PA3</div>
+            <div class="q-body">
+              <div class="q-text">Are there other HVAC rep or distributor clients they've built similar Job → Floor → Room workflows for — and can we see or reference that configuration?</div>
+              <div class="q-note">PhaseAlpha's documentation mentions New Jersey Air Products as a long-term client. If they've already built a Job → Floor → Room data model for someone like Hilberts, we can adapt it rather than starting from scratch. This saves weeks of design time.</div>
+              <div class="q-answer"><textarea placeholder="Existing similar client builds? Can we get a reference config or template data model? Case study?"></textarea></div>
+            </div>
+          </div>
+          <div class="q-card">
+            <div class="q-num" style="background:#2a4db0;">PA4</div>
+            <div class="q-body">
+              <div class="q-text">What's the recommended build sequence from PhaseAlpha's side — what do they want us to configure first to avoid having to redo work?</div>
+              <div class="q-note">Our hypothesis: data model first (record types + relationships), then AlphaTakeoff activation, then automation layer. Get PhaseAlpha's view on sequencing — they may have a recommended implementation path from past engagements that we should follow.</div>
+              <div class="q-answer"><textarea placeholder="Their recommended build sequence — does it match ours? Any dependencies we're not aware of?"></textarea></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <div class="cw-field"><label>Signals heard during the call — map to meaning</label>
+            <textarea style="min-height:120px;">"We re-enter data a lot" → No system of record
+"It depends on the job" → No schema — need to define it
+"We export then upload" → No integration layer — need API or connector
+"We can't change that system" → Hard constraint — design around it
+"We don't track that" → Opportunity — add a field
+
+Notes from this call:
+</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// make overview cards navigate to the right process page
+document.querySelectorAll('.process-card').forEach((card, i) => {
+  const ids = ['p1','p2','p3','p4','p5','p6','p7'];
+  card.style.cursor = 'pointer';
+  card.onclick = () => {
+    const target = ids[i];
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(target).classList.add('active');
+    // highlight the matching nav link
+    document.querySelectorAll('nav a').forEach(a => {
+      if (a.getAttribute('onclick') && a.getAttribute('onclick').includes("'" + target + "'")) {
+        a.classList.add('active');
+      }
+    });
+  };
+});
+</script>
+</body>
+</html>
