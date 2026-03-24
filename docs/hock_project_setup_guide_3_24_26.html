@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOCK — Claude Project Setup Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F7941D;
+    --orange-dark: #D97B0E;
+    --blue: #1B4F8A;
+    --blue-dark: #0F2D52;
+    --white: #FFFFFF;
+    --cream: #FAF8F5;
+    --gray-100: #F0EDE8;
+    --gray-200: #D8D4CC;
+    --gray-400: #8C8880;
+    --gray-700: #3A3630;
+    --green: #2D8A4E;
+    --green-light: #E8F7ED;
+    --yellow-light: #FEF7E8;
+    --red-light: #FDF0EF;
+    --red: #C0392B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--cream);
+    color: var(--gray-700);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--blue-dark);
+    border-bottom: 4px solid var(--orange);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .header-title span { color: var(--orange); }
+
+  .header-badge {
+    background: rgba(247,148,29,0.15);
+    border: 1px solid rgba(247,148,29,0.4);
+    color: var(--orange);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* MAIN */
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* INTRO */
+  .intro {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .intro-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .intro-headline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--blue-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+
+  .intro-sub {
+    font-size: 15px;
+    color: var(--gray-400);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* STEP CARDS */
+  .step-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .step-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .step-num {
+    width: 48px;
+    height: 48px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--blue-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .step-body {
+    padding: 24px 26px;
+  }
+
+  /* NAVIGATE BAR */
+  .nav-path {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .nav-path-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 4px;
+  }
+
+  .nav-crumb {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+  }
+
+  .nav-crumb.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: white;
+  }
+
+  .nav-arrow {
+    color: var(--gray-400);
+    font-size: 16px;
+  }
+
+  /* INSTRUCTION ROWS */
+  .instruction-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .instruction-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    background: var(--cream);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--gray-700);
+    line-height: 1.55;
+    border: 1px solid var(--gray-100);
+  }
+
+  .inst-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .instruction-item.warn {
+    background: var(--red-light);
+    border-color: rgba(192,57,43,0.15);
+  }
+
+  .instruction-item.good {
+    background: var(--green-light);
+    border-color: rgba(45,138,78,0.15);
+  }
+
+  .instruction-item.note {
+    background: var(--yellow-light);
+    border-color: rgba(247,148,29,0.2);
+  }
+
+  /* FILE LIST */
+  .file-list {
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .file-list-header {
+    background: var(--blue-dark);
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .upload-badge {
+    background: var(--orange);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+    margin-left: auto;
+  }
+
+  .file-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 14px;
+    color: var(--gray-700);
+  }
+
+  .file-row:last-child { border-bottom: none; }
+  .file-row:nth-child(even) { background: var(--cream); }
+
+  .file-icon { font-size: 16px; flex-shrink: 0; }
+
+  .file-name {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12.5px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  .file-note {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .note-required { background: var(--red-light); color: var(--red); }
+  .note-per-session { background: var(--yellow-light); color: var(--orange-dark); }
+
+  /* INTEGRATION CARDS */
+  .integration-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .integration-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    background: white;
+    transition: border-color 0.2s;
+  }
+
+  .integration-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .logo-gamma { background: linear-gradient(135deg, #7B2FBE, #4A90D9); }
+  .logo-monday { background: #F62B54; }
+  .logo-n8n { background: #EA4B71; }
+
+  .integration-info { flex: 1; }
+
+  .integration-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--blue-dark);
+    margin-bottom: 2px;
+  }
+
+  .integration-desc {
+    font-size: 12.5px;
+    color: var(--gray-400);
+  }
+
+  .connect-steps {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .connect-btn {
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: default;
+  }
+
+  .connect-step-badge {
+    background: var(--orange);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* DONE BANNER */
+  .done-banner {
+    background: var(--blue-dark);
+    border-radius: 12px;
+    padding: 28px 32px;
+    text-align: center;
+    margin-top: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .done-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(247,148,29,0.08);
+  }
+
+  .done-banner-icon { font-size: 36px; margin-bottom: 10px; }
+
+  .done-banner-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+
+  .done-banner-title span { color: var(--orange); }
+
+  .done-banner-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .phase-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .phase-row {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  code {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 12px;
+    background: var(--gray-100);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--blue);
+  }
+
+  strong { font-weight: 600; }
+
+  .divider {
+    text-align: center;
+    color: var(--gray-200);
+    font-size: 24px;
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">
+    <svg width="90" height="36" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="44" font-family="'Barlow Condensed', sans-serif" font-size="52" font-weight="800" fill="#F7941D" letter-spacing="-1">HOCK</text>
+      <rect x="0" y="48" width="170" height="14" rx="0" fill="#1B4F8A"/>
+      <text x="5" y="58" font-family="'Barlow', sans-serif" font-size="11" font-weight="600" fill="white" letter-spacing="1">International</text>
+    </svg>
+    <div class="header-title">Claude <span>Project</span> Setup Guide</div>
+  </div>
+  <div class="header-badge">One-Time Setup</div>
+</header>
+
+<div class="page">
+
+  <div class="intro">
+    <div class="intro-eyebrow">Before You Begin</div>
+    <div class="intro-headline">3 Steps to Set Up<br>Your Claude Project</div>
+    <div class="intro-sub">Complete these steps once to activate the HOCK Content Production Agent. All three must be done before running any phase prompts.</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- STEP 1 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="step-card">
+    <div class="step-top">
+      <div class="step-num">1</div>
+      <div class="step-title">Paste the System Prompt into Project Instructions</div>
+    </div>
+    <div class="step-body">
+
+      <div class="nav-path">
+        <span class="nav-path-label">Navigate to:</span>
+        <span class="nav-crumb">claude.ai</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb">Your Project</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb">Edit project</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb active">Project Instructions</span>
+      </div>
+
+      <ul class="instruction-list">
+        <li class="instruction-item note">
+          <div class="inst-icon">📋</div>
+          <div>Find the system prompt in your <strong>Monday.com board → AI Prompt Library → Claude Project folder</strong>. All prompts you'll ever need for this agent live there.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="inst-icon">📄</div>
+          <div>Open <strong>HOCK_System_Prompt_3_24_26_Final.md</strong> from the AI Prompt Library and copy the entire contents.</div>
+        </li>
+        <li class="instruction-item">
+          <div class="inst-icon">✏️</div>
+          <div>Paste the full contents into the <strong>Project Instructions text field</strong> inside your Claude project settings.</div>
+        </li>
+        <li class="instruction-item warn">
+          <div class="inst-icon">🚫</div>
+          <div><strong>Do NOT upload the system prompt as a file</strong> to Project Knowledge. It must go in the text field only — phase-locked behavior won't activate otherwise.</div>
+        </li>
+        <li class="instruction-item note">
+          <div class="inst-icon">💡</div>
+          <div>The text field is inside <strong>Edit project → Project Instructions</strong>, not the Knowledge tab. These are two different places.</div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- STEP 2 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="step-card">
+    <div class="step-top">
+      <div class="step-num">2</div>
+      <div class="step-title">Upload Supporting Documents to Project Knowledge</div>
+    </div>
+    <div class="step-body">
+
+      <div class="nav-path">
+        <span class="nav-path-label">Navigate to:</span>
+        <span class="nav-crumb">claude.ai</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb">Your Project</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb">Edit project</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb active">Project Knowledge</span>
+      </div>
+
+      <!-- Permanent files -->
+      <div class="file-list">
+        <div class="file-list-header">
+          📁 Upload These 5 Files — Permanent
+          <span class="upload-badge">← Upload once, stays forever</span>
+        </div>
+        <div class="file-row">
+          <span class="file-icon">📄</span>
+          <span class="file-name">HOCK_Core_Operations_3_24_26_Final.md</span>
+          <span class="file-note note-required">Required</span>
+        </div>
+        <div class="file-row">
+          <span class="file-icon">📄</span>
+          <span class="file-name">HOCK_MCQ_Rules_3_24_26_Final.md</span>
+          <span class="file-note note-required">Required</span>
+        </div>
+        <div class="file-row">
+          <span class="file-icon">📄</span>
+          <span class="file-name">HOCK_Content_Standards_3_24_26_Final.md</span>
+          <span class="file-note note-required">Required</span>
+        </div>
+        <div class="file-row">
+          <span class="file-icon">📄</span>
+          <span class="file-name">HOCK_Revision_Prompts_3_24_26_Final.md</span>
+          <span class="file-note note-required">Required</span>
+        </div>
+        <div class="file-row">
+          <span class="file-icon">📄</span>
+          <span class="file-name">HOCK_Monday_Workflow_3_24_26_Final.md</span>
+          <span class="file-note note-required">Required</span>
+        </div>
+      </div>
+
+      <!-- Per-session: syllabus -->
+      <div class="file-list" style="margin-top:12px">
+        <div class="file-list-header" style="background:#6B4E1A">
+          📚 Add Per Certification Session
+          <span class="upload-badge" style="background:var(--orange-dark)">← Swap when changing cert</span>
+        </div>
+        <div class="file-row">
+          <span class="file-icon">📚</span>
+          <span class="file-name">[Your Certification Syllabus PDF]</span>
+          <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+            <span style="font-size:12px;color:var(--gray-400)">e.g. CIA Part 2, CMA Part 1</span>
+            <span class="file-note note-per-session">Per Session</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Added during production -->
+      <div class="file-list" style="margin-top:12px">
+        <div class="file-list-header" style="background:#2B5282">
+          📎 Added During Production — As Each Phase Completes
+          <span class="upload-badge" style="background:#2B6CB0">← Add as you go</span>
+        </div>
+
+        <div class="file-row phase-row">
+          <div class="phase-dot" style="background:var(--blue)">1</div>
+          <div>
+            <div class="file-name">[Textbook PDF]</div>
+            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">Downloaded from Monday after Phase 1 completes — used as source for MCQs &amp; slides</div>
+          </div>
+          <span class="file-note" style="background:#EBF3FF;color:var(--blue);margin-left:auto">Phase 1</span>
+        </div>
+
+        <div class="file-row phase-row">
+          <div class="phase-dot" style="background:var(--orange)">2</div>
+          <div>
+            <div class="file-name">[MCQs Excel File]</div>
+            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">Downloaded from Monday after Phase 2 — available for reference if needed</div>
+          </div>
+          <span class="file-note" style="background:#FEF7E8;color:var(--orange-dark);margin-left:auto">Phase 2</span>
+        </div>
+
+        <div class="file-row phase-row">
+          <div class="phase-dot" style="background:#6B3FA0">4</div>
+          <div>
+            <div class="file-name">[Presentation PDF]</div>
+            <div style="font-size:12px;color:var(--gray-400);margin-top:2px">Exported from Gamma after Phase 4 — required as source for the slide script in Phase 5</div>
+          </div>
+          <span class="file-note" style="background:#F3ECFF;color:#6B3FA0;margin-left:auto">Phase 4</span>
+        </div>
+      </div>
+
+      <ul class="instruction-list" style="margin-top:14px">
+        <li class="instruction-item good">
+          <div class="inst-icon">✅</div>
+          <div>The <strong>5 permanent files</strong> stay in the project across all certifications — never remove them.</div>
+        </li>
+        <li class="instruction-item note">
+          <div class="inst-icon">💡</div>
+          <div>The <strong>Presentation PDF</strong> (Phase 4) is the only mid-production file the agent actually reads — it's required before Phase 5 can begin.</div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- STEP 3 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="step-card">
+    <div class="step-top">
+      <div class="step-num">3</div>
+      <div class="step-title">Connect Integrations</div>
+    </div>
+    <div class="step-body">
+
+      <div class="nav-path">
+        <span class="nav-path-label">Navigate to:</span>
+        <span class="nav-crumb">claude.ai</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb">Settings</span>
+        <span class="nav-arrow">→</span>
+        <span class="nav-crumb active">Integrations</span>
+      </div>
+
+      <div class="integration-list">
+        <div class="integration-row">
+          <div class="integration-logo logo-gamma">γ</div>
+          <div class="integration-info">
+            <div class="integration-name">Gamma</div>
+            <div class="integration-desc">Creates and exports AI presentations</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+            <div class="connect-btn">Connect</div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600">Click Connect → Sign In → Allow</div>
+          </div>
+        </div>
+
+        <div class="integration-row">
+          <div class="integration-logo logo-monday">m</div>
+          <div class="integration-info">
+            <div class="integration-name">Monday.com</div>
+            <div class="integration-desc">Updates tasks, columns, and statuses</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+            <div class="connect-btn">Connect</div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600">Click Connect → Sign In → Allow</div>
+          </div>
+        </div>
+
+        <div class="integration-row">
+          <div class="integration-logo logo-n8n">n8n</div>
+          <div class="integration-info">
+            <div class="integration-name">n8n</div>
+            <div class="integration-desc">Automates file attachments and webhook workflows (DOCX, Excel uploads)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+            <div class="connect-btn">Connect</div>
+            <div style="font-size:11px;color:var(--gray-400);font-weight:600">Click Connect → Sign In → Allow</div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="instruction-list">
+        <li class="instruction-item good">
+          <div class="inst-icon">✅</div>
+          <div>Once all three integrations show as <strong>Connected</strong>, your project is fully set up.</div>
+        </li>
+        <li class="instruction-item note">
+          <div class="inst-icon">💡</div>
+          <div>You'll see permission modals when connecting — this is expected. Click <strong>Allow</strong> on each one.</div>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- DONE BANNER -->
+  <div class="done-banner">
+    <div class="done-banner-icon">🚀</div>
+    <div class="done-banner-title">You're <span>Ready</span> to Go</div>
+    <div class="done-banner-sub">All three steps complete. Open a new chat inside your Claude project and paste a Phase Prompt from <code>HOCK_Phase_Prompts_3_24_26.md</code> to begin content production.</div>
+  </div>
+
+</div>
+</body>
+</html>
