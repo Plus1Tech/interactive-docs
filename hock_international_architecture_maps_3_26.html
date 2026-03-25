@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOCK Content Production Agent — System Architecture</title>
+<style>
+:root {
+  --orange:#F47920; --blue:#1B4B8A; --cream:#F7F4EE;
+  --orange-light:#FDE9D4; --blue-pale:#E8EEF7;
+  --surface:#fff; --border:#E2DDD6;
+  --text:#1C1A18; --muted:#6B6560; --light:#9E988F;
+  --green:#1A7A4A; --green-pale:#E6F4ED;
+  --amber:#B45309; --amber-pale:#FEF3C7;
+  --purple:#6D28D9; --purple-pale:#EDE9FE;
+  --pink:#F41472; --pink-pale:#FDE7F1;
+  --red:#B91C1C; --red-pale:#FEE2E2;
+  --teal:#0F766E; --teal-pale:#CCFBF1;
+  --r:8px; --sh:0 1px 4px rgba(0,0,0,.08); --shm:0 4px 12px rgba(0,0,0,.10);
+  --sw:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+/* HEADER */
+.hdr{background:var(--blue);color:#fff;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:3px solid var(--orange)}
+.hbrand{display:flex;align-items:baseline;gap:6px}
+.hbrand .hock{font-size:22px;font-weight:800;font-style:italic;color:var(--orange)}
+.hbrand .intl{font-size:12px;font-weight:700;background:var(--orange);color:#fff;padding:2px 7px;border-radius:3px}
+.htitle{font-size:13px;color:rgba(255,255,255,.7)}
+.hbadge{font-size:11px;font-weight:600;background:rgba(255,255,255,.15);color:#fff;padding:3px 10px;border-radius:20px}
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;height:calc(100vh - 60px)}
+/* SIDEBAR */
+.sidebar{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;padding:16px 0 32px}
+.slbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--light);text-transform:uppercase;padding:14px 18px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:13px;color:var(--muted);cursor:pointer;border-left:3px solid transparent;transition:all .15s;font-weight:500;user-select:none}
+.ni:hover{background:var(--cream);color:var(--blue)}
+.ni.active{background:var(--blue-pale);color:var(--blue);border-left-color:var(--orange);font-weight:600}
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:28px 32px 60px}
+.sec{display:none}
+.sec.active{display:block}
+/* SECTION HEADER */
+.stag{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);margin-bottom:4px}
+.stitle{font-size:24px;font-weight:700;color:var(--blue);margin-bottom:6px}
+.sdesc{font-size:14px;color:var(--muted);max-width:700px;line-height:1.6;margin-bottom:24px}
+/* SH */
+.sh{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.bt{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.sp{height:28px}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.ctitle{font-size:13px;font-weight:700;margin-bottom:6px}
+.cbody{font-size:13px;color:var(--muted);line-height:1.55}
+.card.orange{border-left:4px solid var(--orange)}
+.card.blue{border-left:4px solid var(--blue)}
+.card.green{border-left:4px solid var(--green)}
+.card.amber{border-left:4px solid var(--amber)}
+.card.purple{border-left:4px solid var(--purple)}
+.card.teal{border-left:4px solid var(--teal)}
+.card.red{border-left:4px solid var(--red)}
+.card.dark{background:var(--blue);color:#fff}
+.card.dark .ctitle,.card.dark .cbody{color:rgba(255,255,255,.9)}
+/* ALERTS */
+.alert{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:var(--r);font-size:13px;margin-bottom:20px;line-height:1.55}
+.aico{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert.tip{background:var(--blue-pale);border:1px solid #C4D5EE;color:var(--blue)}
+.alert.warn{background:var(--amber-pale);border:1px solid #F6D86B;color:var(--amber)}
+.alert.ok{background:var(--green-pale);border:1px solid #A7D7BC;color:var(--green)}
+.alert.soft{background:var(--orange-light);border:1px solid #F8C49A;color:#7C3A00}
+/* CHIPS */
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+.chip.orange{background:var(--orange-light);color:#7C3A00}
+.chip.blue{background:var(--blue-pale);color:var(--blue)}
+.chip.green{background:var(--green-pale);color:var(--green)}
+.chip.amber{background:var(--amber-pale);color:var(--amber)}
+.chip.purple{background:var(--purple-pale);color:var(--purple)}
+.chip.pink{background:var(--pink-pale);color:var(--pink)}
+.chip.teal{background:var(--teal-pale);color:var(--teal)}
+.chip.red{background:var(--red-pale);color:var(--red)}
+.chip.gray{background:#F0EDE8;color:var(--muted)}
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-bottom:20px}
+.tbl th{background:var(--blue);color:#fff;font-weight:600;padding:10px 14px;text-align:left;font-size:12px}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--cream)}
+/* PHASE FLOW */
+.pflow{display:flex;margin-bottom:24px;overflow-x:auto}
+.pb{flex:1;min-width:110px;background:var(--surface);border:1px solid var(--border);border-right:none;padding:14px 10px;cursor:pointer;transition:background .15s;user-select:none}
+.pb:first-child{border-radius:var(--r) 0 0 var(--r)}
+.pb:last-child{border-right:1px solid var(--border);border-radius:0 var(--r) var(--r) 0}
+.pb:hover{background:var(--cream)}
+.pb.on{background:var(--blue-pale)}
+.pnum{font-size:10px;font-weight:700;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.pname{font-size:12px;font-weight:700;color:var(--blue);line-height:1.3;margin-bottom:4px}
+.pico{font-size:20px;margin-bottom:4px}
+/* PHASE DETAIL */
+.pdtl{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--shm);margin-bottom:24px;display:none}
+.pdtl.on{display:block}
+.pdtlhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.pdtltitle{font-size:17px;font-weight:700;color:var(--blue)}
+.pdtlg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+/* DATA FLOW */
+.fnodes{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin-bottom:20px}
+.fnode{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:12px 16px;text-align:center;min-width:100px}
+.fnode.orange{border-color:var(--orange);background:var(--orange-light)}
+.fnode.blue{border-color:var(--blue);background:var(--blue-pale)}
+.fnode.green{border-color:var(--green);background:var(--green-pale)}
+.fnode.purple{border-color:var(--purple);background:var(--purple-pale)}
+.fnode.amber{border-color:var(--amber);background:var(--amber-pale)}
+.fnode.teal{border-color:var(--teal);background:var(--teal-pale)}
+.fnico{font-size:22px;margin-bottom:4px}
+.fnlbl{font-size:12px;font-weight:700}
+.fnsub{font-size:10px;color:var(--muted);margin-top:2px}
+.farr{font-size:20px;color:var(--orange);padding:0 6px;font-weight:700}
+/* KV LIST */
+.kvl{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);margin-bottom:20px}
+.kvr{display:flex;padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;gap:16px}
+.kvr:last-child{border-bottom:none}
+.kvr:hover{background:var(--cream)}
+.kvk{font-weight:600;color:var(--blue);min-width:180px;flex-shrink:0}
+.kvv{color:var(--muted);flex:1}
+/* RULE LIST */
+.rl{margin:0 0 16px;padding:0;list-style:none}
+.rl li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--muted);padding:5px 0;line-height:1.5;border-bottom:1px solid var(--border)}
+.rl li:last-child{border-bottom:none}
+.rl li::before{content:'→';color:var(--orange);font-weight:700;flex-shrink:0;margin-top:1px}
+/* GATE ROW */
+.gate{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--red);border-radius:var(--r);padding:12px 16px;margin-bottom:10px;font-size:13px}
+.gate strong{color:var(--red)}
+.gate p{color:var(--muted);line-height:1.5}
+/* METRICS */
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--sh)}
+.mv{font-size:28px;font-weight:800;color:var(--blue)}
+.ml{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500}
+.ms{font-size:11px;color:var(--orange);font-weight:600;margin-top:3px}
+/* MONO */
+.mono{font-family:Consolas,'Courier New',monospace;font-size:12px;background:#F0EDE8;padding:2px 6px;border-radius:3px;color:var(--blue)}
+hr.div{border:none;border-top:1px solid var(--border);margin:20px 0}
+/* FLOW TABS */
+.ftabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.ftab{background:var(--surface);border:1.5px solid var(--border);border-radius:6px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;user-select:none}
+.ftab:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-light)}
+.ftab.on{background:var(--blue);border-color:var(--blue);color:#fff}
+/* CANVAS */
+.fcanvas{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--cream);padding:16px 16px 20px;margin-bottom:24px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hbrand"><span class="hock">HOCK</span><span class="intl">International</span></div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="htitle">Content Production Agent — System Architecture</span>
+    <span class="hbadge">Internal Reference · Plus 1 Technology</span>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="slbl">Overview</div>
+  <div class="ni active" onclick="nav(this,'overview')"><span>🏗️</span> System Overview</div>
+  <div class="ni" onclick="nav(this,'stack')"><span>📦</span> Platform Stack</div>
+  <div class="slbl">Pipeline</div>
+  <div class="ni" onclick="nav(this,'phases')"><span>🔄</span> 7-Phase Pipeline</div>
+  <div class="ni" onclick="nav(this,'gates')"><span>🔒</span> Approval Gates</div>
+  <div class="slbl">Integrations</div>
+  <div class="ni" onclick="nav(this,'dataflow')"><span>🔀</span> Data Flow Map</div>
+  <div class="ni" onclick="nav(this,'connectors')"><span>🔌</span> Connectors &amp; Webhooks</div>
+  <div class="ni" onclick="nav(this,'monday')"><span>📋</span> Monday.com Schema</div>
+  <div class="slbl">Reference</div>
+  <div class="ni" onclick="nav(this,'session')"><span>💾</span> Session &amp; IDs</div>
+  <div class="ni" onclick="nav(this,'rules')"><span>📐</span> Behavioral Rules</div>
+  <div class="slbl">Diagrams</div>
+  <div class="ni" onclick="nav(this,'flows')"><span>🏊</span> Swimlane Flows</div>
+</nav>
+
+<main class="main">
+
+<!-- OVERVIEW -->
+<div id="overview" class="sec active">
+  <div class="stag">Architecture</div>
+  <div class="stitle">System Overview</div>
+  <div class="sdesc">The HOCK Content Production Agent is a 7-phase AI workflow that generates exam prep materials end-to-end — from raw textbook to final slide script. Claude generates content; the agent manages orchestration, routing, and storage.</div>
+  <div class="mg">
+    <div class="mc"><div class="mv">7</div><div class="ml">Production Phases</div><div class="ms">Locked sequence</div></div>
+    <div class="mc"><div class="mv">5</div><div class="ml">Integrated Platforms</div><div class="ms">Claude · n8n · Monday · Dropbox · Gamma</div></div>
+    <div class="mc"><div class="mv">2</div><div class="ml">Hard Gate Phases</div><div class="ms">Phase 2 + Phase 3</div></div>
+    <div class="mc"><div class="mv">4+</div><div class="ml">Cert Programs</div><div class="ms">CIA · CMA · CFE · CPA</div></div>
+  </div>
+  <div class="alert tip"><span class="aico">🧱</span><div><strong>Core design principle:</strong> Claude generates content. The agent approves, routes, saves, and tracks. These responsibilities never cross.</div></div>
+  <h3 class="sh">Division of Responsibility</h3>
+  <div class="g2">
+    <div class="card teal"><div class="ctitle">🧠 Claude — Content Engine</div><div class="cbody">Generates textbook sections, MCQs, slide outlines, and narration scripts. Operates inside a Claude Project with certification-specific knowledge files. Does not manage state, approvals, or file attachments.</div></div>
+    <div class="card dark"><div class="ctitle">⚙️ n8n Agent — Workflow Engine</div><div class="cbody">Manages phase locking, approval gates, Dropbox saves, Monday.com status updates, Gamma builds, Kevin subtask creation, and all file attachment operations.</div></div>
+  </div>
+  <h3 class="sh">Who Does What</h3>
+  <table class="tbl">
+    <thead><tr><th>Action</th><th>Owned By</th><th>Mechanism</th></tr></thead>
+    <tbody>
+      <tr><td>Write textbook section prose</td><td><span class="chip teal">Claude</span></td><td>Project knowledge prompt</td></tr>
+      <tr><td>Generate MCQ question set</td><td><span class="chip teal">Claude</span></td><td>MCQ generation prompt</td></tr>
+      <tr><td>Build Gamma presentation</td><td><span class="chip blue">Agent</span></td><td>Gamma MCP → poll → export PPTX</td></tr>
+      <tr><td>Attach files to Monday task</td><td><span class="chip blue">Agent</span></td><td>n8n webhook (never binary via MCP)</td></tr>
+      <tr><td>Update Monday status/dates</td><td><span class="chip blue">Agent</span></td><td>Monday MCP <span class="mono">change_column_value</span></td></tr>
+      <tr><td>Save to Dropbox</td><td><span class="chip gray">User / Manual</span></td><td>Manual — user action</td></tr>
+      <tr><td>Create Kevin subtasks</td><td><span class="chip blue">Agent</span></td><td>Monday MCP <span class="mono">create_subtask</span></td></tr>
+      <tr><td>Generate slide narration script</td><td><span class="chip teal">Claude</span></td><td>Script prompt (manual video production)</td></tr>
+    </tbody>
+  </table>
+  <div class="alert warn"><span class="aico">⚠️</span><div><strong>Manual steps:</strong> Video production and Dropbox saves are fully manual. No HeyGen automation. ElevenLabs Voice ID: <span class="mono">AJVxN451sRqzW0ey09ZU</span>, Turbo v2.5.</div></div>
+</div>
+
+<!-- STACK -->
+<div id="stack" class="sec">
+  <div class="stag">Infrastructure</div>
+  <div class="stitle">Platform Stack</div>
+  <div class="sdesc">Every tool in the HOCK production system, their role, and how they connect.</div>
+  <div class="g3">
+    <div class="card orange"><div class="ctitle">🧠 Claude Projects</div><div class="cbody">AI content engine. Each certification runs inside its own Claude Project. Claude Sonnet preferred (avoids rate limits vs Opus).</div></div>
+    <div class="card green"><div class="ctitle">⚙️ n8n (HOCK Instance)</div><div class="cbody">Workflow orchestration. Runs sub-workflows for Monday updates, file attachments, Gamma creation, and PPTX export. Instance: <span class="mono">hockintl.app.n8n.cloud</span></div></div>
+    <div class="card" style="border-left:4px solid var(--pink)"><div class="ctitle">📋 Monday.com</div><div class="cbody">Project tracking, file storage, status. Board ID: <span class="mono">18398486903</span>. Existing items only — agent never creates new board items.</div></div>
+    <div class="card blue"><div class="ctitle">📦 Dropbox</div><div class="cbody">File archive. All saves are manual user actions — no automated Dropbox writes in the agent workflow.</div></div>
+    <div class="card purple"><div class="ctitle">🎨 Gamma</div><div class="cbody">Slide creation in Phase 4 only. Agent creates via MCP, stores <span class="mono">gammaGenerationId</span> immediately, polls for completion, exports PPTX.</div></div>
+    <div class="card amber"><div class="ctitle">🎙️ ElevenLabs</div><div class="cbody">Voice synthesis for video narration (Phase 6). Manual process. Voice ID: <span class="mono">AJVxN451sRqzW0ey09ZU</span>, Turbo v2.5.</div></div>
+  </div>
+  <div class="alert soft"><span class="aico">🔑</span><div><strong>Important:</strong> All MCP connectors are configured at the Plus 1 Technology account level. HOCK team are end users — they do not configure connectors.</div></div>
+  <table class="tbl">
+    <thead><tr><th>Platform</th><th>Connection Type</th><th>Endpoint / Instance</th><th>Auth Owner</th></tr></thead>
+    <tbody>
+      <tr><td>Monday.com</td><td>MCP Connector</td><td>Monday MCP server</td><td>Plus 1 Technology</td></tr>
+      <tr><td>n8n</td><td>MCP + Webhook</td><td><span class="mono">hockintl.app.n8n.cloud</span></td><td>HOCK Instance</td></tr>
+      <tr><td>Dropbox</td><td>Manual</td><td>Direct user access</td><td>User / Manual</td></tr>
+      <tr><td>Gamma</td><td>MCP Connector</td><td>Gamma MCP server</td><td>Plus 1 Technology</td></tr>
+      <tr><td>ElevenLabs</td><td>Manual</td><td>Direct app access</td><td>HOCK Team</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PHASES -->
+<div id="phases" class="sec">
+  <div class="stag">Pipeline</div>
+  <div class="stitle">7-Phase Production Pipeline</div>
+  <div class="sdesc">Click any phase to see its inputs, outputs, tools, and Monday actions.</div>
+  <div class="pflow">
+    <div class="pb" onclick="showPhase(this,0)"><div class="pico">⚙️</div><div class="pnum">Phase 0</div><div class="pname">Project Init</div></div>
+    <div class="pb" onclick="showPhase(this,1)"><div class="pico">📖</div><div class="pnum">Phase 1</div><div class="pname">Textbook</div></div>
+    <div class="pb" onclick="showPhase(this,2)"><div class="pico">❓</div><div class="pnum">Phase 2</div><div class="pname">MCQs</div></div>
+    <div class="pb" onclick="showPhase(this,3)"><div class="pico">🗂️</div><div class="pnum">Phase 3</div><div class="pname">Outline</div></div>
+    <div class="pb" onclick="showPhase(this,4)"><div class="pico">🎨</div><div class="pnum">Phase 4</div><div class="pname">Gamma</div></div>
+    <div class="pb" onclick="showPhase(this,5)"><div class="pico">🎙️</div><div class="pnum">Phase 5</div><div class="pname">Slide Script</div></div>
+    <div class="pb" onclick="showPhase(this,6)"><div class="pico">🎬</div><div class="pnum">Phase 6</div><div class="pname">Video</div></div>
+    <div class="pb" onclick="showPhase(this,7)"><div class="pico">✅</div><div class="pnum">Phase 7</div><div class="pname">Close-Out</div></div>
+  </div>
+  <div id="pdtl" class="pdtl"></div>
+  <h3 class="sh">Phase Summary</h3>
+  <table class="tbl">
+    <thead><tr><th>Phase</th><th>Output</th><th>Primary Tool</th><th>Monday Action</th><th>Gate</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip gray">0</span> Init</td><td>Session created, itemId confirmed</td><td>Claude + MCP search</td><td>search_task</td><td>—</td></tr>
+      <tr><td><span class="chip orange">1</span> Textbook</td><td>Markdown + DOCX</td><td>Claude → n8n → DOCX</td><td>Post markdown + attach DOCX + Kevin subtask</td><td>—</td></tr>
+      <tr><td><span class="chip orange">2</span> MCQs</td><td>Excel MCQ file</td><td>Claude → n8n upload</td><td>Attach Excel + Kevin subtask</td><td>✅ Ph1 confirmed</td></tr>
+      <tr><td><span class="chip blue">3</span> Outline</td><td>Presentation outline</td><td>Claude</td><td>Status update</td><td>✅ Ph1 + Ph2 confirmed</td></tr>
+      <tr><td><span class="chip purple">4</span> Gamma</td><td>PPTX presentation</td><td>Gamma MCP + n8n</td><td>Attach PPTX</td><td>—</td></tr>
+      <tr><td><span class="chip teal">5</span> Script</td><td>Narration script</td><td>Claude</td><td>Post to slide script field</td><td>—</td></tr>
+      <tr><td><span class="chip amber">6</span> Video</td><td>Recorded video (manual)</td><td>ElevenLabs + manual</td><td>Status update</td><td>—</td></tr>
+      <tr><td><span class="chip green">7</span> Close-Out</td><td>Session closed</td><td>Monday MCP</td><td>Mark Done, archive</td><td>—</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- GATES -->
+<div id="gates" class="sec">
+  <div class="stag">Pipeline</div>
+  <div class="stitle">Approval Gates &amp; Prerequisites</div>
+  <div class="sdesc">Hard stops that enforce production order. The agent cannot proceed past these gates without explicit confirmation.</div>
+  <div class="alert warn"><span class="aico">🚦</span><div><strong>Gate rule:</strong> Phase gates require explicit confirmation — not implied. "Looks good" is not sufficient. The agent must ask directly and receive clear approval.</div></div>
+  <div class="gate"><span style="font-size:20px">🔴</span><p><strong>Gate 2 — Before MCQs begin</strong><br>Requires explicit confirmation that Phase 1 Textbook is complete and approved.</p></div>
+  <div class="gate"><span style="font-size:20px">🔴</span><p><strong>Gate 3 — Before Presentation Outline begins</strong><br>Requires explicit confirmation that both Phase 1 Textbook AND Phase 2 MCQs are complete. Both must be confirmed in the same checkpoint.</p></div>
+  <div class="sp"></div>
+  <h3 class="sh">Kevin Subtask Trigger Rules</h3>
+  <div class="g2">
+    <div class="card orange"><div class="ctitle">After Phase 1 Completes</div><div class="cbody">Auto-creates a Monday subtask assigned to <strong>Kevin Hock</strong> (by name, not email) for PDF conversion of the textbook section.</div></div>
+    <div class="card orange"><div class="ctitle">After Phase 2 Completes</div><div class="cbody">Auto-creates a Monday subtask assigned to <strong>Kevin Hock</strong> for WATU import of the MCQ Excel file.</div></div>
+  </div>
+  <h3 class="sh">Session Identity Rules</h3>
+  <table class="tbl">
+    <thead><tr><th>Variable</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">sessionId</span></td><td>Always equals <span class="mono">taskName</span> equals <span class="mono">textbookName</span></td></tr>
+      <tr><td><span class="mono">dueDate</span></td><td>Must be passed by the agent, never computed internally by n8n</td></tr>
+      <tr><td>Monday Task ID</td><td>Always retrieved via <span class="mono">search_task</span> MCP — never ask the user</td></tr>
+      <tr><td>Monday Task Link</td><td><span class="mono">https://hock-international-company.monday.com/boards/18398486903/pulses/[itemId]</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DATA FLOW -->
+<div id="dataflow" class="sec">
+  <div class="stag">Integration</div>
+  <div class="stitle">Data Flow Map</div>
+  <div class="sdesc">How content and data move through the system — from user input to final stored artifact.</div>
+  <h3 class="sh">Textbook Flow (Phase 1)</h3>
+  <div class="fnodes">
+    <div class="fnode orange"><div class="fnico">💬</div><div class="fnlbl">User</div><div class="fnsub">Chat prompt</div></div><div class="farr">→</div>
+    <div class="fnode" style="border-color:var(--teal);background:var(--teal-pale)"><div class="fnico">🧠</div><div class="fnlbl">Claude</div><div class="fnsub">Generates markdown</div></div><div class="farr">→</div>
+    <div class="fnode" style="border-color:var(--pink);background:var(--pink-pale)"><div class="fnico">📋</div><div class="fnlbl">Monday MCP</div><div class="fnsub">Post to text field</div></div><div class="farr">→</div>
+    <div class="fnode green"><div class="fnico">⚙️</div><div class="fnlbl">n8n Webhook</div><div class="fnsub">add-textbook-file</div></div><div class="farr">→</div>
+    <div class="fnode purple"><div class="fnico">📄</div><div class="fnlbl">DOCX Created</div><div class="fnsub">Attached to Monday</div></div>
+  </div>
+  <h3 class="sh">MCQ Excel Flow (Phase 2)</h3>
+  <div class="fnodes">
+    <div class="fnode" style="border-color:var(--teal);background:var(--teal-pale)"><div class="fnico">🧠</div><div class="fnlbl">Claude</div><div class="fnsub">Generates MCQs</div></div><div class="farr">→</div>
+    <div class="fnode amber"><div class="fnico">🔍</div><div class="fnlbl">Pre-flight</div><div class="fnsub">base64 + PK header</div></div><div class="farr">→</div>
+    <div class="fnode green"><div class="fnico">⚙️</div><div class="fnlbl">n8n Webhook</div><div class="fnsub">monday-excel-upload</div></div><div class="farr">→</div>
+    <div class="fnode" style="border-color:var(--pink);background:var(--pink-pale)"><div class="fnico">📋</div><div class="fnlbl">Monday</div><div class="fnsub">MCQ column attached</div></div>
+  </div>
+  <div class="alert warn"><span class="aico">🧪</span><div><strong>MCQ Pre-flight required:</strong> Output (1) base64 length, (2) PK header confirmation (<span class="mono">UEsD</span> or <span class="mono">UEsFBg</span>), (3) minimum 3,000 char threshold before every upload.</div></div>
+  <h3 class="sh">Gamma Slide Flow (Phase 4)</h3>
+  <div class="fnodes">
+    <div class="fnode" style="border-color:var(--teal);background:var(--teal-pale)"><div class="fnico">🗂️</div><div class="fnlbl">Outline</div><div class="fnsub">Phase 3 output</div></div><div class="farr">→</div>
+    <div class="fnode purple"><div class="fnico">🎨</div><div class="fnlbl">Gamma MCP</div><div class="fnsub">Create + store genId</div></div><div class="farr">→</div>
+    <div class="fnode amber"><div class="fnico">⏳</div><div class="fnlbl">Poll Complete</div><div class="fnsub">gammaGenerationId</div></div><div class="farr">→</div>
+    <div class="fnode green"><div class="fnico">⚙️</div><div class="fnlbl">n8n Export</div><div class="fnsub">gamma_export_pptx</div></div><div class="farr">→</div>
+    <div class="fnode" style="border-color:var(--pink);background:var(--pink-pale)"><div class="fnico">📋</div><div class="fnlbl">Monday</div><div class="fnsub">PPTX attached</div></div>
+  </div>
+  <div class="alert tip"><span class="aico">🔑</span><div><strong>Gamma rule:</strong> <span class="mono">gammaGenerationId</span> is stored immediately on creation. Never create a new presentation if one already exists for the session.</div></div>
+</div>
+
+<!-- CONNECTORS -->
+<div id="connectors" class="sec">
+  <div class="stag">Integration</div>
+  <div class="stitle">Connectors &amp; Webhooks</div>
+  <div class="sdesc">Every external call the agent can make — MCP tool calls and n8n webhook endpoints.</div>
+  <h3 class="sh">Monday.com MCP Calls</h3>
+  <div class="alert tip"><span class="aico">📌</span><div>Each Monday field update must be a <strong>separate MCP call</strong>. Batching multiple updates is not supported — all updates are silently rejected.</div></div>
+  <table class="tbl">
+    <thead><tr><th>MCP Action</th><th>Required Params</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">search_task</span></td><td>taskName</td><td>Always used to retrieve mondayItemId — never ask user</td></tr>
+      <tr><td><span class="mono">change_column_value</span></td><td>board_id, item_id, column_id, value: {"text": "..."}</td><td>Raw strings cause silent rejection — must wrap in text object</td></tr>
+      <tr><td><span class="mono">create_subtask</span></td><td>parentItemId, name, assigneeName: "Kevin Hock"</td><td>Use name string, not email</td></tr>
+      <tr><td><span class="mono">update_item_status</span></td><td>board_id, item_id, status</td><td>Status labels must match Monday board exactly</td></tr>
+    </tbody>
+  </table>
+  <h3 class="sh">n8n Webhook Endpoints</h3>
+  <table class="tbl">
+    <thead><tr><th>Webhook Name</th><th>Endpoint</th><th>Phase</th><th>Key Payload Fields</th></tr></thead>
+    <tbody>
+      <tr><td>add-textbook-file</td><td><span class="mono">hockintl.app.n8n.cloud/webhook/add-textbook-file</span></td><td>Phase 1</td><td>mondayItemId (string), sessionId, content</td></tr>
+      <tr><td>monday-excel-upload</td><td><span class="mono">hockintl.app.n8n.cloud/webhook/monday-excel-upload</span></td><td>Phase 2</td><td>itemId (integer), file_base64, sessionId, studyUnitId, fileName</td></tr>
+    </tbody>
+  </table>
+  <div class="alert warn"><span class="aico">⚙️</span><div><strong>n8n MCP access:</strong> Individual workflows must be enabled under <strong>Settings → Instance-level MCP → Workflows tab</strong> before they appear to the agent. Call via <span class="mono">n8n:execute_workflow</span> — never direct HTTP POST.</div></div>
+  <h3 class="sh">MCQ Excel Payload — Exact Field Names</h3>
+  <div class="kvl">
+    <div class="kvr"><div class="kvk">itemId</div><div class="kvv">Integer (not string) — Monday item ID</div></div>
+    <div class="kvr"><div class="kvk">file_base64</div><div class="kvv">Base64-encoded Excel file (key must be exactly "file_base64")</div></div>
+    <div class="kvr"><div class="kvk">sessionId</div><div class="kvv">Equals taskName equals textbookName</div></div>
+    <div class="kvr"><div class="kvk">studyUnitId</div><div class="kvv">e.g. <span class="mono">SU_5_2796</span></div></div>
+    <div class="kvr"><div class="kvk">fileName</div><div class="kvv">Format: <span class="mono">{studyUnitId}_mcqs_{YYYY-MM-DD}.xlsx</span></div></div>
+  </div>
+</div>
+
+<!-- MONDAY SCHEMA -->
+<div id="monday" class="sec">
+  <div class="stag">Integration</div>
+  <div class="stitle">Monday.com Board Schema</div>
+  <div class="sdesc">Column IDs, task IDs, statuses, and assignee rules for the HOCK Content Production board.</div>
+  <h3 class="sh">Board Identity</h3>
+  <div class="kvl">
+    <div class="kvr"><div class="kvk">Board ID</div><div class="kvv"><span class="mono">18398486903</span></div></div>
+    <div class="kvr"><div class="kvk">Board URL</div><div class="kvv"><span class="mono">https://hock-international-company.monday.com/boards/18398486903</span></div></div>
+    <div class="kvr"><div class="kvk">CMA Part 1 Item ID</div><div class="kvv"><span class="mono">11538392216</span></div></div>
+    <div class="kvr"><div class="kvk">Task Link Pattern</div><div class="kvv"><span class="mono">https://hock-international-company.monday.com/boards/18398486903/pulses/[mondayItemId]</span></div></div>
+  </div>
+  <h3 class="sh">Column IDs</h3>
+  <table class="tbl">
+    <thead><tr><th>Column</th><th>Column ID</th><th>Type</th><th>Used In</th></tr></thead>
+    <tbody>
+      <tr><td>Textbook Markdown</td><td><span class="mono">text_mm1h6708</span></td><td>Long text</td><td>Phase 1 — Claude posts markdown via MCP</td></tr>
+      <tr><td>Textbook File</td><td><span class="mono">textbook_file</span></td><td>File column</td><td>Phase 1 — DOCX attached via n8n webhook</td></tr>
+      <tr><td>MCQs File</td><td><span class="mono">file_mm0vtzzb</span></td><td>File column</td><td>Phase 2 — Excel attached via n8n webhook</td></tr>
+      <tr><td>Presentation File</td><td><span class="mono">file_mm0vegwe</span></td><td>File column</td><td>Phase 4 — PPTX attached via n8n</td></tr>
+      <tr><td>Slide Script</td><td><span class="mono">text_mm1jd9yd</span></td><td>Long text</td><td>Phase 5 — Script text posted via MCP</td></tr>
+    </tbody>
+  </table>
+  <h3 class="sh">Stakeholder Roles</h3>
+  <div class="g2">
+    <div class="card blue"><div class="ctitle">Brian — Primary Reviewer</div><div class="cbody">Assignee for Textbook (Phase 1) and Script (Phase 5). Contact: <span class="mono">brian@hockinternational.com</span>.</div></div>
+    <div class="card orange"><div class="ctitle">Kevin Hock — Subtask Handler</div><div class="cbody">Receives auto-created subtasks after Phase 1 (PDF conversion) and Phase 2 (WATU import). Assigned by name: <span class="mono">"Kevin Hock"</span> — not by email.</div></div>
+  </div>
+</div>
+
+<!-- SESSION -->
+<div id="session" class="sec">
+  <div class="stag">Reference</div>
+  <div class="stitle">Session State &amp; Key IDs</div>
+  <div class="sdesc">How session context is maintained, what identifiers are used, and how the agent tracks state.</div>
+  <div class="alert tip"><span class="aico">🔗</span><div><strong>Identity rule:</strong> <span class="mono">sessionId</span> = <span class="mono">taskName</span> = <span class="mono">textbookName</span>. These three always hold the same value throughout the session.</div></div>
+  <h3 class="sh">Session Variables</h3>
+  <table class="tbl">
+    <thead><tr><th>Variable</th><th>Value Source</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">sessionId</span></td><td>User provides at session start</td><td>Equals taskName and textbookName throughout</td></tr>
+      <tr><td><span class="mono">mondayItemId</span></td><td>Agent retrieves via search_task</td><td>Never ask user — always look up</td></tr>
+      <tr><td><span class="mono">dueDate</span></td><td>Agent passes explicitly</td><td>Never computed by n8n</td></tr>
+      <tr><td><span class="mono">gammaGenerationId</span></td><td>Returned by Gamma MCP on creation</td><td>Stored immediately, never lost, used for polling and PPTX export</td></tr>
+      <tr><td><span class="mono">studyUnitId</span></td><td>From session context</td><td>Used in file naming: <span class="mono">SU_5_2796</span> format</td></tr>
+      <tr><td><span class="mono">phaseState</span></td><td>Window Buffer Memory (n8n)</td><td>Required for phase context — removing causes agent looping</td></tr>
+    </tbody>
+  </table>
+  <h3 class="sh">n8n Architecture Notes</h3>
+  <ul class="rl">
+    <li>Tool nodes only pass data to sub-workflows if input fields are explicitly defined on the tool node</li>
+    <li>Window Buffer Memory node is required — removing it causes the agent to loop and consume API rate limits</li>
+    <li>Tool descriptions must never reference field names not defined in the tool's input schema</li>
+    <li>Behavioral rules belong in the system prompt, not tool descriptions</li>
+    <li>n8n Code node does not support special characters (e.g. →) in template literals — use string concatenation</li>
+    <li><span class="mono">Define Below</span> source option removes sub-workflow selection — use <span class="mono">Database</span> source instead</li>
+  </ul>
+</div>
+
+<!-- RULES -->
+<div id="rules" class="sec">
+  <div class="stag">Reference</div>
+  <div class="stitle">Behavioral Rules</div>
+  <div class="sdesc">Hard rules that govern agent behavior — content standards, file handling, and production guardrails.</div>
+  <h3 class="sh">Content Standards (HOCK Style)</h3>
+  <div class="g3">
+    <div class="mc"><div class="mv">~65%</div><div class="ml">Prose target</div><div class="ms">Body paragraphs</div></div>
+    <div class="mc"><div class="mv">~25%</div><div class="ml">Bullets target</div><div class="ms">Structured lists</div></div>
+    <div class="mc"><div class="mv">~10%</div><div class="ml">Examples target</div><div class="ms">Applied scenarios</div></div>
+  </div>
+  <h3 class="sh">Agent Hard Rules</h3>
+  <ul class="rl">
+    <li>Never ask user for Monday Task ID — always retrieve via <span class="mono">search_task</span></li>
+    <li>Never create a new Gamma presentation if a <span class="mono">gammaGenerationId</span> already exists for the session</li>
+    <li>Never offer "Markdown vs Doc" save options — these don't exist in the defined workflow</li>
+    <li>Always attempt Path A (base64 via <span class="mono">file_base64</span>) for MCQ Excel upload first</li>
+    <li>Never batch Monday MCP updates — each field update is a separate call</li>
+    <li>Claude never creates binary files — file conversion happens in n8n</li>
+    <li>Dropbox saves are always manual user actions — never automated</li>
+  </ul>
+  <h3 class="sh">Brand Tokens</h3>
+  <div class="g4">
+    <div class="card" style="border-left:4px solid #F47920"><div class="ctitle">Orange</div><div class="cbody"><span class="mono">#F47920</span></div></div>
+    <div class="card" style="border-left:4px solid #1B4B8A"><div class="ctitle">Blue</div><div class="cbody"><span class="mono">#1B4B8A</span></div></div>
+    <div class="card" style="border-left:4px solid #F7F4EE;border-top:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc"><div class="ctitle">Cream</div><div class="cbody"><span class="mono">#F7F4EE</span></div></div>
+    <div class="card" style="border-left:4px solid #F41472"><div class="ctitle">Monday Pink</div><div class="cbody"><span class="mono">#F41472</span></div></div>
+  </div>
+  <h3 class="sh">Quality Review Scale</h3>
+  <table class="tbl">
+    <thead><tr><th>Score</th><th>Rating</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip green">5</span></td><td>Production-ready</td><td>Deliver as-is</td></tr>
+      <tr><td><span class="chip blue">4</span></td><td>Minor polish needed</td><td>Quick pass before delivery</td></tr>
+      <tr><td><span class="chip amber">3</span></td><td>Revisions needed</td><td>Address 2 prioritized corrections</td></tr>
+      <tr><td><span class="chip orange">2</span></td><td>Significant rework</td><td>Structural revision required</td></tr>
+      <tr><td><span class="chip red">1</span></td><td>Not acceptable</td><td>Regenerate from prompt</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FLOWS -->
+<div id="flows" class="sec">
+  <div class="stag">Diagrams</div>
+  <div class="stitle">Swimlane Flow Diagrams</div>
+  <div class="sdesc">End-to-end process flows for each phase — showing which system owns each step, how data moves across lanes, and where decision gates occur.</div>
+  <div class="alert soft"><span class="aico">📌</span><div><strong>Authoritative versions.</strong> These diagrams reflect the current confirmed architecture — Dropbox saves are manual User/Manual lane actions.</div></div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:16px">
+    <span style="font-size:11px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.5px;margin-right:4px">Swimlanes</span>
+    <span class="chip orange">🧠 Claude / AI</span>
+    <span class="chip amber">⚙️ n8n / Automation</span>
+    <span class="chip" style="background:var(--pink-pale);color:#9D1257">📋 Monday.com</span>
+    <span class="chip teal">🙋 User / Manual</span>
+    <span style="margin-left:10px;font-size:11px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.5px;margin-right:4px">Shapes</span>
+    <span style="font-size:12px;color:var(--muted)">⬤ Start/Gate</span>
+    <span style="font-size:12px;color:var(--muted)">▬ Process</span>
+    <span style="font-size:12px;color:var(--muted)">⬡ Manual</span>
+    <span style="font-size:12px;color:var(--muted)">◆ Decision</span>
+  </div>
+  <div class="ftabs">
+    <button class="ftab" onclick="showFlow(this,'ph0')">⚙️ Phase 0</button>
+    <button class="ftab on" onclick="showFlow(this,'ph1')">📖 Phase 1 — Textbook</button>
+    <button class="ftab" onclick="showFlow(this,'ph2')">❓ Phase 2 — MCQs</button>
+    <button class="ftab" onclick="showFlow(this,'ph3')">🗂️ Phase 3 — Outline</button>
+    <button class="ftab" onclick="showFlow(this,'ph4')">🎨 Phase 4 — Gamma</button>
+    <button class="ftab" onclick="showFlow(this,'ph5')">🎙️ Phase 5 — Script</button>
+    <button class="ftab" onclick="showFlow(this,'ph6')">🎬 Phase 6 — Video</button>
+    <button class="ftab" onclick="showFlow(this,'ph7')">✅ Phase 7 — Close-Out</button>
+  </div>
+  <div class="fcanvas"><div id="fc"></div></div>
+  <div class="g3">
+    <div class="card blue"><div class="ctitle">Colored lanes = system ownership</div><div class="cbody">Each lane represents a platform. When an arrow crosses into a new lane, ownership transfers to that system.</div></div>
+    <div class="card amber"><div class="ctitle">Decision diamonds = branch points</div><div class="cbody">Diamond shapes indicate a conditional check. Labels on arrows show Yes/Pass and No/Fail branches. Fail paths loop back.</div></div>
+    <div class="card orange"><div class="ctitle">GATE circles = hard stops</div><div class="cbody">Blue circles labeled GATE are approval checkpoints. The agent cannot proceed without explicit user confirmation.</div></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ── NAVIGATION ──────────────────────────────────────
+function nav(el, id) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'flows') { setTimeout(function(){ showFlow(document.querySelector('.ftab.on'),'ph1'); }, 60); }
+}
+
+// ── PHASE DETAIL ────────────────────────────────────
+const phases = [
+    {
+      name: "Phase 0 — Project Initialization",
+      color: "#6B6560",
+      chips: ["Claude", "Monday MCP"],
+      inputs: ["Certification name", "Study unit ID", "Due date"],
+      outputs: ["Session created", "Monday item ID confirmed", "Context loaded"],
+      tools: ["Monday MCP: search_task", "Claude Project activated"],
+      monday: "Retrieve mondayItemId via search_task — never ask user",
+      note: "sessionId = taskName = textbookName from this point forward"
+    },
+    {
+      name: "Phase 1 — Textbook Creation",
+      color: "#F47920",
+      chips: ["Claude", "n8n", "Monday MCP", "Dropbox"],
+      inputs: ["Study unit source material", "Prompt template", "sessionId"],
+      outputs: ["Markdown textbook section", "DOCX file attached to Monday", "Kevin subtask created"],
+      tools: ["Claude content generation", "Monday MCP: change_column_value (text_mm1h6708)", "n8n webhook: add-textbook-file"],
+      monday: "Post markdown to text_mm1h6708, call add-textbook-file, DOCX attached to textbook_file column, create Kevin subtask",
+      note: "Gate for Phase 2: user must explicitly confirm Phase 1 is approved"
+    },
+    {
+      name: "Phase 2 — MCQ Generation",
+      color: "#F47920",
+      chips: ["Claude", "n8n", "Monday MCP"],
+      inputs: ["Approved textbook (Phase 1 confirmed)", "MCQ prompt", "studyUnitId"],
+      outputs: ["Excel MCQ file", "Attached to Monday MCQ column", "Kevin subtask created"],
+      tools: ["Claude MCQ generation", "n8n webhook: monday-excel-upload (Path A: file_base64)", "Monday MCP: subtask"],
+      monday: "Attach Excel to file_mm0vtzzb, create Kevin WATU import subtask",
+      note: "Mandatory pre-flight: output base64 length + PK header (UEsD/UEsFBg) + 3,000 char min before uploading"
+    },
+    {
+      name: "Phase 3 — Presentation Outline",
+      color: "#1B4B8A",
+      chips: ["Claude"],
+      inputs: ["Approved textbook + MCQs (both confirmed)", "Outline prompt"],
+      outputs: ["Structured presentation outline", "Slide structure defined"],
+      tools: ["Claude content generation"],
+      monday: "Status update to In Progress",
+      note: "Both Phase 1 AND Phase 2 must be explicitly confirmed before this phase begins"
+    },
+    {
+      name: "Phase 4 — Gamma Slides",
+      color: "#6D28D9",
+      chips: ["Gamma MCP", "n8n"],
+      inputs: ["Phase 3 outline", "HOCK Gamma theme"],
+      outputs: ["Gamma presentation created", "PPTX exported", "Attached to Monday"],
+      tools: ["Gamma MCP: create presentation", "n8n: gamma_export_pptx"],
+      monday: "PPTX attached to file_mm0vegwe presentation column",
+      note: "gammaGenerationId stored immediately on creation. Never create new if ID already exists for session"
+    },
+    {
+      name: "Phase 5 — Slide Script",
+      color: "#0F766E",
+      chips: ["Claude", "Monday MCP"],
+      inputs: ["Gamma PPTX content", "Script prompt", "Narration style guide"],
+      outputs: ["Narration script per slide", "Script posted to Monday"],
+      tools: ["Claude script generation", "Monday MCP: change_column_value (text_mm1jd9yd)"],
+      monday: "Post script to text_mm1jd9yd slide script column. Assigned to Brian.",
+      note: "Script is manual input for ElevenLabs voice synthesis — no automation"
+    },
+    {
+      name: "Phase 6 — Video Production",
+      color: "#B45309",
+      chips: ["Manual", "ElevenLabs"],
+      inputs: ["Narration script", "PPTX slides"],
+      outputs: ["Recorded video"],
+      tools: ["ElevenLabs (Voice ID: AJVxN451sRqzW0ey09ZU, Turbo v2.5)", "Manual recording"],
+      monday: "Status update when video complete",
+      note: "Fully manual — no HeyGen or automated video agent"
+    },
+    {
+      name: "Phase 7 — Close-Out",
+      color: "#1A7A4A",
+      chips: ["Monday MCP"],
+      inputs: ["All phases confirmed complete"],
+      outputs: ["Task marked Done", "Archive complete"],
+      tools: ["Monday MCP: update status", "Dropbox: confirm all files saved (manual)"],
+      monday: "Set status to Done. Verify all file columns populated.",
+      note: "Final check: all 5 Monday columns should be populated before close"
+    }
+];
+
+function showPhase(el, idx) {
+  var dtl = document.getElementById('pdtl');
+  var allPb = document.querySelectorAll('.pb');
+  if (el.classList.contains('on')) {
+    el.classList.remove('on');
+    dtl.classList.remove('on');
+    dtl.innerHTML = '';
+    return;
+  }
+  allPb.forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+  var ph = phases[idx];
+  dtl.innerHTML = '<div class="pdtlhdr"><div class="pdtltitle" style="color:'+ph.color+'">'+ph.name+'</div><div>'+ph.chips.map(function(c){return '<span class="chip gray" style="margin-left:4px">'+c+'</span>';}).join('')+'</div></div>'
+    +'<div class="pdtlg">'
+    +'<div><div class="sh" style="margin-bottom:8px">Inputs</div><ul class="rl">'+ph.inputs.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>'
+    +'<div><div class="sh" style="margin-bottom:8px">Outputs</div><ul class="rl">'+ph.outputs.map(function(o){return '<li>'+o+'</li>';}).join('')+'</ul></div>'
+    +'<div><div class="sh" style="margin-bottom:8px">Tools</div><ul class="rl">'+ph.tools.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>'
+    +'</div><hr class="div">'
+    +'<div style="display:flex;gap:24px;flex-wrap:wrap">'
+    +'<div style="flex:1;min-width:220px"><div class="sh" style="margin-bottom:6px">Monday Action</div><div class="bt">'+ph.monday+'</div></div>'
+    +'<div style="flex:1;min-width:220px"><div class="sh" style="margin-bottom:6px">Note</div><div class="alert tip" style="margin-bottom:0"><span class="aico">💡</span><div>'+ph.note+'</div></div></div>'
+    +'</div>';
+  dtl.classList.add('on');
+  dtl.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── SWIMLANE ENGINE ─────────────────────────────────
+var LH = 120;    // lane height
+var LW = 140;    // label width
+var NW = 120;    // node width
+var NH = 46;     // node height
+var LC = [60, 180, 300, 420]; // lane center Y values
+
+var LANES = [
+  {label:'Claude / AI',      bg:'#FDE9D4',dark:'#A64B0A',bd:'#F47920'},
+  {label:'n8n / Automation', bg:'#FEFCE8',dark:'#7C4B00',bd:'#D97706'},
+  {label:'Monday.com',       bg:'#FDE7F1',dark:'#831257',bd:'#F41472'},
+  {label:'User / Manual',    bg:'#CCFBF1',dark:'#065048',bd:'#14B8A6'}
+];
+
+var AC = ['#F47920','#D97706','#F41472','#14B8A6','#1B4B8A','#B91C1C','#6D28D9','#059669'];
+
+function defs() {
+  return '<defs>'+AC.map(function(c,i){
+    return '<marker id="m'+i+'" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="'+c+'"/></marker>';
+  }).join('')+'</defs>';
+}
+
+function lcy(lane) { return LC[lane]; }
+function lbt(lane) { return LC[lane]+46; }
+function ltp(lane) { return LC[lane]-46; }
+
+function rNode(n) {
+  var cy = lcy(n.lane);
+  var lines = n.label.split('\n');
+  var col = n.color||'#555';
+  var sub = n.sub||'';
+  var o = '<rect x="'+(n.x-NW/2)+'" y="'+(cy-NH/2)+'" width="'+NW+'" height="'+NH+'" rx="5" fill="'+col+'" stroke="rgba(0,0,0,.14)" stroke-width="1"/>';
+  lines.forEach(function(l,i){ o+='<text x="'+n.x+'" y="'+(cy+(i-(lines.length-1)/2)*13)+'" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="10" font-weight="600" font-family="Segoe UI,sans-serif">'+l+'</text>'; });
+  if(sub) o+='<text x="'+n.x+'" y="'+(cy+NH/2+11)+'" text-anchor="middle" fill="'+col+'" font-size="8" font-family="Segoe UI,sans-serif" opacity=".85">'+sub+'</text>';
+  return o;
+}
+
+function rManual(n) {
+  var cy = lcy(n.lane);
+  var lines = n.label.split('\n');
+  var col = n.color||'#065048';
+  var sub = n.sub||'';
+  var sk=14, w=NW, h=NH;
+  var pts=(n.x-w/2+sk)+','+(cy-h/2)+' '+(n.x+w/2+sk)+','+(cy-h/2)+' '+(n.x+w/2-sk)+','+(cy+h/2)+' '+(n.x-w/2-sk)+','+(cy+h/2);
+  var o='<polygon points="'+pts+'" fill="'+col+'" stroke="rgba(0,0,0,.12)" stroke-width="1"/>';
+  lines.forEach(function(l,i){ o+='<text x="'+n.x+'" y="'+(cy+(i-(lines.length-1)/2)*13)+'" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="10" font-weight="600" font-family="Segoe UI,sans-serif">'+l+'</text>'; });
+  if(sub) o+='<text x="'+n.x+'" y="'+(cy+NH/2+11)+'" text-anchor="middle" fill="'+col+'" font-size="8" font-family="Segoe UI,sans-serif" opacity=".85">'+sub+'</text>';
+  return o;
+}
+
+function rDiamond(n) {
+  var cy = lcy(n.lane); var s=27; var col=n.color||'#B91C1C';
+  var lines = n.label.split('\n');
+  var o='<polygon points="'+n.x+','+(cy-s)+' '+(n.x+s)+','+cy+' '+n.x+','+(cy+s)+' '+(n.x-s)+','+cy+'" fill="'+col+'" stroke="white" stroke-width="1.5"/>';
+  lines.forEach(function(l,i){ o+='<text x="'+n.x+'" y="'+(cy+(i-(lines.length-1)/2)*11)+'" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="9" font-weight="700" font-family="Segoe UI,sans-serif">'+l+'</text>'; });
+  return o;
+}
+
+function rCircle(n) {
+  var cy = lcy(n.lane); var r=26; var col=n.color||'#555';
+  var lines = n.label.split('\n');
+  var o='<circle cx="'+n.x+'" cy="'+cy+'" r="'+r+'" fill="'+col+'" stroke="white" stroke-width="2"/>';
+  lines.forEach(function(l,i){ o+='<text x="'+n.x+'" y="'+(cy+(i-(lines.length-1)/2)*11)+'" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="9" font-weight="700" font-family="Segoe UI,sans-serif">'+l+'</text>'; });
+  return o;
+}
+
+function rN(n) {
+  if(n.type==='circle') return rCircle(n);
+  if(n.type==='diamond') return rDiamond(n);
+  if(n.type==='manual') return rManual(n);
+  return rNode(n);
+}
+
+function arr(pts, ci, lbl) {
+  var d='M '+pts.map(function(p){return p[0]+','+p[1];}).join(' L ');
+  var o='<path d="'+d+'" stroke="'+AC[ci]+'" stroke-width="1.8" fill="none" marker-end="url(#m'+ci+')"/>';
+  if(lbl) {
+    var mx=(pts[0][0]+pts[pts.length-1][0])/2;
+    var my=(pts[0][1]+pts[pts.length-1][1])/2;
+    o+='<rect x="'+(mx-28)+'" y="'+(my-8)+'" width="56" height="14" rx="3" fill="white" opacity=".9"/>';
+    o+='<text x="'+mx+'" y="'+(my+1)+'" text-anchor="middle" dominant-baseline="middle" font-size="8.5" fill="'+AC[ci]+'" font-weight="600" font-family="Segoe UI,sans-serif">'+lbl+'</text>';
+  }
+  return o;
+}
+
+function lanes(W) {
+  var o='';
+  LANES.forEach(function(ln,i){
+    o+='<rect x="'+LW+'" y="'+(i*LH)+'" width="'+(W-LW)+'" height="'+LH+'" fill="'+ln.bg+'" stroke="'+ln.bd+'" stroke-width="0.4" stroke-opacity=".35"/>';
+    o+='<rect x="0" y="'+(i*LH)+'" width="'+LW+'" height="'+LH+'" fill="'+ln.dark+'"/>';
+    o+='<text x="'+(LW/2)+'" y="'+(i*LH+LH/2)+'" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="11" font-weight="700" font-family="Segoe UI,sans-serif">'+ln.label+'</text>';
+    if(i<LANES.length-1) o+='<line x1="0" y1="'+((i+1)*LH)+'" x2="'+W+'" y2="'+((i+1)*LH)+'" stroke="'+ln.bd+'" stroke-width=".6" stroke-opacity=".4"/>';
+  });
+  o+='<rect x="0" y="0" width="'+LW+'" height="'+(LANES.length*LH)+'" fill="none" stroke="#1B4B8A" stroke-width="1.5" rx="4"/>';
+  return o;
+}
+
+function buildSVG(W, title, inner) {
+  var TH=28;
+  var H=LANES.length*LH+TH+6;
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 -'+TH+' '+W+' '+H+'" style="border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.1)">'
+    +defs()
+    +'<rect x="0" y="-'+TH+'" width="'+W+'" height="'+TH+'" fill="#1B4B8A" rx="4"/>'
+    +'<text x="'+(W/2)+'" y="-'+(TH/2)+'" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="12" font-weight="700" font-family="Segoe UI,sans-serif">'+title+'</text>'
+    +lanes(W)
+    +inner
+    +'</svg>';
+}
+
+// ── PHASE DIAGRAMS ───────────────────────────────────
+function ph0() {
+  var W=1160, ns=[
+    {type:'circle', lane:3,x:200,label:'Start\nSession',  color:'#F47920'},
+    {type:'manual', lane:3,x:420,label:'Provide:\ncertName + studyUnitId\n+ dueDate',color:'#065048'},
+    {type:'rect',   lane:0,x:650,label:'Receive\nContext',color:'#A64B0A'},
+    {type:'rect',   lane:0,x:860,label:'search_task\nMCP Call',color:'#A64B0A',sub:'retrieve mondayItemId'},
+    {type:'rect',   lane:2,x:1060,label:'Return\nmondayItemId',color:'#831257'},
+    {type:'circle', lane:0,x:1110,label:'Session\nReady',color:'#1A7A4A'}
+  ];
+  var as=[
+    arr([[226,lcy(3)],[350,lcy(3)]],3),
+    arr([[490,lcy(3)],[590,lcy(3)],[590,lcy(0)]],0),
+    arr([[713,lcy(0)],[797,lcy(0)]],0),
+    arr([[923,lcy(0)],[997,lcy(0)],[997,lcy(2)]],2),
+    arr([[1060+63,lcy(2)],[1084,lcy(2)],[1084,lcy(0)]],4)
+  ];
+  return buildSVG(W,'Phase 0 — Project Initialization',ns.map(rN).join('')+as.join(''));
+}
+
+function ph1() {
+  var W=1820, ns=[
+    {type:'circle', lane:0,x:200, label:'Phase 1\nStart',     color:'#F47920'},
+    {type:'rect',   lane:0,x:400, label:'Generate\nTextbook\nMarkdown',color:'#A64B0A'},
+    {type:'rect',   lane:2,x:605, label:'Post Markdown\nto Monday\ntext_mm1h6708',color:'#831257',sub:'MCP: change_column_value'},
+    {type:'rect',   lane:1,x:815, label:'add-textbook-file\nWebhook',color:'#7C4B00',sub:'n8n webhook call'},
+    {type:'rect',   lane:1,x:1015,label:'Convert\nMarkdown\nto DOCX',color:'#7C4B00'},
+    {type:'rect',   lane:2,x:1215,label:'Attach DOCX\ntextbook_file\ncolumn',color:'#831257'},
+    {type:'manual', lane:3,x:1215,label:'Save Copy\nto Dropbox',color:'#065048',sub:'Manual — User'},
+    {type:'rect',   lane:2,x:1435,label:'Create Kevin\nSubtask\n(PDF Conversion)',color:'#831257'},
+    {type:'rect',   lane:2,x:1635,label:'Update Status\nIn Progress',color:'#831257'},
+    {type:'circle', lane:0,x:1740,label:'GATE\nApproval\nNeeded',color:'#1B4B8A'}
+  ];
+  var as=[
+    arr([[226,lcy(0)],[337,lcy(0)]],0),
+    arr([[463,lcy(0)],[545,lcy(0)],[545,lcy(2)]],0),
+    arr([[668,lcy(2)],[760,lcy(2)],[760,lcy(1)]],1),
+    arr([[878,lcy(1)],[952,lcy(1)]],1),
+    arr([[1078,lcy(1)],[1150,lcy(1)],[1150,lcy(2)]],2),
+    arr([[1078,lcy(1)],[1078,lbt(1)],[1150,lbt(1)],[1150,lcy(3)]],3,'Manual'),
+    arr([[1278,lcy(2)],[1372,lcy(2)]],2),
+    arr([[1498,lcy(2)],[1572,lcy(2)]],2),
+    arr([[1698,lcy(2)],[1740,lcy(2)],[1740,lcy(0)]],4,'Gate')
+  ];
+  return buildSVG(W,'Phase 1 — Textbook Creation',ns.map(rN).join('')+as.join(''));
+}
+
+function ph2() {
+  var W=1760, ns=[
+    {type:'circle',  lane:3,x:200, label:'GATE\nPh1 ✓',             color:'#B91C1C'},
+    {type:'rect',    lane:0,x:420, label:'Generate\nMCQ Questions',  color:'#A64B0A'},
+    {type:'rect',    lane:0,x:620, label:'Build Excel\nStructure',   color:'#A64B0A'},
+    {type:'rect',    lane:0,x:820, label:'Pre-flight\nCheck',        color:'#5B21B6',sub:'base64 len + PK header + 3000+ chars'},
+    {type:'diamond', lane:0,x:1020,label:'Pass?',                    color:'#B91C1C'},
+    {type:'rect',    lane:0,x:820, label:'Fix Base64\n& Retry',      color:'#B91C1C'},
+    {type:'rect',    lane:1,x:1220,label:'monday-excel-upload\nWebhook',color:'#7C4B00',sub:'Path A: file_base64 (default)'},
+    {type:'rect',    lane:1,x:1440,label:'Payload:\nitemId(int)\nfile_base64 + sessionId',color:'#7C4B00'},
+    {type:'rect',    lane:2,x:1630,label:'Attach Excel\nfile_mm0vtzzb',color:'#831257'},
+    {type:'rect',    lane:2,x:1730,label:'Create Kevin\nSubtask\n(WATU)',color:'#831257'}
+  ];
+  var as=[
+    arr([[226,lcy(3)],[380,lcy(3)],[380,lcy(0)]],3),
+    arr([[483,lcy(0)],[557,lcy(0)]],0),
+    arr([[683,lcy(0)],[757,lcy(0)]],0),
+    arr([[883,lcy(0)],[993,lcy(0)]],0),
+    arr([[1020,lcy(0)+27],[1020,lbt(0)],[820,lbt(0)],[820,lcy(0)+23]],5,'Fail'),
+    arr([[1047,lcy(0)],[1134,lcy(0)],[1134,lcy(1)]],1,'Pass'),
+    arr([[1283,lcy(1)],[1377,lcy(1)]],1),
+    arr([[1503,lcy(1)],[1567,lcy(1)],[1567,lcy(2)]],2),
+    arr([[1693,lcy(2)],[1667,lcy(2)]],2)
+  ];
+  return buildSVG(W,'Phase 2 — MCQ Generation',ns.map(rN).join('')+as.join(''));
+}
+
+function ph3() {
+  var W=1200, ns=[
+    {type:'circle',  lane:3,x:200,label:'GATE\nPh1+Ph2 ✓',          color:'#B91C1C'},
+    {type:'rect',    lane:0,x:430,label:'Generate\nPresentation\nOutline',color:'#A64B0A'},
+    {type:'rect',    lane:0,x:650,label:'Review\nOutline\nStructure',color:'#A64B0A'},
+    {type:'diamond', lane:0,x:880,label:'Approved?',                  color:'#B91C1C'},
+    {type:'rect',    lane:0,x:650,label:'Revise\nOutline',            color:'#B91C1C'},
+    {type:'rect',    lane:2,x:1055,label:'Update Status\nIn Progress',color:'#831257'},
+    {type:'circle',  lane:0,x:1145,label:'Phase 3\nComplete',         color:'#1A7A4A'}
+  ];
+  var as=[
+    arr([[226,lcy(3)],[390,lcy(3)],[390,lcy(0)]],3),
+    arr([[493,lcy(0)],[587,lcy(0)]],0),
+    arr([[713,lcy(0)],[853,lcy(0)]],0),
+    arr([[880,lcy(0)+27],[880,lbt(0)],[650,lbt(0)],[650,lcy(0)+23]],5,'Revise'),
+    arr([[907,lcy(0)],[985,lcy(0)],[985,lcy(2)]],2,'Yes'),
+    arr([[1055+63,lcy(2)],[1119,lcy(2)],[1119,lcy(0)]],4)
+  ];
+  return buildSVG(W,'Phase 3 — Presentation Outline',ns.map(rN).join('')+as.join(''));
+}
+
+function ph4() {
+  var W=1760, ns=[
+    {type:'circle',  lane:0,x:200, label:'Ph3\nOutline ✓',            color:'#1B4B8A'},
+    {type:'rect',    lane:0,x:410, label:'Send Outline\nto Gamma MCP', color:'#6D28D9'},
+    {type:'rect',    lane:0,x:620, label:'Create\nPresentation',       color:'#6D28D9',sub:'Gamma MCP create'},
+    {type:'rect',    lane:0,x:840, label:'Store\ngammaGenerationId',   color:'#5B21B6',sub:'immediately — never lose'},
+    {type:'diamond', lane:0,x:1050,label:'Complete?',                  color:'#B45309'},
+    {type:'rect',    lane:1,x:840, label:'Poll / Wait\nfor Completion',color:'#7C4B00'},
+    {type:'rect',    lane:1,x:1250,label:'gamma_export\n_pptx\nSub-workflow',color:'#7C4B00'},
+    {type:'rect',    lane:2,x:1460,label:'upload_gamma\n_ppt_to_monday',color:'#831257'},
+    {type:'rect',    lane:2,x:1650,label:'Attach PPTX\nfile_mm0vegwe', color:'#831257'},
+    {type:'manual',  lane:3,x:1650,label:'Save Copy\nto Dropbox',      color:'#065048',sub:'Manual — User'}
+  ];
+  var as=[
+    arr([[226,lcy(0)],[347,lcy(0)]],0),
+    arr([[473,lcy(0)],[557,lcy(0)]],6),
+    arr([[683,lcy(0)],[777,lcy(0)]],6),
+    arr([[903,lcy(0)],[1023,lcy(0)]],1),
+    arr([[1050,lcy(0)+27],[1050,lcy(1)],[903,lcy(1)]],1,'No'),
+    arr([[840-63,lcy(1)],[777,lcy(1)],[777,lcy(0)+27]],1,'Retry'),
+    arr([[1077,lcy(0)],[1163,lcy(0)],[1163,lcy(1)]],1,'Yes'),
+    arr([[1313,lcy(1)],[1397,lcy(1)],[1397,lcy(2)]],2),
+    arr([[1523,lcy(2)],[1587,lcy(2)]],2),
+    arr([[1650,lcy(2)],[1650,lbt(2)],[1587,lbt(2)],[1587,lcy(3)]],3,'Manual')
+  ];
+  return buildSVG(W,'Phase 4 — Gamma Slides',ns.map(rN).join('')+as.join(''));
+}
+
+function ph5() {
+  var W=1280, ns=[
+    {type:'circle',  lane:0,x:200,label:'Ph4\nSlides ✓',              color:'#1B4B8A'},
+    {type:'rect',    lane:0,x:420,label:'Generate\nSlide Narration\nScript',color:'#A64B0A'},
+    {type:'rect',    lane:0,x:640,label:'Review\nScript\nDraft',       color:'#A64B0A'},
+    {type:'diamond', lane:0,x:860,label:'Approved?',                   color:'#B91C1C'},
+    {type:'rect',    lane:0,x:640,label:'Revise\nScript',              color:'#B91C1C'},
+    {type:'rect',    lane:2,x:1053,label:'Post Script\ntext_mm1jd9yd\nAssigned: Brian',color:'#831257',sub:'MCP: change_column_value'},
+    {type:'rect',    lane:2,x:1190,label:'Update Status\nComplete',    color:'#831257'}
+  ];
+  var as=[
+    arr([[226,lcy(0)],[357,lcy(0)]],0),
+    arr([[483,lcy(0)],[577,lcy(0)]],0),
+    arr([[703,lcy(0)],[833,lcy(0)]],0),
+    arr([[860,lcy(0)+27],[860,lbt(0)],[640,lbt(0)],[640,lcy(0)+23]],5,'Revise'),
+    arr([[887,lcy(0)],[990,lcy(0)],[990,lcy(2)]],2,'Yes'),
+    arr([[1116,lcy(2)],[1127,lcy(2)]],2)
+  ];
+  return buildSVG(W,'Phase 5 — Slide Script',ns.map(rN).join('')+as.join(''));
+}
+
+function ph6() {
+  var W=1360, ns=[
+    {type:'circle',  lane:3,x:200, label:'Ph5\nScript ✓',             color:'#1B4B8A'},
+    {type:'manual',  lane:3,x:430, label:'ElevenLabs\nVoice Synthesis',color:'#065048',sub:'Voice ID: AJVxN451sRqzW0ey09ZU'},
+    {type:'manual',  lane:3,x:650, label:'Record /\nEdit Video',       color:'#065048',sub:'Manual — no HeyGen'},
+    {type:'manual',  lane:3,x:870, label:'Export &\nUpload Video',     color:'#065048',sub:'Manual — User'},
+    {type:'manual',  lane:3,x:1070,label:'Save Copy\nto Dropbox',      color:'#065048',sub:'Manual — User'},
+    {type:'rect',    lane:2,x:1220,label:'Update Monday\nStatus: Done',color:'#831257'},
+    {type:'circle',  lane:0,x:1310,label:'Phase 6\nComplete',          color:'#1A7A4A'}
+  ];
+  var as=[
+    arr([[226,lcy(3)],[367,lcy(3)]],3),
+    arr([[493,lcy(3)],[587,lcy(3)]],3),
+    arr([[713,lcy(3)],[807,lcy(3)]],3),
+    arr([[933,lcy(3)],[1007,lcy(3)]],3),
+    arr([[1133,lcy(3)],[1170,lcy(3)],[1170,lcy(2)]],2),
+    arr([[1220+63,lcy(2)],[1310,lcy(2)],[1310,lcy(0)]],4)
+  ];
+  return buildSVG(W,'Phase 6 — Video Production (Manual)',ns.map(rN).join('')+as.join(''));
+}
+
+function ph7() {
+  var W=1260, ns=[
+    {type:'circle',  lane:3,x:200,label:'All Phases\nComplete',            color:'#1B4B8A'},
+    {type:'rect',    lane:0,x:430,label:'Verify All 5\nMonday Columns\nPopulated',color:'#A64B0A'},
+    {type:'diamond', lane:0,x:660,label:'All\nFilled?',                    color:'#B91C1C'},
+    {type:'rect',    lane:0,x:460,label:'Identify\nMissing\nItems',         color:'#B91C1C'},
+    {type:'rect',    lane:2,x:860,label:'Set Monday\nStatus: Done',         color:'#831257'},
+    {type:'manual',  lane:3,x:860,label:'Confirm Dropbox\nArchive Complete',color:'#065048',sub:'Manual — User'},
+    {type:'rect',    lane:2,x:1060,label:'Archive /\nClose Session',        color:'#831257'},
+    {type:'circle',  lane:0,x:1180,label:'Session\nClosed ✓',              color:'#1A7A4A'}
+  ];
+  var as=[
+    arr([[226,lcy(3)],[390,lcy(3)],[390,lcy(0)]],3),
+    arr([[493,lcy(0)],[633,lcy(0)]],0),
+    arr([[660,lcy(0)+27],[660,lbt(0)],[460,lbt(0)],[460,lcy(0)+23]],5,'No'),
+    arr([[687,lcy(0)],[797,lcy(0)],[797,lcy(2)]],2,'Yes'),
+    arr([[797,lcy(2)],[797,lbt(2)],[797,lbt(3)],[797,lcy(3)]],3,'Manual'),
+    arr([[923,lcy(2)],[997,lcy(2)]],2),
+    arr([[923,lcy(3)],[997,lcy(3)],[997,lcy(2)]],3),
+    arr([[1060+63,lcy(2)],[1154,lcy(2)],[1154,lcy(0)]],4)
+  ];
+  return buildSVG(W,'Phase 7 — Close-Out',ns.map(rN).join('')+as.join(''));
+}
+
+var DIAGRAMS = {ph0:ph0,ph1:ph1,ph2:ph2,ph3:ph3,ph4:ph4,ph5:ph5,ph6:ph6,ph7:ph7};
+
+function showFlow(el, key) {
+  document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  var fc = document.getElementById('fc');
+  fc.innerHTML = DIAGRAMS[key] ? DIAGRAMS[key]() : '<p style="padding:20px;color:#999">No diagram for this phase yet.</p>';
+}
+
+// Auto-load ph1 when page loads
+window.addEventListener('DOMContentLoaded', function(){
+  showFlow(document.querySelector('.ftab.on'), 'ph1');
+});
+</script>
+</body>
+</html>
