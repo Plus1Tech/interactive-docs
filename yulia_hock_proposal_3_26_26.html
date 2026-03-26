@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Marketing Enhancement Proposal — Yulia Hock / HOCK International</title>
+<style>
+  :root {
+    --bg: #f5f4f1;
+    --surface: #ffffff;
+    --surface-2: #fafaf8;
+    --border: #e2e0da;
+    --border-strong: #c8c5bc;
+    --text-primary: #1a1917;
+    --text-secondary: #5a5751;
+    --text-muted: #9a9590;
+    --teal: #0d7c6e;
+    --teal-light: #e6f4f2;
+    --teal-mid: #b2ddd8;
+    --blue: #1d5fa8;
+    --blue-light: #e8f0fa;
+    --amber: #b06a00;
+    --amber-light: #fdf3e3;
+    --amber-mid: #f5c97a;
+    --purple: #6b3fa0;
+    --purple-light: #f2edf9;
+    --green: #2a7a3b;
+    --green-light: #e8f5eb;
+    --gold: #8a6200;
+    --gold-light: #fdf6e3;
+    --red: #b83232;
+    --red-light: #fdeaea;
+    --gray: #6b6762;
+    --gray-light: #f0eeea;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.07), 0 2px 12px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.09), 0 4px 20px rgba(0,0,0,0.06);
+    --font-heading: 'Georgia', 'Times New Roman', serif;
+    --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --sidebar-w: 240px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-brand .logo-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+  .sidebar-brand h2 {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.3;
+    font-weight: normal;
+  }
+  .sidebar-brand .client-tag {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .sidebar-nav { padding: 12px 0; flex: 1; }
+  .nav-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 12px 20px 4px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    color: var(--text-secondary);
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--gray-light); color: var(--text-primary); }
+  .nav-item.active {
+    background: var(--teal-light);
+    color: var(--teal);
+    border-left-color: var(--teal);
+    font-weight: 600;
+  }
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .nav-count {
+    margin-left: auto;
+    background: var(--gray-light);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 20px;
+  }
+  .nav-item.active .nav-count { background: var(--teal-mid); color: var(--teal); }
+
+  .main-content {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 48px 28px;
+  }
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .header-chip {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .chip-teal { background: var(--teal-light); color: var(--teal); }
+  .chip-gold { background: var(--gold-light); color: var(--gold); }
+  .chip-blue { background: var(--blue-light); color: var(--blue); }
+  .chip-purple { background: var(--purple-light); color: var(--purple); }
+  .chip-amber { background: var(--amber-light); color: var(--amber); }
+  .chip-green { background: var(--green-light); color: var(--green); }
+  .chip-gray { background: var(--gray-light); color: var(--gray); }
+  .chip-red { background: var(--red-light); color: var(--red); }
+
+  .page-header h1 {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: normal;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .page-header .subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .stat-item .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-item .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  /* ── Sections ── */
+  .section { display: none; padding: 40px 48px; }
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 28px;
+  }
+  .section-header h2 {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: normal;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .section-header p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    max-width: 700px;
+  }
+
+  /* ── Option Cards ── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .options-grid.single { grid-template-columns: 1fr; }
+
+  .option-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+  .option-card:hover { box-shadow: var(--shadow-md); }
+
+  .option-card-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .option-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .num-amber { background: var(--amber-light); color: var(--amber); }
+  .num-teal { background: var(--teal-light); color: var(--teal); }
+  .num-purple { background: var(--purple-light); color: var(--purple); }
+
+  .option-title-block h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .option-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .option-card-body { padding: 16px 20px; }
+  .option-desc {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+
+  .detail-row {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+  }
+  .detail-label {
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: 10.5px;
+    min-width: 76px;
+    padding-top: 1px;
+  }
+  .detail-value { color: var(--text-secondary); flex: 1; }
+
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-top: 14px;
+    font-family: var(--font-body);
+    transition: background .15s, color .15s;
+  }
+  .toggle-btn:hover { background: var(--gray-light); color: var(--text-primary); }
+  .toggle-arrow { transition: transform .2s; font-size: 10px; }
+  .toggle-btn.open .toggle-arrow { transform: rotate(180deg); }
+
+  .expanded-details {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 14px 20px;
+    background: var(--surface-2);
+  }
+  .expanded-details.open { display: block; }
+  .expanded-details ul {
+    padding-left: 18px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .expanded-details ul li { margin-bottom: 2px; }
+
+  /* ── Phase Banner ── */
+  .phase-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    margin-bottom: 22px;
+    border: 1px solid;
+  }
+  .phase-banner.amber { background: var(--amber-light); border-color: var(--amber-mid); }
+  .phase-banner.teal { background: var(--teal-light); border-color: var(--teal-mid); }
+  .phase-banner.purple { background: var(--purple-light); border-color: #c9aee8; }
+
+  .phase-icon { font-size: 20px; }
+  .phase-text h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .phase-text p { font-size: 12px; color: var(--text-secondary); }
+  .phase-banner.amber .phase-text h4 { color: var(--amber); }
+  .phase-banner.teal .phase-text h4 { color: var(--teal); }
+  .phase-banner.purple .phase-text h4 { color: var(--purple); }
+
+  /* ── Comparison Table ── */
+  .compare-table-wrap { overflow-x: auto; }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .compare-table th {
+    background: var(--surface-2);
+    border-bottom: 2px solid var(--border);
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .compare-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+  .compare-table tr:hover td { background: var(--gray-light); }
+  .compare-table .option-name { font-weight: 600; color: var(--text-primary); }
+  .compare-table .phase-tag {
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: .07em;
+    white-space: nowrap;
+  }
+
+  /* dot ratings */
+  .dot-row { display: flex; gap: 4px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.on-teal { background: var(--teal); }
+  .dot.on-amber { background: var(--amber); }
+  .dot.on-purple { background: var(--purple); }
+  .dot.off { background: var(--border); }
+
+  /* ── Overview ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .info-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .info-card ul {
+    padding-left: 16px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .info-card p { color: var(--text-secondary); font-size: 13px; line-height: 1.7; }
+
+  .callout {
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border: 1px solid;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .callout.gold { background: var(--gold-light); border-color: #e4d18a; color: var(--gold); }
+  .callout.teal { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal); }
+  .callout strong { font-weight: 700; }
+
+  /* ── Next Steps ── */
+  .steps-list { display: flex; flex-direction: column; gap: 14px; }
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    box-shadow: var(--shadow);
+  }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .step-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .step-meta {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; }
+    .page-header { padding: 24px; }
+    .section { padding: 24px; }
+    .options-grid { grid-template-columns: 1fr; }
+    .overview-grid { grid-template-columns: 1fr; }
+    .header-stats { flex-wrap: wrap; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="data:image/jpeg;base64,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" 
+           alt="Hock International" 
+           style="width: 130px; height: auto; display: block; margin-bottom: 12px;">
+      <div class="logo-label">Proposal</div>
+      <h2>AI Marketing Enhancement</h2>
+      <div class="client-tag">HOCK International · 2026</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <div class="nav-item active" onclick="showSection('overview', this)">
+        <span class="nav-dot" style="background:#0d7c6e"></span>
+        Summary
+      </div>
+
+      <div class="nav-group-label">Options by Phase</div>
+      <div class="nav-item" onclick="showSection('quick', this)">
+        <span class="nav-dot" style="background:#b06a00"></span>
+        Quick Wins
+        <span class="nav-count">4</span>
+      </div>
+      <div class="nav-item" onclick="showSection('medium', this)">
+        <span class="nav-dot" style="background:#0d7c6e"></span>
+        Medium Builds
+        <span class="nav-count">5</span>
+      </div>
+      <div class="nav-item" onclick="showSection('full', this)">
+        <span class="nav-dot" style="background:#6b3fa0"></span>
+        Full Systems
+        <span class="nav-count">4</span>
+      </div>
+
+      <div class="nav-group-label">Reference</div>
+      <div class="nav-item" onclick="showSection('matrix', this)">
+        <span class="nav-dot" style="background:#6b6762"></span>
+        Comparison Matrix
+      </div>
+      <div class="nav-item" onclick="showSection('nextsteps', this)">
+        <span class="nav-dot" style="background:#2a7a3b"></span>
+        Next Steps
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
+        <div class="header-meta" style="margin-bottom:0;">
+          <span class="header-chip chip-teal">AI Marketing Proposal</span>
+          <span class="header-chip chip-gold">HOCK International</span>
+          <span class="header-chip chip-gray">March 2026</span>
+        </div>
+        <img src="data:image/jpeg;base64,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" 
+             alt="Hock International" 
+             style="width: 110px; height: auto; flex-shrink:0; margin-top:2px;">
+      </div>
+      <h1>AI-Enhanced Marketing Operations</h1>
+      <p class="subtitle">A phased set of 13 options — from quick prompt wins to full automation systems — designed to reduce manual effort, increase content output, and expand audience reach without adding headcount.</p>
+      <div class="header-stats">
+        <div class="stat-item">
+          <div class="stat-value">13</div>
+          <div class="stat-label">Total Options</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Phases</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">4</div>
+          <div class="stat-label">Core Systems</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">1</div>
+          <div class="stat-label">Marketing FTE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== OVERVIEW ==================== -->
+    <section class="section active" id="section-overview">
+      <div class="section-header">
+        <h2>Proposal Summary</h2>
+        <p>Based on your discovery call, here is the full picture of what's possible — organized by effort so you can decide where to start.</p>
+      </div>
+
+      <div class="callout gold">
+        <strong>Context:</strong> You're running a lean, one-person marketing operation with strong tools already in place. The biggest opportunity isn't replacing what you do — it's connecting the gaps between your tools and removing the manual hand-offs that slow everything down.
+      </div>
+
+      <div class="overview-grid">
+        <div class="info-card">
+          <h4>Current Stack</h4>
+          <ul>
+            <li>HubSpot — email + social</li>
+            <li>SEMrush — SEO + briefs</li>
+            <li>ChatGPT — writing + edits</li>
+            <li>Canva — design</li>
+            <li>Monday.com — planning</li>
+            <li>Google / Meta / LinkedIn Ads</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>Confirmed Goals</h4>
+          <ul>
+            <li>Repurpose course content at scale</li>
+            <li>Reduce manual re-entry between tools</li>
+            <li>Reactivate email nurture cadence</li>
+            <li>Surface opportunities you don't know exist</li>
+            <li>Grow qualified audience (25–35, accounting/finance/tax)</li>
+            <li>Maintain authentic brand voice</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>Key Friction Points</h4>
+          <ul>
+            <li>Manual textbook → ChatGPT → Canva loop</li>
+            <li>Disconnected Monday boards</li>
+            <li>Broadcast emails currently paused</li>
+            <li>AI avatar quality concern</li>
+            <li>No pipeline from course output → marketing</li>
+            <li>All handoffs are copy/paste</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout teal">
+        <strong>Recommended starting point:</strong> Options 1 and 3 can be delivered this week and immediately unblock Yulia's current priority (email relaunch). Option 5 (Content Repurposing Chain) is the highest-leverage medium build and should follow within 2 weeks.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <div class="phase-banner amber" style="cursor:pointer" onclick="showSection('quick',document.querySelector('[onclick*=quick]'))">
+          <div class="phase-icon">⚡</div>
+          <div class="phase-text">
+            <h4>Phase 1 — Quick Wins</h4>
+            <p>4 options · Low effort · Immediate ROI · No setup required</p>
+          </div>
+        </div>
+        <div class="phase-banner teal" style="cursor:pointer" onclick="showSection('medium',document.querySelector('[onclick*=medium]'))">
+          <div class="phase-icon">🔧</div>
+          <div class="phase-text">
+            <h4>Phase 2 — Medium Builds</h4>
+            <p>5 options · 1–2 weeks · Connected workflows</p>
+          </div>
+        </div>
+        <div class="phase-banner purple" style="cursor:pointer" onclick="showSection('full',document.querySelector('[onclick*=full]'))">
+          <div class="phase-icon">🏗️</div>
+          <div class="phase-text">
+            <h4>Phase 3 — Full Systems</h4>
+            <p>4 options · Multi-week · Complete automation engines</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== QUICK WINS ==================== -->
+    <section class="section" id="section-quick">
+      <div class="section-header">
+        <h2>⚡ Phase 1 — Quick Wins</h2>
+        <p>Low-effort, high-value options that can be delivered immediately and used right away. No complex setup. Plug-and-play prompt kits, templates, and HTML tools.</p>
+      </div>
+
+      <div class="phase-banner amber">
+        <div class="phase-icon">⚡</div>
+        <div class="phase-text">
+          <h4>Quick Wins — 4 Options</h4>
+          <p>Effort: Low · Timeline: Days, not weeks · No new tools required</p>
+        </div>
+      </div>
+
+      <div class="options-grid">
+
+        <!-- Option 1 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-amber">1</div>
+            <div class="option-title-block">
+              <h3>Optimized ChatGPT Prompt Library</h3>
+              <div class="option-badges">
+                <span class="badge chip-amber">Low Effort</span>
+                <span class="badge chip-teal">High Impact</span>
+                <span class="badge chip-gray">No Setup</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Replace ad-hoc prompting with a copy-paste prompt kit for Yulia and the India social team. Covers every recurring content task in one document. Consistent inputs = consistent outputs = less editing time.</p>
+            <div class="detail-row"><span class="detail-label">Replaces</span><span class="detail-value">Freeform ChatGPT sessions with no structure</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude or ChatGPT</span></div>
+            <div class="detail-row"><span class="detail-label">Used by</span><span class="detail-value">Yulia + India social manager</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show deliverables <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>SEMrush brief → long-form SEO article (with keyword density, heading structure, length)</li>
+              <li>Article → email nurture summary</li>
+              <li>Article → 3 platform-specific social captions (LinkedIn, Facebook, Instagram)</li>
+              <li>Textbook section → 10 carousel bullet points for Canva</li>
+              <li>Email tone pass: "members" language vs. "students"</li>
+              <li>Practice question pull: extract 2–3 sample questions from course content</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 2 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-amber">2</div>
+            <div class="option-title-block">
+              <h3>Interactive HTML Resource Docs</h3>
+              <div class="option-badges">
+                <span class="badge chip-amber">Low–Med Effort</span>
+                <span class="badge chip-teal">High Impact</span>
+                <span class="badge chip-blue">Lead Gen</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Replace static PDF lead magnets with interactive HTML tools. Higher conversion than a PDF, more memorable, shareable, and brandable. Directly inspired by the interactive demo Yulia loved during the call.</p>
+            <div class="detail-row"><span class="detail-label">Replaces</span><span class="detail-value">Static PDF downloads as lead magnets</span></div>
+            <div class="detail-row"><span class="detail-label">Connects to</span><span class="detail-value">HubSpot opt-in + welcome sequence</span></div>
+            <div class="detail-row"><span class="detail-label">Used by</span><span class="detail-value">Website visitors / prospective members</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show deliverables <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Exam study guide as an interactive HTML page (replaces PDF download)</li>
+              <li>"Is this exam right for me?" quiz — captures lead + routes to correct HubSpot workflow</li>
+              <li>Course preview landing snippet — embeds on site, drives free membership signups</li>
+              <li>Each tool connects to HubSpot form endpoint for list capture</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 3 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-amber">3</div>
+            <div class="option-title-block">
+              <h3>HubSpot Email Language Refresh Prompts</h3>
+              <div class="option-badges">
+                <span class="badge chip-amber">Low Effort</span>
+                <span class="badge chip-green">This Week</span>
+                <span class="badge chip-gray">HubSpot</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Yulia's top priority this week is updating "students → members" across her 200+ email library. A targeted Claude prompt handles the language swap + tone review in one pass — turning a week of manual work into a single-day task.</p>
+            <div class="detail-row"><span class="detail-label">Solves</span><span class="detail-value">Subscription → membership migration language backlog</span></div>
+            <div class="detail-row"><span class="detail-label">Timeline</span><span class="detail-value">Can start immediately</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude + HubSpot</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show deliverables <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Prompt template: paste any HubSpot email → outputs membership-language version</li>
+              <li>Tone review layer: checks for "student/subscriber" language and flags it</li>
+              <li>Optional: batch processing workflow if volume justifies it</li>
+              <li>Version comparison output so Yulia can approve before replacing</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 4 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-amber">4</div>
+            <div class="option-title-block">
+              <h3>SEMrush → Content Brief Template (Structured)</h3>
+              <div class="option-badges">
+                <span class="badge chip-amber">Low Effort</span>
+                <span class="badge chip-teal">Medium Impact</span>
+                <span class="badge chip-gray">SEMrush + Claude</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Yulia currently re-explains formatting, length, keywords, and audience every time she writes a ChatGPT prompt from a SEMrush brief. A structured fill-in template eliminates that friction entirely. Same brief → same quality → less editing.</p>
+            <div class="detail-row"><span class="detail-label">Replaces</span><span class="detail-value">Re-writing SEO instructions from scratch each time</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">SEMrush + Claude or ChatGPT</span></div>
+            <div class="detail-row"><span class="detail-label">Used by</span><span class="detail-value">Yulia</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show deliverables <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Master prompt template with locked fields: audience, tone, exam type, keyword list, heading structure, length, CTA</li>
+              <li>Variable fields Yulia fills in per-article: primary keyword, secondary keywords, source material</li>
+              <li>Output format spec: H1, H2s, word count, meta description, internal link placeholder</li>
+              <li>Variant prompts for: long-form article, short supporting article, email version, social snippet</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== MEDIUM BUILDS ==================== -->
+    <section class="section" id="section-medium">
+      <div class="section-header">
+        <h2>🔧 Phase 2 — Medium Builds</h2>
+        <p>Connected workflows that take 1–2 weeks to build and deliver sustained, repeatable value. These are where the real time savings compound.</p>
+      </div>
+
+      <div class="phase-banner teal">
+        <div class="phase-icon">🔧</div>
+        <div class="phase-text">
+          <h4>Medium Builds — 5 Options</h4>
+          <p>Effort: Medium · Timeline: 1–2 weeks per build · Requires some configuration</p>
+        </div>
+      </div>
+
+      <div class="options-grid">
+
+        <!-- Option 5 -->
+        <div class="option-card" style="border-left: 3px solid var(--teal);">
+          <div class="option-card-header">
+            <div class="option-num num-teal">5</div>
+            <div class="option-title-block">
+              <h3>Content Repurposing Pipeline (Prompt Chain)</h3>
+              <div class="option-badges">
+                <span class="badge chip-teal">Highest Leverage</span>
+                <span class="badge chip-amber">Medium Effort</span>
+                <span class="badge chip-gold">Recommended</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">One course or textbook input → all content formats flow out automatically. This is the core of Marc's "automated content engine" idea from the call. Eliminates the biggest source of manual re-entry in the current workflow.</p>
+            <div class="detail-row"><span class="detail-label">Input</span><span class="detail-value">Course / textbook / lesson content</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude + Monday.com (or Notion / HTML interface)</span></div>
+            <div class="detail-row"><span class="detail-label">Used by</span><span class="detail-value">Yulia + India social manager</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show outputs <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>1 long-form SEO article (with target keyword integration)</li>
+              <li>2–3 shorter supporting articles for resource library</li>
+              <li>1 email nurture version (study tip + CTA format)</li>
+              <li>5 social captions — platform-specific (LinkedIn, Facebook, Instagram)</li>
+              <li>10 carousel bullet points (Canva-ready)</li>
+              <li>1 video script outline (optional)</li>
+              <li>All outputs formatted and labeled — paste into Monday card or HubSpot directly</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 6 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-teal">6</div>
+            <div class="option-title-block">
+              <h3>Monday.com Content Card Auto-Population</h3>
+              <div class="option-badges">
+                <span class="badge chip-teal">Medium Effort</span>
+                <span class="badge chip-teal">High Impact</span>
+                <span class="badge chip-blue">Zapier / Make</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">When a course finishes production, automatically create pre-filled Monday cards for blog, social, and email tasks — assigned, dated, and ready to action. Closes the gap between course creation and content distribution that currently falls through the cracks.</p>
+            <div class="detail-row"><span class="detail-label">Trigger</span><span class="detail-value">Course production completion in Monday</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Monday.com + Zapier or Make + Claude</span></div>
+            <div class="detail-row"><span class="detail-label">Assigns to</span><span class="detail-value">Yulia or India social manager</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show details <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Auto-creates Monday card with: suggested blog titles, social caption drafts, due dates based on publish schedule</li>
+              <li>Cards tagged by exam type, ICP audience, content format</li>
+              <li>Assigned to correct team member on creation</li>
+              <li>Removes the manual "I'll get to it later" gap between course creation and content output</li>
+              <li>Can connect to Option 5 (repurposing pipeline) to pre-populate card content automatically</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 7 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-teal">7</div>
+            <div class="option-title-block">
+              <h3>Nurture Email Campaign Builder</h3>
+              <div class="option-badges">
+                <span class="badge chip-teal">Medium Effort</span>
+                <span class="badge chip-teal">High Impact</span>
+                <span class="badge chip-gray">HubSpot</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Build the bi-weekly educational email Marc described. A repeatable prompt template + structured format that generates a HubSpot-ready email draft from any topic or textbook section — then optionally automates the whole thing via trigger.</p>
+            <div class="detail-row"><span class="detail-label">Input</span><span class="detail-value">Topic or textbook section</span></div>
+            <div class="detail-row"><span class="detail-label">Output</span><span class="detail-value">HubSpot-ready email draft</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude + HubSpot (+ optional Zapier)</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show details <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Email template: study tip + practice question + latest article link + CTA to free membership</li>
+              <li>Prompt flow: input topic → Claude generates full draft in correct format</li>
+              <li>Audience-aware: outputs can be segmented by exam type or member tier</li>
+              <li>Optional advanced: Zapier trigger auto-drafts in HubSpot on a schedule</li>
+              <li>Reactivates the bi-weekly cadence Yulia currently has paused</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 8 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-teal">8</div>
+            <div class="option-title-block">
+              <h3>Social Content Workflow for India Team</h3>
+              <div class="option-badges">
+                <span class="badge chip-teal">Medium Effort</span>
+                <span class="badge chip-teal">High Impact</span>
+                <span class="badge chip-gray">Monday + Canva</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Replace the India social manager's manual freeform ChatGPT process with a structured workflow. Same work, faster output, more consistent quality, no re-entry between tools. Their carousel posts are the highest-engagement format — this makes them easier to produce at scale.</p>
+            <div class="detail-row"><span class="detail-label">Current</span><span class="detail-value">Manual: textbook → ChatGPT → Canva → post</span></div>
+            <div class="detail-row"><span class="detail-label">Future</span><span class="detail-value">Structured form → Claude → Monday card → Canva</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude + Monday.com + Canva</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show details <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Structured input form: course name, exam type, target keyword, platform, tone</li>
+              <li>Claude generates: platform-specific captions + hashtag sets + 10 carousel bullet points</li>
+              <li>Output drops directly into Monday board card — assigned and dated</li>
+              <li>Social manager moves to Canva from Monday — no re-entry</li>
+              <li>Outputs tagged by exam so Yulia can review by category</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 9 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-teal">9</div>
+            <div class="option-title-block">
+              <h3>LinkedIn Audience Targeting Playbook</h3>
+              <div class="option-badges">
+                <span class="badge chip-teal">Medium–High Effort</span>
+                <span class="badge chip-blue">Audience Growth</span>
+                <span class="badge chip-gray">Sales Navigator</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">If Sales Navigator access is confirmed, build the full opt-in engine Marc referenced. ICP filter criteria → lead magnet matching → HubSpot welcome sequence → nurture flow to free membership. Expands the audience without paid ad spend.</p>
+            <div class="detail-row"><span class="detail-label">Dependency</span><span class="detail-value">Sales Navigator access must be confirmed first</span></div>
+            <div class="detail-row"><span class="detail-label">ICP</span><span class="detail-value">Ages 25–35, accounting / finance / tax, bachelor's degree</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">LinkedIn Sales Navigator + HubSpot</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show details <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>ICP filter set: role, seniority, industry, geography, education — built in Sales Navigator</li>
+              <li>Lead magnet matching: PDF guide or interactive HTML tool matched to audience segment</li>
+              <li>Opt-in strategy: compliant consent flow built into magnet delivery</li>
+              <li>HubSpot welcome sequence: 3-email onboarding to free membership</li>
+              <li>Nurture flow: bi-weekly educational content (connects to Option 7)</li>
+              <li>Note: must include opt-in mechanism — cold email without consent is non-compliant</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== FULL SYSTEMS ==================== -->
+    <section class="section" id="section-full">
+      <div class="section-header">
+        <h2>🏗️ Phase 3 — Full Systems</h2>
+        <p>Multi-week builds that create complete, end-to-end automation engines. These require the Phase 1 and 2 foundations and deliver the highest long-term leverage.</p>
+      </div>
+
+      <div class="phase-banner purple">
+        <div class="phase-icon">🏗️</div>
+        <div class="phase-text">
+          <h4>Full Systems — 4 Options</h4>
+          <p>Effort: High · Timeline: Multi-week · Requires Phase 1 + 2 groundwork</p>
+        </div>
+      </div>
+
+      <div class="options-grid">
+
+        <!-- Option 10 -->
+        <div class="option-card" style="border-left: 3px solid var(--purple);">
+          <div class="option-card-header">
+            <div class="option-num num-purple">10</div>
+            <div class="option-title-block">
+              <h3>End-to-End Content Engine</h3>
+              <div class="option-badges">
+                <span class="badge chip-purple">High Effort</span>
+                <span class="badge chip-purple">Very High Impact</span>
+                <span class="badge chip-gold">Flagship Build</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">The full version of what Jessica described on the call. Course production completes → Claude generates all marketing outputs → Monday boards are auto-populated → India team works from Monday → Yulia reviews and approves → HubSpot scheduled. Yulia spot-checks, not builds.</p>
+            <div class="detail-row"><span class="detail-label">Connects</span><span class="detail-value">Options 5, 6, 7, and 8 into one pipeline</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude + Monday.com + HubSpot + Zapier/Make</span></div>
+            <div class="detail-row"><span class="detail-label">Human role</span><span class="detail-value">Review and approve — not build</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show pipeline <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Trigger: course/textbook marks complete in Monday</li>
+              <li>Claude generates: article, social captions, email draft, carousel bullets, video script outline</li>
+              <li>All outputs auto-populate Monday boards — assigned, dated, tagged by exam/ICP</li>
+              <li>India team works from Monday → Canva (no ChatGPT session needed)</li>
+              <li>Yulia reviews → approves → HubSpot schedules automatically</li>
+              <li>Analytics loop: HubSpot engagement data surfaces back to inform next content cycle</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 11 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-purple">11</div>
+            <div class="option-title-block">
+              <h3>Hack Circle Content Feed Automation</h3>
+              <div class="option-badges">
+                <span class="badge chip-purple">High Effort</span>
+                <span class="badge chip-teal">High Impact</span>
+                <span class="badge chip-blue">Community</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Hack Circle just launched and needs a constant content feed to stay alive and engaged. Auto-generate and schedule conversation starters, study tips, resource drops, and Brian's thought leadership content — sourced from the same course pipeline — without Yulia manually feeding it.</p>
+            <div class="detail-row"><span class="detail-label">Platform</span><span class="detail-value">Circle (Hack Circle community app)</span></div>
+            <div class="detail-row"><span class="detail-label">Source</span><span class="detail-value">Existing course material + repurposing pipeline</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude + Circle API + Zapier/Make</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show details <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Auto-post: weekly conversation starters pulled from course topics</li>
+              <li>Auto-post: study tips + practice questions from textbook content</li>
+              <li>Brian's thought leadership: pre-drafted from course material → Brian reviews → posts in his Circle space</li>
+              <li>Event announcements: auto-generate from HubSpot event calendar</li>
+              <li>Resource drops: new article or guide posts auto-shared in relevant exam group</li>
+              <li>Keeps community active without Yulia manually curating every post</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 12 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-purple">12</div>
+            <div class="option-title-block">
+              <h3>AI-Powered Lead Magnet Upgrade</h3>
+              <div class="option-badges">
+                <span class="badge chip-purple">Medium–High Effort</span>
+                <span class="badge chip-teal">High Impact</span>
+                <span class="badge chip-blue">Lead Gen</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">Replace static PDF downloads with Claude-powered interactive tools that are more engaging, more shareable, and more conversion-friendly. These tools do the audience segmentation work for HubSpot — routing leads into the right sequence automatically on completion.</p>
+            <div class="detail-row"><span class="detail-label">Replaces</span><span class="detail-value">PDF guide downloads as primary lead magnets</span></div>
+            <div class="detail-row"><span class="detail-label">Connects to</span><span class="detail-value">HubSpot opt-in → right welcome sequence</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">Claude API + HubSpot forms + HTML/JavaScript</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show tools <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>"Which exam is right for you?" AI diagnostic — outputs a personalized study path + captures email</li>
+              <li>"Quiz yourself on 5 questions from [exam]" — free sample questions → drives free membership</li>
+              <li>Each tool embeds on the HOCK International website</li>
+              <li>On completion: connects to HubSpot form endpoint → triggers correct onboarding sequence</li>
+              <li>Higher conversion than PDF — interactive, personalized, and shareable</li>
+              <li>Can be co-branded for LinkedIn ad campaigns targeting ICP</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Option 13 -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-num num-purple">13</div>
+            <div class="option-title-block">
+              <h3>Voice Content Pipeline (11 Labs Integration)</h3>
+              <div class="option-badges">
+                <span class="badge chip-purple">High Effort</span>
+                <span class="badge chip-purple">Medium–High Impact</span>
+                <span class="badge chip-blue">Brand Authenticity</span>
+              </div>
+            </div>
+          </div>
+          <div class="option-card-body">
+            <p class="option-desc">If Brian moves forward with professional voice cloning, build the full pipeline: course content → video script → 11 Labs audio → illustrated Brian avatar. Solves the authenticity concern Yulia raised — it's clearly an illustration, not a fake human, with Brian's real voice. Extends to social video clips and Hack Circle audio drops.</p>
+            <div class="detail-row"><span class="detail-label">Dependency</span><span class="detail-value">Brian must upgrade to 11 Labs professional plan</span></div>
+            <div class="detail-row"><span class="detail-label">Solves</span><span class="detail-value">"This feels like AI" concern with current avatars</span></div>
+            <div class="detail-row"><span class="detail-label">Tools</span><span class="detail-value">11 Labs + Claude + video production workflow</span></div>
+            <button class="toggle-btn" onclick="toggleDetails(this)">Show details <span class="toggle-arrow">▼</span></button>
+          </div>
+          <div class="expanded-details">
+            <ul>
+              <li>Brian voice cloning: train on professional recording session → deploy across all content</li>
+              <li>Course narration: replace AI TTS with Brian's cloned voice on existing and new courses</li>
+              <li>Short-form social clips: illustrated Brian avatar + real voice → LinkedIn / Instagram Reels</li>
+              <li>Podcast-style audio drops: repurposed lesson content as audio for Hack Circle</li>
+              <li>Video script pipeline: course content → Claude script → 11 Labs audio → avatar rendering</li>
+              <li>Note: illustrated avatar style (not photorealistic) resolves the authenticity concern Yulia flagged</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== MATRIX ==================== -->
+    <section class="section" id="section-matrix">
+      <div class="section-header">
+        <h2>Comparison Matrix — All 13 Options</h2>
+        <p>A side-by-side view of effort, impact, tools, and phase for quick decision-making.</p>
+      </div>
+
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Option</th>
+              <th>Phase</th>
+              <th>Effort</th>
+              <th>Impact</th>
+              <th>Primary Tool(s)</th>
+              <th>Dependency</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td class="option-name">Prompt Library</td>
+              <td><span class="badge chip-amber phase-tag">Quick Win</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-amber"></div><div class="dot off"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Claude / ChatGPT</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td class="option-name">Interactive HTML Docs</td>
+              <td><span class="badge chip-amber phase-tag">Quick Win</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-amber"></div><div class="dot on-amber"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>HTML + HubSpot</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td class="option-name">HubSpot Email Refresh Prompts</td>
+              <td><span class="badge chip-amber phase-tag">Quick Win</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-amber"></div><div class="dot off"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>Claude + HubSpot</td>
+              <td>None — start now</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td class="option-name">SEMrush Brief Template</td>
+              <td><span class="badge chip-amber phase-tag">Quick Win</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-amber"></div><div class="dot off"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>SEMrush + Claude</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td class="option-name">Content Repurposing Pipeline ⭐</td>
+              <td><span class="badge chip-teal phase-tag">Medium</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Claude + Monday</td>
+              <td>Option 1 or 4 first</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td class="option-name">Monday Auto-Population</td>
+              <td><span class="badge chip-teal phase-tag">Medium</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Monday + Zapier</td>
+              <td>Option 5 ideal</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td class="option-name">Nurture Email Campaign Builder</td>
+              <td><span class="badge chip-teal phase-tag">Medium</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Claude + HubSpot</td>
+              <td>Options 1 + 3</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td class="option-name">India Team Social Workflow</td>
+              <td><span class="badge chip-teal phase-tag">Medium</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Claude + Monday + Canva</td>
+              <td>Option 5 ideal</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td class="option-name">LinkedIn Targeting Playbook</td>
+              <td><span class="badge chip-teal phase-tag">Medium</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>Sales Navigator + HubSpot</td>
+              <td>Confirm Sales Nav access</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td class="option-name">End-to-End Content Engine ⭐</td>
+              <td><span class="badge chip-purple phase-tag">Full System</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-purple"></div><div class="dot on-purple"></div><div class="dot on-purple"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Claude + Monday + HubSpot + Zapier</td>
+              <td>Options 5, 6, 7, 8</td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td class="option-name">Hack Circle Content Feed</td>
+              <td><span class="badge chip-purple phase-tag">Full System</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-purple"></div><div class="dot on-purple"></div><div class="dot on-purple"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Claude + Circle API + Zapier</td>
+              <td>Circle API access + Option 5</td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td class="option-name">AI-Powered Lead Magnet Upgrade</td>
+              <td><span class="badge chip-purple phase-tag">Full System</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-purple"></div><div class="dot on-purple"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot on-teal"></div>
+                </div>
+              </td>
+              <td>Claude API + HubSpot + HTML</td>
+              <td>HubSpot form setup</td>
+            </tr>
+            <tr>
+              <td>13</td>
+              <td class="option-name">Voice Content Pipeline (11 Labs)</td>
+              <td><span class="badge chip-purple phase-tag">Full System</span></td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-purple"></div><div class="dot on-purple"></div><div class="dot on-purple"></div>
+                </div>
+              </td>
+              <td>
+                <div class="dot-row">
+                  <div class="dot on-teal"></div><div class="dot on-teal"></div><div class="dot off"></div>
+                </div>
+              </td>
+              <td>11 Labs + Claude + video tools</td>
+              <td>Brian's 11 Labs plan upgrade</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:12px;">⭐ = Recommended starting points for each phase &nbsp;·&nbsp; Dots indicate relative score (1–3 scale)</p>
+    </section>
+
+    <!-- ==================== NEXT STEPS ==================== -->
+    <section class="section" id="section-nextsteps">
+      <div class="section-header">
+        <h2>Next Steps</h2>
+        <p>Immediate actions to move from proposal to build — organized by owner and priority.</p>
+      </div>
+
+      <div class="callout gold">
+        <strong>Recommended sequence:</strong> Start with Options 1 and 3 this week (both unblock current work), confirm open questions in parallel, then scope Option 5 as the first medium build. Everything else flows from there.
+      </div>
+
+      <div class="steps-list">
+
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Confirm email platform (Microsoft vs Google)</h4>
+            <p>Jessica to verify before scoping any automation that touches Yulia's inbox or triggers workflows outside HubSpot. Determines integration path for Options 7 and 10.</p>
+            <div class="step-meta">
+              <span class="badge chip-teal">Owner: Jessica</span>
+              <span class="badge chip-amber">This Week</span>
+              <span class="badge chip-gray">Blocks: Options 7, 10</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Deliver Option 3 — HubSpot Email Language Refresh Prompts</h4>
+            <p>Yulia's top priority is reactivating email campaigns this week. This prompt kit unblocks her immediately and demonstrates fast value with zero setup required.</p>
+            <div class="step-meta">
+              <span class="badge chip-teal">Owner: Jessica</span>
+              <span class="badge chip-green">This Week</span>
+              <span class="badge chip-gray">Unlocks: Email Relaunch</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Deliver Option 1 — Prompt Library</h4>
+            <p>Build and send the reusable prompt kit covering all recurring content tasks. Both Yulia and the India social manager can start using it immediately. Sets the foundation for Options 5 and 8.</p>
+            <div class="step-meta">
+              <span class="badge chip-teal">Owner: Jessica + Marc</span>
+              <span class="badge chip-amber">Week 1–2</span>
+              <span class="badge chip-gray">Enables: Options 5, 8</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Confirm LinkedIn Sales Navigator access</h4>
+            <p>Yulia to check with the team member who manages LinkedIn ads. This single confirmation unlocks or removes Option 9 from scope.</p>
+            <div class="step-meta">
+              <span class="badge chip-blue">Owner: Yulia</span>
+              <span class="badge chip-amber">This Week</span>
+              <span class="badge chip-gray">Unlocks: Option 9</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Scope Option 5 — Content Repurposing Pipeline</h4>
+            <p>Schedule a working session to define the pipeline: which courses to start with, what output formats are needed, and how outputs will land in Monday. This is the highest-leverage medium build.</p>
+            <div class="step-meta">
+              <span class="badge chip-teal">Owner: Jessica + Yulia</span>
+              <span class="badge chip-amber">Week 2</span>
+              <span class="badge chip-gold">Highest Leverage</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <h4>Confirm Brian's 11 Labs status and voice cloning interest</h4>
+            <p>Yulia to check whether Brian has already explored professional voice cloning. If not, Jessica has already demoed this capability. Decision determines whether Option 13 is in scope.</p>
+            <div class="step-meta">
+              <span class="badge chip-blue">Owner: Yulia (check with Brian)</span>
+              <span class="badge chip-gray">When Available</span>
+              <span class="badge chip-gray">Unlocks: Option 13</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">7</div>
+          <div class="step-body">
+            <h4>Review full proposal and prioritize</h4>
+            <p>Yulia reviews this proposal and selects which options she wants to move forward on first. Jessica and Marc use her response to build a phased project plan with timelines and scoping notes.</p>
+            <div class="step-meta">
+              <span class="badge chip-blue">Owner: Yulia</span>
+              <span class="badge chip-gray">After Receiving Proposal</span>
+              <span class="badge chip-teal">Drives: Project Plan</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  function showSection(id, navEl) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const section = document.getElementById('section-' + id);
+    if (section) section.classList.add('active');
+    if (navEl) navEl.classList.add('active');
+  }
+
+  function toggleDetails(btn) {
+    const card = btn.closest('.option-card');
+    const details = card.querySelector('.expanded-details');
+    const isOpen = details.classList.contains('open');
+    details.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.childNodes[0].textContent = isOpen ? 'Show details ' : 'Hide details ';
+  }
+</script>
+</body>
+</html>
