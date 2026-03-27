@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robert M. Hilberts, Inc. — Implementation Time Estimate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:     #1B3A8A;
+  --navy-dk:  #0f2260;
+  --navy-lt:  #2E5BC4;
+  --red:      #8B2020;
+  --bg:       #F5F4F1;
+  --white:    #ffffff;
+  --border:   #E4E0D9;
+  --ink:      #1a1a1a;
+  --ink2:     #3a3a3a;
+  --ink3:     #6b6b6b;
+  --ink4:     #9a9a9a;
+  --green:    #1a6633;
+  --green-bg: #eaf5ee;
+  --green-bd: #a0d4b0;
+  --amber:    #8a5000;
+  --amber-bg: #fef5e6;
+  --amber-bd: #f0d090;
+  --sidebar:  232px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar);
+  min-width: var(--sidebar);
+  background: var(--navy-dk);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.sb-logo {
+  padding: 28px 20px 22px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.sb-section { padding: 14px 12px 4px; }
+.sb-label {
+  font-size: 9px; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(255,255,255,.3);
+  padding: 0 8px 8px; display: block;
+}
+nav a {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: 6px; margin-bottom: 2px;
+  cursor: pointer; text-decoration: none;
+  font-size: 12.5px; font-weight: 400;
+  color: rgba(255,255,255,.55);
+  transition: all .12s;
+  border: none; background: transparent;
+  width: 100%; text-align: left;
+  font-family: 'DM Sans', sans-serif;
+}
+nav a:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.9); }
+nav a.active { background: rgba(255,255,255,.12); color: #fff; font-weight: 500; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.nav-hrs {
+  margin-left: auto; font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,.3); white-space: nowrap; font-family: 'DM Sans', monospace;
+}
+nav a.active .nav-hrs { color: rgba(255,255,255,.5); }
+
+.sb-footer {
+  margin-top: auto; padding: 20px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  font-size: 10px; color: rgba(255,255,255,.25); line-height: 1.7;
+}
+
+/* ── MAIN ── */
+main { flex: 1; overflow-y: auto; padding: 48px 52px 80px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── PAGE HEADER ── */
+.ph { margin-bottom: 32px; }
+.ph-eye {
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink4); margin-bottom: 8px;
+}
+.ph-title {
+  font-family: 'Fraunces', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--ink); line-height: 1.2; margin-bottom: 8px;
+}
+.ph-desc { font-size: 14px; color: var(--ink3); line-height: 1.65; max-width: 600px; }
+
+/* ── PHASE BADGE ── */
+.phase-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  padding: 3px 10px; border-radius: 100px; margin-bottom: 16px;
+}
+.tag-p1   { background: #eef1f9; color: var(--navy); border: 1px solid #b0bedd; }
+.tag-p2   { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+.tag-all  { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bd); }
+
+/* ── TASK TABLE ── */
+.task-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 14px;
+}
+.task-card-header {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--ink4);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.task-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 11px 20px; border-bottom: 1px solid var(--border);
+  font-size: 13.5px; color: var(--ink2);
+}
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: var(--bg); }
+.task-hrs {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  white-space: nowrap; font-family: 'DM Sans', monospace;
+}
+.task-note {
+  font-size: 11.5px; color: var(--ink4); margin-top: 2px;
+}
+.task-subtotal {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 13px 20px; background: var(--bg);
+  border-top: 2px solid var(--border);
+  font-size: 13px; font-weight: 700; color: var(--ink);
+}
+.task-subtotal span:last-child { font-family: 'Fraunces', serif; font-size: 17px; color: var(--navy); }
+
+/* ── STAT STRIP ── */
+.stat-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 24px;
+}
+.stat-box {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 20px;
+}
+.stat-val {
+  font-family: 'Fraunces', serif;
+  font-size: 28px; font-weight: 700; line-height: 1;
+  margin-bottom: 5px; color: var(--navy);
+}
+.stat-lbl { font-size: 12px; color: var(--ink3); line-height: 1.4; }
+
+/* ── TOTALS PAGE ── */
+.totals-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;
+}
+.total-card {
+  border-radius: 10px; padding: 24px 26px;
+}
+.total-card.p1 { background: var(--navy); }
+.total-card.p2 { background: var(--navy-lt); }
+.tc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.5); margin-bottom: 8px; }
+.tc-hrs { font-family: 'Fraunces', serif; font-size: 42px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 6px; }
+.tc-desc { font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.5; margin-bottom: 14px; }
+.tc-breakdown {
+  border-top: 1px solid rgba(255,255,255,.15); padding-top: 14px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.tc-line {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: rgba(255,255,255,.6);
+}
+.tc-line span:last-child { font-weight: 600; color: rgba(255,255,255,.85); font-family: 'DM Sans', monospace; }
+
+.timeline-card {
+  background: var(--navy-dk); border-radius: 10px;
+  padding: 22px 26px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.tl-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.4); margin-bottom: 6px; }
+.tl-val { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: #fff; }
+.tl-desc { font-size: 12px; color: rgba(255,255,255,.45); margin-top: 4px; }
+
+.assumption-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px 22px;
+}
+.assumption-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--ink3); line-height: 1.5;
+}
+.assumption-row:last-child { border-bottom: none; }
+.assumption-row::before { content: '·'; color: var(--navy); font-weight: 700; flex-shrink: 0; margin-top: 0; }
+
+/* ── BANNER ── */
+.banner {
+  border-radius: 8px; padding: 13px 16px;
+  font-size: 13px; line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-bottom: 20px;
+}
+.banner.info { background: #eef1f9; border: 1px solid #b0bedd; color: #0f2260; }
+.banner.ok   { background: var(--green-bg); border: 1px solid var(--green-bd); color: #0f3d1f; }
+.banner strong { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ SIDEBAR ═══════ -->
+<aside>
+  <div class="sb-logo">
+    <svg viewBox="0 0 200 46" xmlns="http://www.w3.org/2000/svg" style="width:158px;display:block;margin-bottom:10px">
+      <rect x="0" y="0" width="44" height="23" rx="4" fill="#fff"/>
+      <rect x="0" y="23" width="44" height="23" rx="0" fill="#8B2020"/>
+      <rect x="0" y="40" width="44" height="6" rx="2" fill="#8B2020"/>
+      <rect x="8"  y="4"  width="7" height="35" fill="#1B3A8A"/>
+      <rect x="29" y="4"  width="7" height="35" fill="#1B3A8A"/>
+      <rect x="8"  y="17" width="28" height="9"  fill="#1B3A8A"/>
+      <text x="52" y="30" font-family="'DM Sans',sans-serif" font-weight="700" font-size="17" letter-spacing="2" fill="white">HILBERTS</text>
+    </svg>
+    <div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.04em">Implementation Estimate<br>March 2026 · Confidential</div>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-label">Summary</span>
+    <nav>
+      <a class="active" onclick="show('totals', this)">
+        <span class="nav-dot" style="background:#fff"></span>Total estimate
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-label">Phase 1 — Bid Automation</span>
+    <nav>
+      <a onclick="show('setup', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>Setup &amp; design
+        <span class="nav-hrs">14 hrs</span>
+      </a>
+      <a onclick="show('w1', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>W1 — Email triage
+        <span class="nav-hrs">18 hrs</span>
+      </a>
+      <a onclick="show('w2', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>W2 — Drawing retrieval
+        <span class="nav-hrs">24 hrs</span>
+      </a>
+      <a onclick="show('w3', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>W3 — Morning digest
+        <span class="nav-hrs">16 hrs</span>
+      </a>
+      <a onclick="show('p1-test', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>Testing &amp; training
+        <span class="nav-hrs">14 hrs</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb-footer">
+    Prepared by<br>
+    Plus 1 Technology<br>
+    Jessica Peaden · Marc Umstead
+  </div>
+</aside>
+
+<!-- ═══════ MAIN ═══════ -->
+<main>
+
+<!-- TOTALS -->
+<div id="totals" class="page active">
+  <div class="ph">
+    <div class="ph-eye">Implementation Estimate · March 2026</div>
+    <div class="ph-title">Time &amp; Timeline Summary</div>
+    <div class="ph-desc">Phase 1 is scoped to deliver working automation in 2–3 weeks, broken into five steps from initial setup through testing and team training.</div>
+  </div>
+
+  <div style="background:var(--navy);border-radius:10px;padding:24px 26px;margin-bottom:14px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:8px">Phase 1 — Bid Intake Automation</div>
+    <div style="font-family:'Fraunces',serif;font-size:42px;font-weight:700;color:#fff;line-height:1;margin-bottom:6px">86 hrs</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:14px">Email triage, drawing retrieval across all three formats, morning review digest, testing, and training.</div>
+    <div style="border-top:1px solid rgba(255,255,255,.15);padding-top:14px;display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.6)"><span>Setup &amp; design</span><span style="font-weight:600;color:rgba(255,255,255,.85)">14 hrs</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.6)"><span>W1 — Email triage + extraction</span><span style="font-weight:600;color:rgba(255,255,255,.85)">18 hrs</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.6)"><span>W2 — Drawing retrieval</span><span style="font-weight:600;color:rgba(255,255,255,.85)">24 hrs</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.6)"><span>W3 — Morning digest + decisions</span><span style="font-weight:600;color:rgba(255,255,255,.85)">16 hrs</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.6)"><span>Testing, QA &amp; training</span><span style="font-weight:600;color:rgba(255,255,255,.85)">14 hrs</span></div>
+    </div>
+  </div>
+
+  <div style="background:var(--navy-dk);border-radius:10px;padding:22px 26px;margin-bottom:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;text-align:center">
+    <div style="padding:0 20px;border-right:1px solid rgba(255,255,255,.1)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:8px">Total Hours</div>
+      <div style="font-family:'Fraunces',serif;font-size:32px;font-weight:700;color:#fff">86 hrs</div>
+    </div>
+    <div style="padding:0 20px;border-right:1px solid rgba(255,255,255,.1)">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:8px">Estimated Timeline</div>
+      <div style="font-family:'Fraunces',serif;font-size:32px;font-weight:700;color:#fff">2–3 wks</div>
+    </div>
+    <div style="padding:0 20px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:8px">First Value Delivered</div>
+      <div style="font-family:'Fraunces',serif;font-size:32px;font-weight:700;color:#fff">Day 5</div>
+    </div>
+  </div>
+
+  <div class="assumption-card">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink4);margin-bottom:14px">Estimate Assumptions</div>
+    <div class="assumption-row">Outlook/O365 access, Dropbox API access, and Claude API key are provisioned before build begins.</div>
+    <div class="assumption-row">All estimates reflect Plus 1 Technology implementation hours. Client time for feedback, testing review, and training sessions is not included.</div>
+    <div class="assumption-row">Estimates may vary based on the complexity of real email samples, number of contractor portal formats encountered, and any scope additions during build.</div>
+  </div>
+</div>
+
+<!-- P1: SETUP -->
+<div id="setup" class="page">
+  <div class="ph">
+    <div class="ph-eye">Phase 1 · Step 1 of 5</div>
+    <div class="ph-title">Setup &amp; Solution Design</div>
+    <div class="ph-desc">Foundation work done before any automation is built — environment access, workflow architecture, and testing data preparation.</div>
+  </div>
+  <span class="phase-tag tag-p1">Phase 1 · Required</span>
+  <div class="task-card">
+    <div class="task-card-header"><span>Task</span><span>Hours</span></div>
+    <div class="task-row">
+      <div><div>n8n environment setup and O365 connection</div><div class="task-note">Connect n8n to Hilberts Outlook inbox via Microsoft Graph API. Verify read access.</div></div>
+      <span class="task-hrs">3 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Dropbox API connection and access verification</div><div class="task-note">Authorize n8n with the Dropbox account that has access to contractor shared folders.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Claude API setup and prompt architecture design</div><div class="task-note">Configure API key, design the three-prompt structure (classify → extract → retrieve).</div></div>
+      <span class="task-hrs">3 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Google Sheets bid register creation</div><div class="task-note">Build four-tab register (Pending Review, Active Bids, Passed, Flagged) with full schema. Field names match Dragonfly for Phase 2 handoff.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Sample email collection and workflow design</div><div class="task-note">Work with Tom to gather 5 real ITB samples — one of each format. Map all three workflow paths before building.</div></div>
+      <span class="task-hrs">4 hrs</span>
+    </div>
+    <div class="task-subtotal"><span>Setup &amp; Design Total</span><span>14 hrs</span></div>
+  </div>
+</div>
+
+<!-- P1: W1 -->
+<div id="w1" class="page">
+  <div class="ph">
+    <div class="ph-eye">Phase 1 · Step 2 of 5</div>
+    <div class="ph-title">Workflow 1 — Email Triage &amp; Extraction</div>
+    <div class="ph-desc">The first automation: n8n watches the Outlook inbox, Claude classifies every incoming email, and all ITBs are extracted into structured bid records.</div>
+  </div>
+  <span class="phase-tag tag-p1">Phase 1 · Target: Days 1–5</span>
+  <div class="banner ok"><span>✓</span><div><strong>Delivers standalone value.</strong> Workflow 1 runs independently — every ITB is captured and structured even before drawing retrieval is built.</div></div>
+  <div class="task-card">
+    <div class="task-card-header"><span>Task</span><span>Hours</span></div>
+    <div class="task-row">
+      <div><div>n8n O365 Watch Emails trigger + polling configuration</div><div class="task-note">15-minute polling interval. Configure to capture subject, body, sender, attachments, and timestamp.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Claude classification prompt (ITB vs. non-ITB)</div><div class="task-note">Haiku model — fast and low cost. Returns is_itb, confidence level, and reason. Routes non-ITBs to stop.</div></div>
+      <span class="task-hrs">3 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Router node — confidence-based branching</div><div class="task-note">High/medium confidence → extraction. Low confidence → flagged tab. False → stop. No email is silently dropped.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Claude extraction prompt — 14-field structured output</div><div class="task-note">Sonnet model. Extracts project name, GC, contact, bid due date, drawing links, format type, portal credentials, scope keywords, and HVAC scope summary.</div></div>
+      <span class="task-hrs">4 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Google Sheets append — bid register write</div><div class="task-note">Parse Claude JSON, map all 14 fields to sheet columns, add workflow metadata (received_at, status, source_email_id).</div></div>
+      <span class="task-hrs">3 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Error handling — invalid JSON, API failures, rate limits</div><div class="task-note">Wrap Claude calls in try/catch. Log failures to an Errors tab rather than crashing the scenario.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Live test on 5 real ITB samples</div><div class="task-note">Run against the collected samples. Verify classification accuracy, field extraction quality, and Sheets write.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-subtotal"><span>Workflow 1 Total</span><span>18 hrs</span></div>
+  </div>
+</div>
+
+<!-- P1: W2 -->
+<div id="w2" class="page">
+  <div class="ph">
+    <div class="ph-eye">Phase 1 · Step 3 of 5</div>
+    <div class="ph-title">Workflow 2 — Drawing Retrieval</div>
+    <div class="ph-desc">The highest-value workflow. Routes each bid to one of three retrieval paths based on drawing format — PDF attachments, Dropbox bulk packages, or contractor portals.</div>
+  </div>
+  <span class="phase-tag tag-p1">Phase 1 · Target: Days 4–12</span>
+  <div class="task-card">
+    <div class="task-card-header"><span>Task</span><span>Hours</span></div>
+    <div class="task-row">
+      <div><div>Trigger: Sheets watch — new "Awaiting Drawing Retrieval" row</div><div class="task-note">n8n watches for rows with the correct status. Routes to the correct path based on drawing_format field.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Path A — PDF attachment: Claude Vision page identification</div><div class="task-note">O365 retrieve attachment binary → Claude Vision identifies HVAC sheet pages (M-, H-, HVAC- prefixes) → returns page numbers, equipment types, and scope summary.</div></div>
+      <span class="task-hrs">6 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Path B — Dropbox: folder listing and fuzzy name matching</div><div class="task-note">Dropbox list_folder on shared link → Claude matches contractor bid names to Dropbox folder names (handles "Dupont vs Nemours" style mismatches) → navigate matched folder → identify HVAC files.</div></div>
+      <span class="task-hrs">8 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Path B — Dropbox: generate direct file links</div><div class="task-note">Dropbox create_shared_link on matched HVAC files → write direct links to Sheets row. High-confidence matches only; low-confidence flagged for manual review.</div></div>
+      <span class="task-hrs">3 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Path C — Portal links: flag and surface credentials</div><div class="task-note">Portal URLs, Project IDs, and Security Keys already extracted in W1. Update row status to "Portal — Manual Access" with all credentials visible in the morning card.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Sheets row update — status to "Ready for Review"</div><div class="task-note">All paths write their results back. Rows transition from "Awaiting Drawing Retrieval" to "Ready for Review" when complete.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Live test — all three formats against real samples</div><div class="task-note">Verify PDF Vision accuracy, Dropbox fuzzy match on at least 3 real naming pairs, portal flag behavior.</div></div>
+      <span class="task-hrs">1 hr</span>
+    </div>
+    <div class="task-subtotal"><span>Workflow 2 Total</span><span>24 hrs</span></div>
+  </div>
+</div>
+
+<!-- P1: W3 -->
+<div id="w3" class="page">
+  <div class="ph">
+    <div class="ph-eye">Phase 1 · Step 4 of 5</div>
+    <div class="ph-title">Workflow 3 — Morning Review Digest</div>
+    <div class="ph-desc">The final workflow: a daily 6:45am email to Tom with all pending bids organized by urgency, drawing links ready, and one-click BID / PASS / FLAG decision buttons.</div>
+  </div>
+  <span class="phase-tag tag-p1">Phase 1 · Target: Days 10–15</span>
+  <div class="task-card">
+    <div class="task-card-header"><span>Task</span><span>Hours</span></div>
+    <div class="task-row">
+      <div><div>n8n scheduled trigger — 6:45am daily</div><div class="task-note">Schedule node reads all "Ready for Review" rows from the Sheets register, sorted by bid_due_date ascending.</div></div>
+      <span class="task-hrs">1 hr</span>
+    </div>
+    <div class="task-row">
+      <div><div>Claude digest assembly — HTML email generation</div><div class="task-note">Claude receives the bid array and produces a clean HTML email. Bids sorted by due date. Urgent badge (red) if due within 48 hours. Each card shows: project, GC, due date, scope summary, drawing link, and action buttons.</div></div>
+      <span class="task-hrs">5 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>O365 send — morning email to Tom (+ CC Belinda)</div><div class="task-note">Subject: "Bid Queue — {N} new · {M} due this week". Sent from the automation at 6:45am daily.</div></div>
+      <span class="task-hrs">1 hr</span>
+    </div>
+    <div class="task-row">
+      <div><div>Webhook setup — BID / PASS / FLAG decision capture</div><div class="task-note">Three n8n webhook URLs. Each button in the digest email hits the correct webhook with the row ID encoded. Catches Tom's click instantly.</div></div>
+      <span class="task-hrs">4 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Webhook receiver — Sheets update + tab routing</div><div class="task-note">BID → status = "Bidding", row copies to Active Bids tab. PASS → Passed tab with timestamp. FLAG → stays in Pending, highlighted. All decisions logged with decision_at timestamp.</div></div>
+      <span class="task-hrs">3 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Internal test digest — review before Tom sees it</div><div class="task-note">Send test digest to Jessica and Marc first. Review card layout, link behavior, and webhook response before live delivery.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-subtotal"><span>Workflow 3 Total</span><span>16 hrs</span></div>
+  </div>
+</div>
+
+<!-- P1: TESTING -->
+<div id="p1-test" class="page">
+  <div class="ph">
+    <div class="ph-eye">Phase 1 · Step 5 of 5</div>
+    <div class="ph-title">Testing, Training &amp; Go-Live</div>
+    <div class="ph-desc">End-to-end testing across the full workflow, a live one-week parallel run, and a short training session for Tom, Belinda, and Dave.</div>
+  </div>
+  <span class="phase-tag tag-p1">Phase 1 · Final Step</span>
+  <div class="task-card">
+    <div class="task-card-header"><span>Task</span><span>Hours</span></div>
+    <div class="task-row">
+      <div><div>End-to-end system test — full workflow run</div><div class="task-note">Trigger a real email → verify classification → extraction → drawing retrieval → digest delivery → webhook decision capture → Sheets update. All three email formats tested.</div></div>
+      <span class="task-hrs">4 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>One-week parallel run — live inbox, monitor results</div><div class="task-note">System runs on Tom's real inbox. Plus 1 monitors daily for errors, missed classifications, or extraction issues. Corrections made in real time.</div></div>
+      <span class="task-hrs">4 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Training session — Tom, Belinda, Dave</div><div class="task-note">30-minute walkthrough: how to read the morning digest, what BID/PASS/FLAG does, how to find the Sheets register, what to do if something looks wrong.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>SOP documentation</div><div class="task-note">One-page reference doc: how the system works, how to handle edge cases, who to contact if something breaks.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-row">
+      <div><div>Dragonfly handoff prep — field mapping document</div><div class="task-note">Document every Sheets field → matching Dragonfly field. Build the Dragonfly write node in n8n as a disabled module — ready to activate in Phase 2.</div></div>
+      <span class="task-hrs">2 hrs</span>
+    </div>
+    <div class="task-subtotal"><span>Testing &amp; Training Total</span><span>14 hrs</span></div>
+  </div>
+</div>
+
+
+</main>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.querySelector('main').scrollTop = 0;
+}
+</script>
+</body>
+</html>
