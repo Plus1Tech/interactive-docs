@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robert M. Hilberts, Inc. — Dragonfly + AI Monthly Cost Estimate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:     #1B3A8A;
+  --navy-dk:  #0f2260;
+  --navy-lt:  #2E5BC4;
+  --red:      #8B2020;
+  --bg:       #F5F4F1;
+  --white:    #ffffff;
+  --border:   #E4E0D9;
+  --ink:      #1a1a1a;
+  --ink2:     #3a3a3a;
+  --ink3:     #6b6b6b;
+  --ink4:     #9a9a9a;
+  --green:    #1a6633;
+  --green-bg: #eaf5ee;
+  --green-bd: #a0d4b0;
+  --amber:    #8a5000;
+  --amber-bg: #fef5e6;
+  --amber-bd: #f0d090;
+  --sidebar:  232px;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+aside {
+  width: var(--sidebar);
+  min-width: var(--sidebar);
+  background: var(--navy-dk);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.sb-logo { padding: 28px 20px 22px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.sb-section { padding: 14px 12px 4px; }
+.sb-label {
+  font-size: 9px; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(255,255,255,.3);
+  padding: 0 8px 8px; display: block;
+}
+nav a {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: 6px; margin-bottom: 2px;
+  cursor: pointer; text-decoration: none;
+  font-size: 12.5px; font-weight: 400;
+  color: rgba(255,255,255,.55);
+  transition: all .12s; border: none; background: transparent;
+  width: 100%; text-align: left; font-family: 'DM Sans', sans-serif;
+}
+nav a:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.9); }
+nav a.active { background: rgba(255,255,255,.12); color: #fff; font-weight: 500; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sb-footer {
+  margin-top: auto; padding: 20px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  font-size: 10px; color: rgba(255,255,255,.25); line-height: 1.7;
+}
+
+main { flex: 1; overflow-y: auto; padding: 48px 52px 80px; }
+.page { display: none; }
+.page.active { display: block; }
+
+.ph { margin-bottom: 32px; }
+.ph-eye { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink4); margin-bottom: 8px; }
+.ph-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: var(--ink); line-height: 1.2; margin-bottom: 8px; }
+.ph-desc { font-size: 14px; color: var(--ink3); line-height: 1.65; max-width: 600px; }
+
+/* ── COST CARD ── */
+.cost-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 14px;
+}
+.cost-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+}
+.cost-icon {
+  width: 40px; height: 40px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.cost-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+.cost-tagline { font-size: 12px; color: var(--ink4); margin-top: 2px; }
+.cost-price {
+  margin-left: auto; text-align: right;
+}
+.cost-price-val {
+  font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--navy);
+}
+.cost-price-lbl { font-size: 10px; color: var(--ink4); text-transform: uppercase; letter-spacing: .06em; }
+.cost-body { padding: 18px 22px; }
+.cost-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.cost-row:last-child { border-bottom: none; }
+.cost-row-label { color: var(--ink2); flex: 1; line-height: 1.5; }
+.cost-row-note { font-size: 11.5px; color: var(--ink4); margin-top: 2px; }
+.cost-row-val { font-weight: 600; color: var(--ink); white-space: nowrap; font-family: 'DM Sans', monospace; margin-left: 20px; }
+.cost-row-val.free { color: var(--green); }
+.cost-row-val.low { color: var(--navy); }
+
+/* ── TOTALS ── */
+.total-strip {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-bottom: 20px;
+}
+.total-box {
+  border-radius: 10px; padding: 20px 22px;
+}
+.total-box.phase1 { background: var(--navy); }
+.total-box.future { background: var(--navy-lt); }
+.total-box.note   { background: var(--green-bg); border: 1px solid var(--green-bd); }
+.tb-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px; }
+.tb-label.light { color: rgba(255,255,255,.5); }
+.tb-label.dark  { color: var(--green); }
+.tb-val { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.tb-val.light { color: #fff; }
+.tb-val.dark  { color: var(--green); }
+.tb-desc { font-size: 12px; line-height: 1.5; }
+.tb-desc.light { color: rgba(255,255,255,.6); }
+.tb-desc.dark  { color: var(--green); }
+
+/* ── SUMMARY TABLE ── */
+.summary-table {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 16px;
+}
+.st-header {
+  display: grid; grid-template-columns: 1fr 100px 100px 120px;
+  padding: 10px 20px; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--ink4);
+}
+.st-row {
+  display: grid; grid-template-columns: 1fr 100px 100px 120px;
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  font-size: 13px; align-items: center;
+}
+.st-row:last-child { border-bottom: none; }
+.st-row:hover { background: var(--bg); }
+.st-row.total-row {
+  background: var(--navy); border-top: 2px solid var(--navy);
+  font-weight: 700; border-bottom: none;
+}
+.st-platform { color: var(--ink2); font-weight: 500; }
+.st-platform small { display: block; font-size: 11px; color: var(--ink4); font-weight: 400; margin-top: 1px; }
+.st-cell { font-family: 'DM Sans', monospace; color: var(--ink3); font-size: 12px; }
+.st-cell.green { color: var(--green); font-weight: 600; }
+.st-cell.navy  { color: var(--navy); font-weight: 600; }
+.st-cell.white { color: #fff; font-weight: 700; }
+.st-total-lbl  { color: rgba(255,255,255,.7); font-size: 13px; }
+
+/* ── BANNER ── */
+.banner {
+  border-radius: 8px; padding: 13px 16px; font-size: 13px;
+  line-height: 1.6; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 18px;
+}
+.banner.ok   { background: var(--green-bg); border: 1px solid var(--green-bd); color: #0f3d1f; }
+.banner.info { background: #eef1f9; border: 1px solid #b0bedd; color: #0f2260; }
+.banner.warn { background: var(--amber-bg); border: 1px solid var(--amber-bd); color: #5a3200; }
+.banner strong { font-weight: 600; }
+
+/* ── TIER BADGE ── */
+.tier {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: 3px 9px; border-radius: 100px; margin-left: 8px;
+}
+.tier-p1 { background: #eef1f9; color: var(--navy); border: 1px solid #b0bedd; }
+.tier-p2 { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+
+/* ── USAGE CALC ── */
+.calc-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; padding: 22px; margin-bottom: 14px;
+}
+.calc-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink4); margin-bottom: 16px; }
+.calc-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.calc-row:last-child { border-bottom: none; }
+.calc-label { color: var(--ink3); }
+.calc-val { font-weight: 600; color: var(--ink); font-family: 'DM Sans', monospace; }
+.calc-val.accent { color: var(--navy); }
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="sb-logo">
+    <svg viewBox="0 0 200 46" xmlns="http://www.w3.org/2000/svg" style="width:158px;display:block;margin-bottom:10px">
+      <rect x="0" y="0" width="44" height="23" rx="4" fill="#fff"/>
+      <rect x="0" y="23" width="44" height="23" rx="0" fill="#8B2020"/>
+      <rect x="0" y="40" width="44" height="6" rx="2" fill="#8B2020"/>
+      <rect x="8"  y="4"  width="7" height="35" fill="#1B3A8A"/>
+      <rect x="29" y="4"  width="7" height="35" fill="#1B3A8A"/>
+      <rect x="8"  y="17" width="28" height="9"  fill="#1B3A8A"/>
+      <text x="52" y="30" font-family="'DM Sans',sans-serif" font-weight="700" font-size="17" letter-spacing="2" fill="white">HILBERTS</text>
+    </svg>
+    <div style="font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.04em">Dragonfly + AI Monthly Costs<br>March 2026 · Confidential</div>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-label">Dragonfly + AI Stack</span>
+    <nav>
+      <a class="active" onclick="show('summary', this)">
+        <span class="nav-dot" style="background:#fff"></span>Cost summary
+      </a>
+      <a onclick="show('dragonfly', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>Dragonfly (PhaseAlpha)
+      </a>
+      <a onclick="show('n8n', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>n8n — Automation
+      </a>
+      <a onclick="show('claude', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>Claude API — AI
+      </a>
+      <a onclick="show('dropbox', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>Dropbox API
+      </a>
+      <a onclick="show('microsoft', this)">
+        <span class="nav-dot" style="background:#1B3A8A"></span>Microsoft 365
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb-section">
+    <span class="sb-label">Notes</span>
+    <nav>
+      <a onclick="show('assumptions', this)">
+        <span class="nav-dot" style="background:#1a6633"></span>Assumptions &amp; notes
+      </a>
+    </nav>
+  </div>
+
+  <div class="sb-footer">
+    Prepared by<br>
+    Plus 1 Technology<br>
+    Jessica Peaden · Marc Umstead
+  </div>
+</aside>
+
+<main>
+
+<!-- SUMMARY -->
+<div id="summary" class="page active">
+  <div class="ph">
+    <div class="ph-eye">Monthly Platform Costs · Dragonfly + AI</div>
+    <div class="ph-title">What it costs to run</div>
+    <div class="ph-desc">All ongoing platform costs for the Dragonfly + AI implementation — the single solution option for Hilberts. These are the recurring monthly fees after the one-time implementation is complete.</div>
+  </div>
+
+  <div class="banner ok">
+    <span>✓</span>
+    <div><strong>Microsoft 365 and Dropbox are existing subscriptions — no added cost there.</strong> The new recurring costs are Dragonfly (PhaseAlpha SaaS), n8n Cloud, and Claude API usage — totalling approximately $200–260/month for the full running stack.</div>
+  </div>
+
+  <div class="total-strip">
+    <div class="total-box phase1">
+      <div class="tb-label light">Total Monthly (running)</div>
+      <div class="tb-val light">$200–260</div>
+      <div class="tb-desc light">Dragonfly + n8n + Claude API at Hilberts' current volume</div>
+    </div>
+    <div class="total-box future">
+      <div class="tb-label light">Annual Cost</div>
+      <div class="tb-val light">~$2,400–3,100</div>
+      <div class="tb-desc light">Full year of platform costs across the entire stack</div>
+    </div>
+    <div class="total-box note">
+      <div class="tb-label dark">Already Paying</div>
+      <div class="tb-val dark">$0 net new</div>
+      <div class="tb-desc dark">Microsoft 365 and Dropbox are existing — no added cost</div>
+    </div>
+  </div>
+
+  <div class="summary-table">
+    <div class="st-header">
+      <div>Platform</div>
+      <div>Monthly Cost</div>
+      <div>Status</div>
+      <div>Notes</div>
+    </div>
+    <div class="st-row">
+      <div class="st-platform">Dragonfly (PhaseAlpha) <small>Operations hub + CRM</small></div>
+      <div class="st-cell navy">~$150–180/mo</div>
+      <div class="st-cell">New cost</div>
+      <div class="st-cell">SaaS subscription · confirm with Joe Lewis</div>
+    </div>
+    <div class="st-row">
+      <div class="st-platform">n8n Cloud <small>Automation orchestrator</small></div>
+      <div class="st-cell navy">~$20/mo</div>
+      <div class="st-cell">New cost</div>
+      <div class="st-cell">Starter plan · 2,500 executions/mo</div>
+    </div>
+    <div class="st-row">
+      <div class="st-platform">Claude API <small>AI classification, extraction + digest</small></div>
+      <div class="st-cell navy">$25–50/mo</div>
+      <div class="st-cell">New cost</div>
+      <div class="st-cell">Usage-based · scales with email volume</div>
+    </div>
+    <div class="st-row">
+      <div class="st-platform">Dropbox <small>Contractor drawing retrieval</small></div>
+      <div class="st-cell green">$0 added</div>
+      <div class="st-cell">Existing</div>
+      <div class="st-cell">API access included in existing plan</div>
+    </div>
+    <div class="st-row">
+      <div class="st-platform">Microsoft 365 <small>Outlook inbox + email delivery</small></div>
+      <div class="st-cell green">$0 added</div>
+      <div class="st-cell">Existing</div>
+      <div class="st-cell">Microsoft Graph API included in M365</div>
+    </div>
+    <div class="st-row total-row">
+      <div class="st-total-lbl">Monthly Total (new costs only)</div>
+      <div class="st-cell white">$200–260/mo</div>
+      <div class="st-cell white"></div>
+      <div class="st-cell white">~$2,400–3,100/yr</div>
+    </div>
+  </div>
+
+  <div class="banner info"><span>ℹ</span><div><strong>Dragonfly pricing:</strong> PhaseAlpha pricing is not publicly listed — the ~$150–180/mo figure is an estimate based on comparable HVAC SaaS platforms at Hilberts' team size. Confirm exact pricing with Joe Lewis at PhaseAlpha before final budgeting.</div></div>
+</div>
+
+<!-- DRAGONFLY -->
+<div id="dragonfly" class="page">
+  <div class="ph">
+    <div class="ph-eye">Platform Cost · Operations Hub</div>
+    <div class="ph-title">Dragonfly (PhaseAlpha)</div>
+    <div class="ph-desc">The central hub for all project data, quotes, contacts, room schedules, and order history. Hilberts already has a Dragonfly account — this is the ongoing SaaS subscription cost to maintain and expand it as the primary operations platform.</div>
+  </div>
+
+  <div class="cost-card">
+    <div class="cost-header">
+      <div class="cost-icon" style="background:#eef1f9">🐉</div>
+      <div>
+        <div class="cost-name">Dragonfly — PhaseAlpha</div>
+        <div class="cost-tagline">HVAC-native project management, CRM, file storage, and operations hub</div>
+      </div>
+      <div class="cost-price">
+        <div class="cost-price-val">~$150–180</div>
+        <div class="cost-price-lbl">per month est.</div>
+      </div>
+    </div>
+    <div class="cost-body">
+      <div class="cost-row">
+        <div><div class="cost-row-label">Dragonfly SaaS subscription</div><div class="cost-row-note">PhaseAlpha does not publish pricing publicly. Estimate based on comparable HVAC SaaS platforms for a team of 6–15 users. Confirm exact pricing with Joe Lewis.</div></div>
+        <div class="cost-row-val">Confirm with PhaseAlpha</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">What Dragonfly replaces</div><div class="cost-row-note">Google Sheets bid register, manual spreadsheet tracking, scattered Dropbox files, and in-Tom's-head CRM. One searchable, mobile-accessible hub for all project data.</div></div>
+        <div class="cost-row-val low">Replaces 4+ tools</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">AlphaTakeoff — blueprint AI</div><div class="cost-row-note">PhaseAlpha's AI blueprint reader that replaces 4–6 hrs of manual room counting. May be included in the Dragonfly subscription or priced separately — confirm with PhaseAlpha.</div></div>
+        <div class="cost-row-val">May be included</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">PhaseAlpha implementation support</div><div class="cost-row-note">PhaseAlpha typically includes implementation, training, and ongoing support in their SaaS pricing. Confirm what is included vs. billed separately.</div></div>
+        <div class="cost-row-val">Confirm with PhaseAlpha</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Existing account status</div><div class="cost-row-note">Hilberts has had Dragonfly for ~1 year. An existing subscription may already be active — confirm current billing with Belinda and Tom before the PhaseAlpha call.</div></div>
+        <div class="cost-row-val low">May already be paying</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner warn"><span>⚠</span><div><strong>Pricing TBD — confirm with Joe Lewis (PhaseAlpha).</strong> The $150–180/mo estimate is a placeholder based on comparable platforms. The PhaseAlpha call is needed to confirm the exact Dragonfly subscription cost, whether AlphaTakeoff is included, and what the current Hilberts account status is.</div></div>
+</div>
+
+<!-- N8N -->
+<div id="n8n" class="page">
+  <div class="ph">
+    <div class="ph-eye">Platform Cost · Automation</div>
+    <div class="ph-title">n8n Cloud</div>
+    <div class="ph-desc">The automation orchestrator that runs all three Phase 1 workflows. Watches the Outlook inbox, routes emails through Claude, writes to Google Sheets, and delivers the morning digest.</div>
+  </div>
+
+  <div class="cost-card">
+    <div class="cost-header">
+      <div class="cost-icon" style="background:#fff3e0">⚙️</div>
+      <div>
+        <div class="cost-name">n8n Cloud <span class="tier tier-p1">Starter Plan</span></div>
+        <div class="cost-tagline">Workflow automation platform — manages all three Phase 1 workflows</div>
+      </div>
+      <div class="cost-price">
+        <div class="cost-price-val">~$20</div>
+        <div class="cost-price-lbl">per month</div>
+      </div>
+    </div>
+    <div class="cost-body">
+      <div class="cost-row">
+        <div><div class="cost-row-label">n8n Cloud Starter</div><div class="cost-row-note">€24/mo (≈$26 USD) billed monthly · $20/mo billed annually</div></div>
+        <div class="cost-row-val">~$20–26/mo</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Executions included</div><div class="cost-row-note">2,500 workflow runs/month. At 10–40 emails/day, Hilberts uses ~300–1,200 executions/month — well within the Starter limit.</div></div>
+        <div class="cost-row-val low">2,500/mo</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">What one execution = at Hilberts</div><div class="cost-row-note">One complete email processed end-to-end (classify → extract → retrieve drawings). All steps inside count as one execution — not per step.</div></div>
+        <div class="cost-row-val low">1 email = 1 run</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Morning digest workflow</div><div class="cost-row-note">Runs once daily at 6:45am regardless of how many bids are in the queue. Counts as 1 execution/day = ~30/month.</div></div>
+        <div class="cost-row-val low">~30/mo extra</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">If volume grows — Pro plan</div><div class="cost-row-note">n8n Cloud Pro at ~$50/mo includes 10,000 executions. Only needed if Hilberts scales to 100+ emails/day consistently.</div></div>
+        <div class="cost-row-val">$50/mo if needed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-title">Execution Usage Estimate — Phase 1</div>
+    <div class="calc-row"><div class="calc-label">Emails per day (average)</div><div class="calc-val">~25 emails</div></div>
+    <div class="calc-row"><div class="calc-label">Working days per month</div><div class="calc-val">~22 days</div></div>
+    <div class="calc-row"><div class="calc-label">Email workflow executions/month</div><div class="calc-val">~550</div></div>
+    <div class="calc-row"><div class="calc-label">Morning digest executions/month</div><div class="calc-val">~22</div></div>
+    <div class="calc-row"><div class="calc-label">Webhook (Tom's decisions) executions</div><div class="calc-val">~200</div></div>
+    <div class="calc-row"><div class="calc-label">Total estimated executions/month</div><div class="calc-val accent">~770 of 2,500</div></div>
+    <div class="calc-row"><div class="calc-label">Headroom remaining on Starter plan</div><div class="calc-val accent">~69% unused</div></div>
+  </div>
+
+  <div class="banner info"><span>ℹ</span><div>n8n counts a full workflow run as one execution — not each individual step inside it. A 15-step email processing workflow that runs 550 times = 550 executions, not 8,250. This is why n8n is significantly cheaper than Zapier or Make at the same workflow complexity.</div></div>
+</div>
+
+<!-- CLAUDE API -->
+<div id="claude" class="page">
+  <div class="ph">
+    <div class="ph-eye">Platform Cost · AI</div>
+    <div class="ph-title">Claude API (Anthropic)</div>
+    <div class="ph-desc">The AI layer that classifies emails, extracts structured bid data, identifies HVAC drawings in PDFs, resolves Dropbox naming mismatches, and assembles the morning digest. Billed per token — you only pay for what's used.</div>
+  </div>
+
+  <div class="cost-card">
+    <div class="cost-header">
+      <div class="cost-icon" style="background:#e8f4f8">🤖</div>
+      <div>
+        <div class="cost-name">Claude API <span class="tier tier-p1">Pay-as-you-go</span></div>
+        <div class="cost-tagline">Anthropic — billed per million tokens (input + output separately)</div>
+      </div>
+      <div class="cost-price">
+        <div class="cost-price-val">$25–50</div>
+        <div class="cost-price-lbl">per month est.</div>
+      </div>
+    </div>
+    <div class="cost-body">
+      <div class="cost-row">
+        <div><div class="cost-row-label">Claude Haiku 4.5 — used for email classification</div><div class="cost-row-note">Fast, cheap binary classification. $1 input / $5 output per million tokens. ~500 tokens per email = ~$0.0005 per email classified.</div></div>
+        <div class="cost-row-val low">$1/$5 per MTok</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Claude Sonnet 4.6 — used for full data extraction</div><div class="cost-row-note">Extracts all 14 bid fields from confirmed ITBs. $3 input / $15 output per million tokens. ~2,000 tokens per email = ~$0.006 per extraction.</div></div>
+        <div class="cost-row-val low">$3/$15 per MTok</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Claude Sonnet 4.6 — Dropbox fuzzy name matching</div><div class="cost-row-note">Only runs when email format is "dropbox_bulk" (~30% of emails). ~1,500 tokens per call.</div></div>
+        <div class="cost-row-val low">~30% of emails</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Claude Sonnet 4.6 — morning digest assembly</div><div class="cost-row-note">Runs once daily. Assembles HTML email from the day's pending bids. ~3,000 tokens/day = ~$0.04/day.</div></div>
+        <div class="cost-row-val low">~$1.20/mo</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">No subscription — no minimum</div><div class="cost-row-note">Claude API is pure pay-as-you-go. If Hilberts processes zero emails on a weekend, the cost is $0 for that day.</div></div>
+        <div class="cost-row-val free">$0 minimum</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-title">Monthly Claude API Cost Estimate</div>
+    <div class="calc-row"><div class="calc-label">Emails classified per month (Haiku)</div><div class="calc-val">~550 emails × $0.0005 = <span style="color:var(--navy);font-weight:600">$0.28</span></div></div>
+    <div class="calc-row"><div class="calc-label">ITB emails extracted per month (Sonnet) — ~60% of emails</div><div class="calc-val">~330 emails × $0.006 = <span style="color:var(--navy);font-weight:600">$1.98</span></div></div>
+    <div class="calc-row"><div class="calc-label">PDF Vision calls — ~30% of ITBs</div><div class="calc-val">~100 PDFs × $0.02 = <span style="color:var(--navy);font-weight:600">$2.00</span></div></div>
+    <div class="calc-row"><div class="calc-label">Dropbox fuzzy matching — ~30% of ITBs</div><div class="calc-val">~100 calls × $0.005 = <span style="color:var(--navy);font-weight:600">$0.50</span></div></div>
+    <div class="calc-row"><div class="calc-label">Morning digest assembly (daily)</div><div class="calc-val">22 days × $0.04 = <span style="color:var(--navy);font-weight:600">$0.88</span></div></div>
+    <div class="calc-row"><div class="calc-label">Buffer for retries, edge cases, and growth</div><div class="calc-val"><span style="color:var(--navy);font-weight:600">$20–45</span> buffer</div></div>
+    <div class="calc-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:12px"><div class="calc-label" style="font-weight:600;color:var(--ink)">Total estimated monthly Claude API cost</div><div class="calc-val accent" style="font-size:16px">$25–50/mo</div></div>
+  </div>
+
+  <div class="banner ok"><span>✓</span><div><strong>Low cost, high value.</strong> Even at the high end, Claude API processes every ITB email for under $0.05 each. At Hilberts' current volume, the entire AI layer costs less than a business lunch — and saves 10–15 hours of Tom's time every week.</div></div>
+</div>
+
+<!-- DROPBOX -->
+<div id="dropbox" class="page">
+  <div class="ph">
+    <div class="ph-eye">Platform Cost · File Storage</div>
+    <div class="ph-title">Dropbox API</div>
+    <div class="ph-desc">Used by Workflow 2 to navigate contractor-shared Dropbox folders, match job names to folder names, and generate direct drawing links. No additional cost — API access is included in Hilberts' existing Dropbox plan.</div>
+  </div>
+
+  <div class="cost-card">
+    <div class="cost-header">
+      <div class="cost-icon" style="background:#e3f2fd">📁</div>
+      <div>
+        <div class="cost-name">Dropbox <span class="tier tier-p1">Existing Subscription</span></div>
+        <div class="cost-tagline">Contractor-shared drawing folders — API access included at all paid plan tiers</div>
+      </div>
+      <div class="cost-price">
+        <div class="cost-price-val" style="color:var(--green)">$0</div>
+        <div class="cost-price-lbl">added cost</div>
+      </div>
+    </div>
+    <div class="cost-body">
+      <div class="cost-row">
+        <div><div class="cost-row-label">Dropbox API access</div><div class="cost-row-note">Included in all Dropbox Plus, Professional, and Business plans. No separate API fee.</div></div>
+        <div class="cost-row-val free">Included</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">What n8n does with Dropbox</div><div class="cost-row-note">Calls files/list_folder to get folder contents, then sharing/create_shared_link to generate direct links to HVAC files. Standard API calls with no usage billing.</div></div>
+        <div class="cost-row-val free">No usage fee</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Contractor-shared folders</div><div class="cost-row-note">The automation accesses contractor-shared links (public Dropbox shares) — these don't require Hilberts to own or store the files. No additional storage consumed.</div></div>
+        <div class="cost-row-val free">No storage added</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Existing monthly cost (for reference)</div><div class="cost-row-note">Hilberts already pays for Dropbox. This cost is not changing and is not included in the Phase 1 totals.</div></div>
+        <div class="cost-row-val">Existing cost</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner ok"><span>✓</span><div><strong>No new cost.</strong> Dropbox API is available on any paid Dropbox plan. The automation uses the API to navigate contractor-shared folders — it does not upload, store, or modify any files in Hilberts' Dropbox.</div></div>
+</div>
+
+<!-- MICROSOFT 365 -->
+<div id="microsoft" class="page">
+  <div class="ph">
+    <div class="ph-eye">Platform Cost · Email</div>
+    <div class="ph-title">Microsoft 365 / Outlook</div>
+    <div class="ph-desc">The source of all ITB emails. n8n connects to the Hilberts Outlook inbox via the Microsoft Graph API — which is included in all Microsoft 365 Business plans. No additional cost or configuration required beyond an app registration.</div>
+  </div>
+
+  <div class="cost-card">
+    <div class="cost-header">
+      <div class="cost-icon" style="background:#e3f2fd">📧</div>
+      <div>
+        <div class="cost-name">Microsoft 365 <span class="tier tier-p1">Existing Subscription</span></div>
+        <div class="cost-tagline">Outlook inbox + Microsoft Graph API — included in all M365 Business plans</div>
+      </div>
+      <div class="cost-price">
+        <div class="cost-price-val" style="color:var(--green)">$0</div>
+        <div class="cost-price-lbl">added cost</div>
+      </div>
+    </div>
+    <div class="cost-body">
+      <div class="cost-row">
+        <div><div class="cost-row-label">Microsoft Graph API</div><div class="cost-row-note">Included in all Microsoft 365 Business Basic, Standard, and Premium plans. Allows n8n to read emails, retrieve attachments, and send emails on behalf of the account.</div></div>
+        <div class="cost-row-val free">Included</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">What n8n does with M365</div><div class="cost-row-note">Polls the inbox every 15 minutes for new emails. Retrieves email body, subject, sender, and attachment binaries. Sends the morning digest email to Tom (and CC to Belinda).</div></div>
+        <div class="cost-row-val free">Read + send</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Setup required</div><div class="cost-row-note">A one-time Azure App Registration (free) and an OAuth connection in n8n. Takes about 30 minutes. No recurring configuration needed after that.</div></div>
+        <div class="cost-row-val">One-time setup</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">No impact on Tom's inbox or email experience</div><div class="cost-row-note">The automation reads emails but does not move, delete, or modify them. Tom's inbox works exactly as it does today.</div></div>
+        <div class="cost-row-val free">No changes</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner ok"><span>✓</span><div><strong>No new cost.</strong> Microsoft Graph API is a standard part of every Microsoft 365 Business subscription. Hilberts already pays for M365 — there is no API surcharge, no usage fee, and no plan upgrade required.</div></div>
+</div>
+
+<!-- GOOGLE SHEETS -->
+<div id="sheets" class="page">
+  <div class="ph">
+    <div class="ph-eye">Platform Cost · Bid Register</div>
+    <div class="ph-title">Google Sheets</div>
+    <div class="ph-desc">The temporary bid register used in Phase 1 to store all extracted bid data — Pending Review, Active Bids, Passed, and Flagged tabs. Completely free. Replaced by Dragonfly (PhaseAlpha) in Phase 2.</div>
+  </div>
+
+  <div class="cost-card">
+    <div class="cost-header">
+      <div class="cost-icon" style="background:#e8f5e9">📊</div>
+      <div>
+        <div class="cost-name">Google Sheets <span class="tier tier-p1">Free</span></div>
+        <div class="cost-tagline">Temporary bid register — Phase 1 only. Replaced by Dragonfly in Phase 2.</div>
+      </div>
+      <div class="cost-price">
+        <div class="cost-price-val" style="color:var(--green)">$0</div>
+        <div class="cost-price-lbl">per month</div>
+      </div>
+    </div>
+    <div class="cost-body">
+      <div class="cost-row">
+        <div><div class="cost-row-label">Google Sheets API</div><div class="cost-row-note">Free. Any Google account can create and share a spreadsheet. n8n connects via standard OAuth — no paid Google Workspace plan required for this use case.</div></div>
+        <div class="cost-row-val free">Free</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">What it stores</div><div class="cost-row-note">Four tabs: Pending Review (new bids awaiting Tom's decision), Active Bids (calendar of jobs being bid), Passed (bids declined with reason), Flagged (portal bids for manual review).</div></div>
+        <div class="cost-row-val free">4 tabs</div>
+      </div>
+      <div class="cost-row">
+        <div><div class="cost-row-label">Phase 2 handoff</div><div class="cost-row-note">All field names in the Sheets register match Dragonfly's Opportunity record schema exactly. When Dragonfly API is confirmed, n8n's write step points to Dragonfly instead. Zero data migration effort.</div></div>
+        <div class="cost-row-val free">Direct handoff</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner ok"><span>✓</span><div><strong>Intentionally temporary.</strong> Google Sheets is used in Phase 1 because it's free, instant to set up, and requires no PhaseAlpha dependency. Its schema is designed to map directly to Dragonfly — it's a bridge, not a long-term solution.</div></div>
+</div>
+
+<!-- ASSUMPTIONS -->
+<div id="assumptions" class="page">
+  <div class="ph">
+    <div class="ph-eye">Notes</div>
+    <div class="ph-title">Assumptions &amp; Notes</div>
+    <div class="ph-desc">What these estimates are based on and what could change them.</div>
+  </div>
+
+  <div class="calc-card" style="margin-bottom:14px">
+    <div class="calc-title">Usage Assumptions</div>
+    <div class="calc-row"><div class="calc-label">Average daily bid emails</div><div class="calc-val">25/day (midpoint of 10–40 range)</div></div>
+    <div class="calc-row"><div class="calc-label">Working days per month</div><div class="calc-val">22 days</div></div>
+    <div class="calc-row"><div class="calc-label">% of emails that are ITBs</div><div class="calc-val">~60% (rest are non-ITB, classified by Haiku only)</div></div>
+    <div class="calc-row"><div class="calc-label">% of ITBs with PDF attachments</div><div class="calc-val">~30% (Claude Vision runs)</div></div>
+    <div class="calc-row"><div class="calc-label">% of ITBs with Dropbox bulk packages</div><div class="calc-val">~30% (fuzzy match runs)</div></div>
+    <div class="calc-row"><div class="calc-label">% of ITBs with portal links only</div><div class="calc-val">~40% (no drawing retrieval — flagged for Tom)</div></div>
+  </div>
+
+  <div class="calc-card" style="margin-bottom:14px">
+    <div class="calc-title">What Could Change the Cost</div>
+    <div class="calc-row"><div class="calc-label">Dragonfly pricing confirmed higher or lower</div><div class="calc-val">Largest variable — confirm with PhaseAlpha</div></div>
+    <div class="calc-row"><div class="calc-label">AlphaTakeoff priced separately from Dragonfly</div><div class="calc-val">Could add $30–80/mo if not bundled</div></div>
+    <div class="calc-row"><div class="calc-label">Email volume doubles (40+ emails/day)</div><div class="calc-val">~$10–20/mo more in Claude API only</div></div>
+    <div class="calc-row"><div class="calc-label">n8n volume exceeds 2,500 executions/mo</div><div class="calc-val">Pro plan upgrade adds ~$30/mo</div></div>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-title">ROI Context</div>
+    <div class="calc-row"><div class="calc-label">Total monthly platform cost (full Dragonfly + AI stack)</div><div class="calc-val accent">$200–260/mo</div></div>
+    <div class="calc-row"><div class="calc-label">Hours recovered per week (bid intake + takeoff + follow-up)</div><div class="calc-val accent">10–15 hrs/week</div></div>
+    <div class="calc-row"><div class="calc-label">Value at $35/hr (conservative staff rate)</div><div class="calc-val accent">$1,400–2,100/mo recovered</div></div>
+    <div class="calc-row"><div class="calc-label">ROI ratio (value recovered vs. platform cost)</div><div class="calc-val accent">~7–10× return</div></div>
+    <div class="calc-row"><div class="calc-label">Annual platform cost</div><div class="calc-val">~$2,400–3,100/yr</div></div>
+    <div class="calc-row"><div class="calc-label">Annual value recovered</div><div class="calc-val">~$16,800–25,200/yr</div></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.querySelector('main').scrollTop = 0;
+}
+</script>
+</body>
+</html>
