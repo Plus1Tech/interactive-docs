@@ -1,0 +1,48 @@
+name: Publish internal documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-internal-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download approved standalone documents
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p internal
+          curl -L --fail --retry 3 \
+            'https://t9017426462.p.clickup-attachments.com/t9017426462/6fdc3aba-0eb7-42c9-bf23-644e01caed39/Plus1_Enterprise_Client_Technical_Documentation_Template_EXECUTIVE_PRO_ENTERPRISE_BPMN_ALL_TABS_WIDE_ALIGNED.html' \
+            -o internal/enterprise-client-technical-documentation.html
+          curl -L --fail --retry 3 \
+            'https://t9017426462.p.clickup-attachments.com/t9017426462/858f3afb-69bc-4c5e-90fc-9b48a7d3069f/Plus1_AI_Workflow_Setup_Template_EXECUTIVE_PRO_ENTERPRISE_BPMN_ALL_TABS_WIDE_ALIGNED.html' \
+            -o internal/claude-n8n-ai-workflow-setup.html
+          test "$(wc -c < internal/enterprise-client-technical-documentation.html)" -gt 1500000
+          test "$(wc -c < internal/claude-n8n-ai-workflow-setup.html)" -gt 40000
+          grep -qi '<html' internal/enterprise-client-technical-documentation.html
+          grep -qi '<html' internal/claude-n8n-ai-workflow-setup.html
+
+      - name: Commit published pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add internal/enterprise-client-technical-documentation.html internal/claude-n8n-ai-workflow-setup.html
+          if git diff --cached --quiet; then
+            echo 'No documentation changes to publish.'
+            exit 0
+          fi
+          git commit -m 'Publish standalone internal documentation pages'
+          git push
